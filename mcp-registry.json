@@ -1,0 +1,148 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-14",
+  "description": "Local registry of available MCP servers for Claude Code",
+  "servers": {
+    "github": {
+      "name": "@modelcontextprotocol/server-github",
+      "displayName": "GitHub MCP Server",
+      "type": "npm",
+      "install": "npm install -g @modelcontextprotocol/server-github",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": {
+          "required": true,
+          "description": "GitHub Personal Access Token with repo, workflow, read:org scopes",
+          "obtain": "https://github.com/settings/tokens"
+        }
+      },
+      "capabilities": [
+        "pr-management",
+        "issue-tracking",
+        "ci-cd-triggers",
+        "code-search",
+        "commit-analysis"
+      ],
+      "priority": "high",
+      "enhances": ["pr-workflow"],
+      "installed": false,
+      "tokenSavings": 2000,
+      "description": "100+ GitHub API tools for PR/issue management"
+    },
+    "context7": {
+      "name": "@context7/mcp-server",
+      "displayName": "Context7 Documentation Server",
+      "type": "npm",
+      "install": "npm install -g @context7/mcp-server",
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"],
+      "env": {},
+      "capabilities": [
+        "documentation",
+        "real-time-docs",
+        "framework-references"
+      ],
+      "priority": "medium",
+      "enhances": [],
+      "installed": false,
+      "tokenSavings": 3000,
+      "description": "Fetches real-time documentation from source repositories (React, Next.js, Vue, etc.)"
+    },
+    "playwright": {
+      "name": "@executeautomation/playwright-mcp-server",
+      "displayName": "Playwright Browser Automation",
+      "type": "npm",
+      "install": "npm install -g @executeautomation/playwright-mcp-server",
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"],
+      "env": {},
+      "capabilities": [
+        "browser-automation",
+        "testing",
+        "e2e-tests"
+      ],
+      "priority": "medium",
+      "enhances": [],
+      "installed": true,
+      "tokenSavings": 1000,
+      "description": "Browser automation for testing and web scraping"
+    },
+    "sequential-thinking": {
+      "name": "sequential-thinking-mcp",
+      "displayName": "Sequential Thinking Server",
+      "type": "github",
+      "install": "git clone https://github.com/sequentialthinking/mcp-server.git && cd mcp-server && npm install",
+      "command": "node",
+      "args": ["/path/to/mcp-server/index.js"],
+      "env": {},
+      "capabilities": [
+        "structured-reasoning",
+        "step-by-step-analysis",
+        "context-maintenance"
+      ],
+      "priority": "low",
+      "enhances": [],
+      "installed": false,
+      "tokenSavings": 5000,
+      "description": "Structured, reflective thinking process for complex problems"
+    },
+    "notion": {
+      "name": "@notionhq/mcp-server",
+      "displayName": "Notion Integration",
+      "type": "npm",
+      "install": "npm install -g @notionhq/mcp-server",
+      "command": "npx",
+      "args": ["-y", "@notionhq/mcp-server"],
+      "env": {
+        "NOTION_TOKEN": {
+          "required": true,
+          "description": "Notion Integration Token",
+          "obtain": "https://www.notion.so/my-integrations"
+        }
+      },
+      "capabilities": [
+        "documentation-sync",
+        "task-management",
+        "project-specs"
+      ],
+      "priority": "low",
+      "enhances": [],
+      "installed": false,
+      "tokenSavings": 1000,
+      "description": "Fetch documents, update tasks, retrieve project specs from Notion"
+    },
+    "filesystem": {
+      "name": "@modelcontextprotocol/server-filesystem",
+      "displayName": "Filesystem Server",
+      "type": "npm",
+      "install": "npm install -g @modelcontextprotocol/server-filesystem",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {},
+      "capabilities": [
+        "enhanced-file-ops",
+        "directory-watching",
+        "file-search"
+      ],
+      "priority": "low",
+      "enhances": [],
+      "installed": false,
+      "tokenSavings": 500,
+      "description": "Enhanced file operations (may be redundant with built-in tools)"
+    }
+  },
+  "installationOrder": [
+    "github",
+    "context7",
+    "playwright",
+    "sequential-thinking",
+    "notion",
+    "filesystem"
+  ],
+  "autoInstallCriteria": {
+    "minPriority": "medium",
+    "agentRequirements": true,
+    "userApproval": false
+  }
+}

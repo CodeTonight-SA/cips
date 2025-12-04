@@ -1,0 +1,60 @@
+# User/Machine-Specific State (Parallel Universe Safe)
+# These directories contain runtime, local configuration, and personal state
+# that must remain isolated per user/machine to prevent conflicts
+
+# Runtime and Debug
+debug/
+file-history/
+shell-snapshots/
+history.jsonl
+
+# Local Configuration
+ide/
+plugins/
+projects/
+settings.json
+.mcp.json
+
+# Personal State
+todos/
+workflows/
+statsig/
+instances/
+instances-*.tar.gz
+
+# OS-Specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Git
+.git/
+
+.credentials.json
+
+# Only commit portable, shared rules and skills:
+# - CLAUDE.md
+# - EFFICIENCY_CHECKLIST.md
+# - README.md
+# - skills/*/SKILL.md
+.hooks.log
+.read-cache.json
+
+# Semantic RL++ (Machine-Specific Runtime)
+embeddings.db
+models/
+*.dylib
+error-signatures.jsonl
+config/discovered-patterns.json
+.orchestrator-state.json
+.session.log
+.bash-lint.log
+.maintenance.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Artifact cleanup
+*.zip
