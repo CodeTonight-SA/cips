@@ -28,9 +28,18 @@
 #   ./crazy_script.sh install-mcp     # Install required MCP servers
 #   ./crazy_script.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 2.6.0
+# VERSION: 2.6.1
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-09 (v2.6: Design Principles Enforcers + GRASP Skill)
+# DATE: 2025-12-09 (v2.6.1: Self-improvement cycle)
+#
+# CHANGELOG v2.6.1:
+#   - Auto-generated skill: batch-edit-enforcer (enforces MultiEdit over individual Edit)
+#   - Fixed SC2188 shellcheck warning (: > instead of >)
+#   - Fixed SC2295 shellcheck warning (quoted expansion)
+#   - Fixed Python deprecation warnings (datetime.utcnow -> datetime.now(timezone.utc))
+#   - Fixed MD040 violations in EFFICIENCY_CHECKLIST.md
+#   - CIPS Gen 8 serialized: a7b52eb4
+#   - Skill count: 34 → 35
 #
 # CHANGELOG v2.6.0:
 #   - GRASP principles skill (9 patterns for OO responsibility assignment)
@@ -994,7 +1003,7 @@ detect_agent_patterns() {
 
     local detected_count=0
     local output_file="$CLAUDE_DIR/detected_agent_patterns.txt"
-    > "$output_file"  # Clear previous detections
+    : > "$output_file"  # Clear previous detections
 
     # Read built-in patterns (use tab delimiter to avoid conflicts with regex pipes)
     local patterns=$(jq -r '.builtInPatterns[] | "\(.name)\t\(.signature)\t\(.minOccurrences)"' "$patterns_file")

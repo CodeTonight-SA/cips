@@ -189,7 +189,7 @@ YAGNI ONLY applies to:
 
 ❌ WRONG - Bare code block:
 
-```
+```text
 npm install
 ```
 
@@ -215,7 +215,7 @@ Session optimization
 
 ❌ WRONG - No spacing:
 
-```
+```markdown
 ### Heading
 Content here
 - List item
@@ -223,7 +223,7 @@ Content here
 
 ✅ CORRECT - Proper spacing:
 
-```
+```markdown
 ### Heading
 
 Content here
@@ -235,13 +235,13 @@ Content here
 
 ❌ WRONG - Long skill description exceeding 120 characters:
 
-```
+```markdown
 - **skill-name**: This is a very long description that exceeds the 120 character limit and makes markdown difficult to read
 ```
 
 ✅ CORRECT - Wrapped with continuation:
 
-```
+```markdown
 - **skill-name**: This is a very long description that exceeds the 120 character limit and makes
   markdown difficult to read
 ```
@@ -250,7 +250,7 @@ Content here
 
 ❌ WRONG - Double spacing:
 
-```
+```markdown
 ### Section 1
 
 
@@ -259,7 +259,7 @@ Content here
 
 ✅ CORRECT - Single blank line:
 
-```
+```markdown
 ### Section 1
 
 - Content
@@ -269,7 +269,7 @@ Content here
 
 ❌ WRONG - Same heading under same parent:
 
-```
+```markdown
 ## Features
 ### Example
 (content)
@@ -278,7 +278,7 @@ Content here
 
 ✅ CORRECT - Unique descriptive headings:
 
-```
+```markdown
 ## Features
 ### Example: Basic Usage
 (content)

@@ -39,7 +39,7 @@ while true; do
 
         while IFS= read -r file; do
             if [[ -f "$file" ]]; then
-                log "Fixing: ${file#$CLAUDE_DIR/}"
+                log "Fixing: ${file#"$CLAUDE_DIR"/}"
 
                 # Run markdownlint with fix, capture output
                 OUTPUT=$(npx -y markdownlint-cli --fix "$file" 2>&1 || true)

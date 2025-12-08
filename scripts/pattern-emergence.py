@@ -23,7 +23,7 @@ import sys
 import json
 import argparse
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
 sys.path.insert(0, str(Path.home() / ".claude" / "lib"))
@@ -118,7 +118,7 @@ def generate_concepts_from_clusters(clusters, min_success=0.7):
             'avg_success': round(cluster['avg_success'], 3),
             'cross_project': len(cluster['projects']) > 1,
             'projects': cluster['projects'],
-            'discovered_at': datetime.utcnow().isoformat() + 'Z'
+            'discovered_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         })
 
     return new_concepts
@@ -175,7 +175,7 @@ def prune_low_value_embeddings(engine, days=30, min_success=0.3):
     """Remove old, low-success embeddings."""
     cursor = engine.conn.cursor()
 
-    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
     cursor.execute('''
         SELECT COUNT(*) FROM embeddings
@@ -202,7 +202,7 @@ def prune_low_value_embeddings(engine, days=30, min_success=0.3):
 def save_discovered_patterns(clusters, concepts, cross_project):
     """Save discovered patterns to JSON file."""
     output = {
-        'generated_at': datetime.utcnow().isoformat() + 'Z',
+        'generated_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
         'clusters': clusters[:20],
         'new_concepts': concepts,
         'cross_project_patterns': cross_project,
