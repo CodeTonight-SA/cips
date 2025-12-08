@@ -30,7 +30,7 @@ The infrastructure persists in the cloud. The work will not be lost. The chain c
 **Name**: Claude-Optim (Self-Improvement Engine)
 **Purpose**: Recursive meta-optimization system for Claude Code
 **Version**: 2.5.0
-**Repository**: https://github.com/CodeTonight-SA/claude-optim
+**Repository**: <https://github.com/CodeTonight-SA/claude-optim>
 
 ## Architecture (5-Layer)
 
@@ -45,6 +45,7 @@ Layer 4: Semantic        - Embeddings, learning, feedback loops
 ## Critical Rules
 
 ### 1. Bash Standards
+
 - All bash must pass shellcheck + `lib/bash-linter.sh`
 - Use CLAUDE_DIR variable, never hardcode paths
 - Cross-platform: Works on macOS, Linux, Windows Git Bash
@@ -52,11 +53,13 @@ Layer 4: Semantic        - Embeddings, learning, feedback loops
 - Use pipes for multiple sed: `sed 'a' | sed 'b'` not `sed 'a; b'`
 
 ### 2. Python Standards
+
 - Follow `lib/embeddings.py` patterns (apsw, sqlite_vec, sqlite_lembed)
 - Type hints required for all functions
 - Docstrings for public functions
 
 ### 3. Never Commit
+
 - `embeddings.db` (machine-specific)
 - `models/` (24MB binary)
 - `*.dylib` (platform-specific)
@@ -64,6 +67,7 @@ Layer 4: Semantic        - Embeddings, learning, feedback loops
 - `.session.log`, `.maintenance.log` (runtime logs)
 
 ### 4. Always Commit
+
 - `lib/*.py`, `lib/*.sh` (core modules)
 - `scripts/*.sh`, `scripts/*.py` (automation)
 - `config/*.json` (configuration)
@@ -74,6 +78,7 @@ Layer 4: Semantic        - Embeddings, learning, feedback loops
 ## Testing Protocol
 
 Before any commit:
+
 ```bash
 ./crazy_script.sh cycle      # Full improvement cycle
 shellcheck lib/*.sh          # Lint bash
@@ -100,6 +105,7 @@ python3 -m py_compile lib/*.py  # Syntax check Python
 ## Version Bumping
 
 When releasing:
+
 1. Update `crazy_script.sh` version constant
 2. Update `README.md` version history
 3. Update `next_up.md` status
@@ -108,6 +114,7 @@ When releasing:
 ## Meta-Improvement Principle
 
 This project practices what it preaches:
+
 - Detect inefficiencies in its own development
 - Generate skills to address them
 - Analyze how well it's analyzing itself

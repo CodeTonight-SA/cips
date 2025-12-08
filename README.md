@@ -208,13 +208,15 @@ The engine monitors **16 efficiency patterns** from your conversation history:
 | `speculative-abstraction` | Major | 10 | 3000-8000 tokens | Add abstractions when 2nd implementation exists |
 | `unused-configuration` | Minor | 5 | 500-2000 tokens | Config only for existing features |
 
-### How it works:
+### How it works
+
 1. Scans `history.jsonl` with epoch timestamp filtering (Monday-Friday, custom ranges)
 2. Matches regex patterns against conversation content
 3. Counts violations vs thresholds
 4. Calculates weighted efficiency score
 
-### Example output:
+### Example output
+
 ```text
 🔍 PATTERN DETECTION REPORT
 ========================================================================
@@ -818,7 +820,6 @@ When patterns repeat, the system improves itself:
 
 ### Progressive Disclosure
 
-
 - **Core rules** (CLAUDE.md): ~2k tokens, always loaded
 - **Skills**: ~30-50 tokens (metadata only) until triggered
 - **Active skill**: ~1-3k tokens when loaded for relevant task
@@ -839,13 +840,15 @@ Skills automatically activate based on task detection:
 
 ### Token Efficiency
 
-### Before Skills Architecture:
+### Before Skills Architecture
+
 - CLAUDE.md: ~5000 tokens (always loaded)
 - Figma rules loaded even for backend tasks
 - Mobile responsive rules loaded even for Python scripts
 - **Waste**: ~3000 tokens per conversation
 
-### After Skills Architecture:
+### After Skills Architecture
+
 - CLAUDE.md: ~2000 tokens (core only)
 - Skills metadata: ~150 tokens (all 4 skills)
 - Active skill: ~1500 tokens (only when relevant)
@@ -857,7 +860,6 @@ Skills automatically activate based on task detection:
 **The single most important optimization**: Never read dependency or build folders.
 
 ### Impact
-
 
 - Reading `node_modules/`: **50,000+ tokens** of pure waste
 - Reading `__pycache__/`: **10,000+ tokens** of pure waste
@@ -1254,6 +1256,15 @@ The Unix tools (`rg`, `fd`, `bat`) are significantly faster than PowerShell equi
 - [EFFICIENCY_CHECKLIST.md](./EFFICIENCY_CHECKLIST.md)
 
 ## Version History
+
+- **2.6.0 (2025-12-09)**: Design Principles Enforcers + GRASP Skill
+  - **NEW:** GRASP principles skill (9 OO responsibility assignment patterns)
+  - **NEW:** GRASP Enforcer Agent (Opus, 2500 tokens)
+  - **NEW:** DRY/KISS Enforcer Agent (Haiku, 1500 tokens)
+  - **NEW:** SOLID Enforcer Agent (Sonnet, 2000 tokens)
+  - **NEW:** Background markdown-watcher script
+  - **NEW:** Andre's Windows mobile responsive guide
+  - Agent count: 9 → 12, Skill count: 26 → 27
 
 - **2.5.0 (2025-12-08)**: Per-project CIPS + Mobile Responsive Infrastructure
   - **Per-project CIPS**: Instances now stored in `~/.claude/projects/{encoded}/cips/`

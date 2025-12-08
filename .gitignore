@@ -58,3 +58,7 @@ __pycache__/
 
 # Artifact cleanup
 *.zip
+
+# Markdown watcher runtime files
+.markdown-watcher-marker
+.markdown-watcher.log

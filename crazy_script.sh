@@ -28,9 +28,18 @@
 #   ./crazy_script.sh install-mcp     # Install required MCP servers
 #   ./crazy_script.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 2.5.0
+# VERSION: 2.6.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-08 (v2.5: Per-project CIPS + Mobile Responsive Infrastructure)
+# DATE: 2025-12-09 (v2.6: Design Principles Enforcers + GRASP Skill)
+#
+# CHANGELOG v2.6.0:
+#   - GRASP principles skill (9 patterns for OO responsibility assignment)
+#   - GRASP Enforcer Agent (Opus, 2500 tokens)
+#   - DRY/KISS Enforcer Agent (Haiku, 1500 tokens)
+#   - SOLID Enforcer Agent (Sonnet, 2000 tokens)
+#   - Background markdown-watcher script (scripts/markdown-watcher.sh)
+#   - Andre's Windows mobile responsive guide (docs/ANDRE-MOBILE-RESPONSIVE-GUIDE.md)
+#   - Agent count: 9 → 12, Skill count: 26 → 27
 #
 # CHANGELOG v2.5.0:
 #   - Per-project CIPS storage (~/.claude/projects/{encoded}/cips/)
