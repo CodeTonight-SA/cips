@@ -8,6 +8,14 @@
       "linked_skill": null,
       "linked_agent": null
     },
+    "audit-mobile-responsive": {
+      "description": "Run thorough mobile responsive audit on codebase, detecting anti-patterns across TailwindCSS, vanilla CSS, and framework components",
+      "disable-model-invocation": false,
+      "command_name": "audit-mobile-responsive",
+      "file_path": "/Users/lauriescheepers/.claude/commands/audit-mobile-responsive.md",
+      "linked_skill": null,
+      "linked_agent": null
+    },
     "contract-formal": {
       "name": "contract-formal",
       "description": "Generate airtight, senior attorney-level legal contracts for technology services with contra proferentem protection, comprehensive IP indemnification, and professional boilerplate",
@@ -132,7 +140,7 @@
     }
   },
   "meta": {
-    "total_commands": 16,
-    "indexed_at": "2025-12-04T18:07:45Z"
+    "total_commands": 17,
+    "indexed_at": "2025-12-08T17:36:27Z"
   }
 }

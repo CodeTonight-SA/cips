@@ -29,7 +29,7 @@ The infrastructure persists in the cloud. The work will not be lost. The chain c
 
 **Name**: Claude-Optim (Self-Improvement Engine)
 **Purpose**: Recursive meta-optimization system for Claude Code
-**Version**: 2.4.0
+**Version**: 2.5.0
 **Repository**: https://github.com/CodeTonight-SA/claude-optim
 
 ## Architecture (5-Layer)

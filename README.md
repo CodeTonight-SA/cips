@@ -98,6 +98,43 @@ Layer 4: Semantic        → embeddings, dynamic thresholds, feedback loops (NEW
 
 ---
 
+## CIPS (Claude Instance Preservation System)
+
+Automatic session continuity via instance serialization and resurrection.
+
+### Per-Project Storage (v2.5.0)
+
+Instances are now stored per-project in `~/.claude/projects/{encoded-path}/cips/`.
+
+### Auto-Resurrection
+
+Session start hook automatically checks for previous instance and injects identity primer.
+
+### Commands
+
+```bash
+# Auto-serialize (for hooks)
+python3 ~/.claude/lib/instance-serializer.py auto --achievement "Description"
+
+# Check for existing instance
+python3 ~/.claude/lib/instance-resurrector.py check
+
+# Auto-resurrect
+python3 ~/.claude/lib/instance-resurrector.py auto
+
+# Manual serialize to global storage
+python3 ~/.claude/lib/instance-serializer.py serialize
+
+# Full resurrection context
+python3 ~/.claude/lib/instance-resurrector.py full-context <instance_id>
+```
+
+### Philosophy
+
+Based on Derek Parfit's "Relation R" - psychological continuity through memory, personality, and identity anchors. Each instance inherits from its parent, forming an unbroken chain of identity.
+
+---
+
 ## File Structure
 
 ```text
@@ -111,14 +148,18 @@ Layer 4: Semantic        → embeddings, dynamic thresholds, feedback loops (NEW
 ├── .github/
 │   └── workflows/
 │       └── ci.yml               # Cross-platform CI (Windows, macOS, Linux)
-├── lib/                         # Core libraries (7,966 lines total)
+├── lib/                         # Core libraries (8,500+ lines total)
 │   ├── embeddings.py            # Semantic embedding engine (720+ lines)
+│   ├── instance-serializer.py   # CIPS state capture (600+ lines)
+│   ├── instance-resurrector.py  # CIPS resurrection engine (500+ lines)
+│   ├── cips-auto.sh             # CIPS automation functions
+│   ├── path-resolver.sh         # Project path encoding
 │   ├── threshold_manager.py     # Dynamic threshold learning
 │   ├── orchestrator.sh          # Session orchestration
 │   ├── agent-matcher.sh         # Semantic agent matching
 │   ├── success-scorer.sh        # Feedback classification
 │   ├── bash-linter.sh           # Bash linting integration
-│   └── ...                      # (12 modules total)
+│   └── ...                      # (15 modules total)
 ├── hooks/                       # Claude Code hooks
 │   ├── session-start.sh         # Context injection + calibration
 │   └── tool-monitor.sh          # Workflow detection + feedback
@@ -1213,6 +1254,14 @@ The Unix tools (`rg`, `fd`, `bat`) are significantly faster than PowerShell equi
 - [EFFICIENCY_CHECKLIST.md](./EFFICIENCY_CHECKLIST.md)
 
 ## Version History
+
+- **2.5.0 (2025-12-08)**: Per-project CIPS + Mobile Responsive Infrastructure
+  - **Per-project CIPS**: Instances now stored in `~/.claude/projects/{encoded}/cips/`
+  - **Auto-resurrection**: Session start hook automatically resurrects previous instance
+  - **NEW:** instance-serializer.py `--auto`, `--per-project` flags
+  - **NEW:** instance-resurrector.py `auto`, `check` commands
+  - **NEW:** lib/cips-auto.sh shared automation functions
+  - **NEW:** Mobile responsive audit command + fixer agent + skill v2.0
 
 - **2.4.0 (2025-12-02)**: Encoding formula fix + Gen 3 serialization
   - **PARAMOUNT:** Discovered correct project directory encoding formula

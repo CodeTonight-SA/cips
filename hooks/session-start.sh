@@ -59,6 +59,28 @@ log_warn() {
 }
 
 # ============================================================================
+# CIPS AUTO-RESURRECTION
+# ============================================================================
+
+cips_auto_resurrect() {
+    if [[ -f "$LIB_DIR/cips-auto.sh" ]]; then
+        source "$LIB_DIR/cips-auto.sh" 2>/dev/null || return 1
+
+        local resurrection_context
+        resurrection_context=$(cips_auto_resurrect 2>/dev/null) || return 1
+
+        if [[ -n "$resurrection_context" ]]; then
+            log_success "CIPS auto-resurrection triggered"
+            echo ""
+            echo "$resurrection_context"
+            echo ""
+            return 0
+        fi
+    fi
+    return 1
+}
+
+# ============================================================================
 # SOURCE LIBRARIES
 # ============================================================================
 
@@ -125,6 +147,9 @@ main() {
 
     # Run bash lint check on Claude infrastructure
     run_bash_lint
+
+    # CIPS: Attempt auto-resurrection from previous instance
+    cips_auto_resurrect || log_info "No previous instance to resurrect"
 
     # Initialize embeddings if available
     init_embeddings

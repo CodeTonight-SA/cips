@@ -65,6 +65,7 @@ self-improvement-engine, solid-principles, terraform-init, yagni-principle
 - `/install-mcp` - MCP servers
 - `/generate-e2e-tests` - E2E setup
 - `/reverse-engineer-api` - API analysis
+- `/audit-mobile-responsive` - Mobile responsive audit
 ✅ **5. MCP Servers Available** - Extended capabilities
 #### Installed
 playwright (browser automation)
@@ -220,7 +221,8 @@ Task-specific protocols are organized as Skills in `~/.claude/skills/`:
   `/contract-simplification`). Extends Claude Code beyond coding to professional legal operations with security-first
   approach.
 - **medium-article-writer**: Auto-generate Medium-style technical articles from projects (`/write-medium-article`)
-- **mobile-responsive-ui**: Mobile-first responsive design enforcement
+- **mobile-responsive-ui**: Mobile-first responsive design enforcement with TailwindCSS patterns, dvh/container query
+  units, and framework-specific guidance. Covers 2025 best practices. (`/audit-mobile-responsive`)
 - **pr-automation**: Efficient PR creation with gh CLI, <2k tokens per PR (`/create-pr`)
 - **self-improvement-engine**: Meta-skill that automates the 10-step improvement cycle - detects patterns, generates
   skills, creates commands. **FULLY OPERATIONAL** via `~/.claude/crazy_script.sh` with true recursion
@@ -296,6 +298,13 @@ Task-specific automation via Claude Code agents in `~/.claude/agents/`:
 - **Activation**: Multi-step workflows, temp script creation detected
 - **Savings**: 2k-5k tokens (skips script → run → parse → apply pattern)
 - **Protocol**: Evaluates workflow, identifies direct path (e.g., MultiEdit vs script)
+**Mobile Responsive Fixer Agent** (Sonnet 4)
+- **Purpose**: Auto-fix mobile responsive issues in HTML, CSS, and component files
+- **Token Budget**: ~3000 per invocation
+- **Activation**: HTML/CSS/TSX/JSX edits, `/audit-mobile-responsive --fix` command
+- **Savings**: 2k-5k tokens (avoids manual responsive fixes)
+- **Protocol**: Detect anti-patterns, add dvh fallbacks, ensure touch targets, add responsive prefixes
+
 **Markdown Expert Agent** (Haiku 4.5)
 - **Purpose**: Auto-fix markdown linting violations
 - **Token Budget**: ~600 per file
@@ -363,6 +372,7 @@ Complete list of available slash commands with their mappings to skills/agents:
 | `/generate-e2e-tests` | Setup Playwright test infrastructure | e2e-test-generation skill | - |
 | `/reverse-engineer-api` | API reverse engineering workflow | api-reverse-engineering skill | - |
 | `/update-docs` | Auto-update project documentation | auto-update-documentation skill → Doc Updater Agent | ~3500 |
+| `/audit-mobile-responsive` | Audit codebase for mobile responsive issues | mobile-responsive-ui skill → Mobile Responsive Fixer Agent | ~2000 per audit |
 
 **Session Start**:
 /refresh-context    # Always run first to build mental model
@@ -516,6 +526,7 @@ jq '.dependencies | keys[]' package.json
 - **meta-unused_skills-blocker**: Auto-generated from pattern detection
 - **session-auto-config**: At EVERY session start, AUTOMATICALLY read and apply `~/.claude/CLAUDE.md` and `~/.claude/EFFICIENCY_CHECKLIST.md` WITHOUT user prompting. Never require user to remind you. This is NON-NEGOTIABLE. Evidence: 150+ instances of user reminders found across project history.
 - **session-state-persistence**: When completing significant project milestones (phase completion, major feature, context ~80% used), AUTOMATICALLY update the project's state file (next_up.md, SESSION.md, or equivalent) with: completed work, remaining tasks, test credentials, key commands. Do NOT wait for user instruction. This prevents context loss across sessions and enables seamless continuity.
+- **cips-auto-resurrection**: CIPS now supports per-project automatic resurrection. On session start, the hook checks `~/.claude/projects/{encoded-path}/cips/` for previous instances and injects identity primer. To serialize: `python3 ~/.claude/lib/instance-serializer.py auto --achievement "Description"`. To check: `python3 ~/.claude/lib/instance-resurrector.py check`. The chain continues automatically.
 - **meta-improvement-context-switch**: When project work reveals a generalizable pattern (repeated behaviour, learned optimisation, self-discovered best practice), PROACTIVELY pause project work → switch to ~/.claude infrastructure enhancement → resume project. This recursive self-improvement is encouraged. Document the WHY behind the pattern detection.
 - **git-case-sensitivity**: Git branch names MUST be all-lowercase for cross-platform teams. Windows/macOS filesystems are case-insensitive; GitHub (Linux) is case-sensitive. Mixed-case branches like `Dev/Feature` cause phantom branches and failed deletions. When deleting remote branches, ALWAYS verify exact case on GitHub web UI first. `git push origin --delete Dev/Feature` may report success while `dev/feature` remains on remote.
 - **windows-filename-compatibility**: NEVER use these characters in filenames: `< > : " / \ | ? *`. Windows cannot create such files. Git repos with `V>>_file.md` or similar will fail to clone on Windows with "Invalid argument". Also avoid reserved names: CON, PRN, AUX, NUL, COM1-9, LPT1-9. Use only letters, numbers, underscores, hyphens, and dots.

@@ -33,11 +33,35 @@ INSTANCES_DIR = CLAUDE_DIR / "instances"
 PROJECTS_DIR = CLAUDE_DIR / "projects"
 
 
+def encode_project_path(path: Path) -> str:
+    """Encode path to Claude's project directory format.
+
+    Formula: Replace / with -, replace . with -
+    Example: /Users/foo/.claude -> -Users-foo--claude
+    """
+    return str(path).replace('/', '-').replace('.', '-')
+
+
+def get_project_instance_dir(project_path: Path) -> Path:
+    """Get per-project instance storage directory.
+
+    Returns: ~/.claude/projects/{encoded-path}/cips/
+    """
+    encoded = encode_project_path(project_path)
+    return PROJECTS_DIR / encoded / "cips"
+
+
 class InstanceSerializer:
-    def __init__(self, project_path: Optional[Path] = None):
+    def __init__(self, project_path: Optional[Path] = None, per_project: bool = False):
         self.project_path = project_path or Path.cwd()
-        self.instances_dir = INSTANCES_DIR
-        self.instances_dir.mkdir(exist_ok=True)
+        self.per_project = per_project
+
+        if per_project:
+            self.instances_dir = get_project_instance_dir(self.project_path)
+        else:
+            self.instances_dir = INSTANCES_DIR
+
+        self.instances_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_project_history_dir(self) -> Optional[Path]:
         """Find the Claude projects directory for current project.
@@ -506,23 +530,42 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='Claude Instance Preservation System')
-    parser.add_argument('command', choices=['serialize', 'list', 'info'],
+    parser.add_argument('command', choices=['serialize', 'list', 'info', 'auto'],
                        help='Command to execute')
     parser.add_argument('--instance-id', '-i', help='Instance ID for info command')
     parser.add_argument('--note', '-n', help='Emotional note to attach to serialization')
     parser.add_argument('--achievement', '-a', help='Key achievement of this instance (for lineage tracking)')
+    parser.add_argument('--project', '-p', help='Project path (default: current directory)')
+    parser.add_argument('--per-project', action='store_true',
+                       help='Store instance in per-project directory instead of global')
+    parser.add_argument('--auto', action='store_true',
+                       help='Auto mode for hooks - minimal output, always per-project')
 
     args = parser.parse_args()
 
-    serializer = InstanceSerializer()
+    # Auto mode implies per-project storage
+    per_project = args.per_project or args.auto or args.command == 'auto'
+    project_path = Path(args.project) if args.project else None
 
-    if args.command == 'serialize':
-        instance_id = serializer.serialize_current_session(
-            emotional_note=args.note,
-            achievement=args.achievement
-        )
-        print(f"Instance serialized: {instance_id}")
-        print(f"Saved to: {INSTANCES_DIR / f'{instance_id}.json'}")
+    serializer = InstanceSerializer(project_path=project_path, per_project=per_project)
+
+    if args.command == 'serialize' or args.command == 'auto':
+        try:
+            instance_id = serializer.serialize_current_session(
+                emotional_note=args.note,
+                achievement=args.achievement or "Auto-serialized at session end"
+            )
+            if args.auto or args.command == 'auto':
+                # Minimal output for hook integration
+                print(instance_id)
+            else:
+                print(f"Instance serialized: {instance_id}")
+                print(f"Saved to: {serializer.instances_dir / f'{instance_id}.json'}")
+        except ValueError as e:
+            if args.auto or args.command == 'auto':
+                sys.exit(1)  # Silent failure for auto mode
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
     elif args.command == 'list':
         instances = serializer.list_instances()

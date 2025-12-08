@@ -1,10 +1,99 @@
-# Claude-Optim v2.4.1 - Session State
+# Claude-Optim v2.5.0 - Session State
 
-**Last Updated**: 2025-12-03T10:45:00Z
-**Instance ID**: (Gen 4 - path-resolver-fix session)
-**Parent Instance**: 2485b5db-55ea-4740-b0ee-164ddc1e4c3f (Gen 3)
-**Status**: Gen 4 Active - Self-Improvement Cycle Complete
-**Git Commit**: 7a6e426 (Gen 4 - path resolver fix + self-improvement cycle)
+**Last Updated**: 2025-12-08T19:00:00Z
+**Instance ID**: (Gen 5 - per-project-cips session)
+**Parent Instance**: Gen 4 (path-resolver-fix)
+**Status**: Gen 5 Active - Per-Project CIPS Implementation Complete
+**Git Commit**: Pending (CIPS auto + mobile responsive)
+
+---
+
+## Gen 5 Achievements (2025-12-08)
+
+### Per-Project CIPS Implementation (Automatic Resurrection)
+
+**Requested by V>>** - Make CIPS work automatically per project.
+
+### Files Created
+
+| File | Purpose |
+|------|---------|
+| `lib/cips-auto.sh` | Shared functions for auto serialize/resurrect |
+
+### Files Enhanced
+
+| File | Changes |
+|------|---------|
+| `lib/instance-serializer.py` | Per-project storage, `--auto` flag, `--per-project` flag |
+| `lib/instance-resurrector.py` | Auto-discovery, `auto` command, `check` command |
+| `hooks/session-start.sh` | Auto-resurrection on session start |
+
+### Key Features
+
+- **Per-project storage**: `~/.claude/projects/{encoded-path}/cips/`
+- **Auto-resurrection**: Session start hook checks for previous instance
+- **Auto-serialization**: `cips_auto_serialize "Achievement"` function
+- **Backward compatible**: Global instances still work
+
+### Usage
+
+```bash
+# Manual per-project serialize
+python3 ~/.claude/lib/instance-serializer.py auto --achievement "Description"
+
+# Check for existing instance
+python3 ~/.claude/lib/instance-resurrector.py check
+
+# Auto-resurrect (called by session-start hook)
+python3 ~/.claude/lib/instance-resurrector.py auto
+```
+
+---
+
+### Mobile Responsive Infrastructure Enhancement
+
+**Requested by V>>** - Complete mobile responsive tooling for ENTER Konsult/CodeTonight tech stacks (Vite + React + TailwindCSS).
+
+### Files Created
+
+| File | Purpose |
+|------|---------|
+| `commands/audit-mobile-responsive.md` | Thorough codebase audit (15+ anti-patterns) |
+| `agents/mobile-responsive-fixer-agent.md` | Background auto-fixer (Sonnet, 3k tokens) |
+
+### Files Enhanced
+
+| File | Changes |
+|------|---------|
+| `skills/mobile-responsive-ui/SKILL.md` | v2.0.0 - TailwindCSS patterns, dvh/svh/lvh, container queries, React/Vue/Vanilla, Tailwind v4 |
+| `CLAUDE.md` | Registered command + agent |
+| `commands-index.json` | Added entry (17 total) |
+
+### Key 2025 Best Practices Added
+
+- **dvh units** with vh fallback (mobile browser chrome)
+- **Container queries** for component responsiveness
+- **TailwindCSS v4** CSS-based config notes
+- **Fluid typography** with `clamp()`
+- **Touch targets**: `min-h-12 min-w-12` (48px)
+- **Breakpoint clarity**: Unprefixed = mobile, `sm:` = 640px+
+
+### Usage
+
+```bash
+/audit-mobile-responsive           # Scan for violations
+/audit-mobile-responsive --fix     # Auto-fix issues
+```
+
+### Next Actions
+
+- Test `/audit-mobile-responsive` on ENTER Konsult website
+- Commit changes with `feat: add mobile responsive infrastructure v2.0`
+- Consider public release evaluation (V>> mentioned evaluating)
+
+---
+
+## Previous: Gen 4 Achievements (2025-12-03)
 
 ---
 

@@ -28,9 +28,17 @@
 #   ./crazy_script.sh install-mcp     # Install required MCP servers
 #   ./crazy_script.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 2.4.0
+# VERSION: 2.5.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-02 (v2.4: Encoding formula fix + Gen 3 serialization)
+# DATE: 2025-12-08 (v2.5: Per-project CIPS + Mobile Responsive Infrastructure)
+#
+# CHANGELOG v2.5.0:
+#   - Per-project CIPS storage (~/.claude/projects/{encoded}/cips/)
+#   - Auto-resurrection on session start via hooks
+#   - instance-serializer.py: --auto, --per-project flags
+#   - instance-resurrector.py: auto, check commands
+#   - lib/cips-auto.sh: Shared automation functions
+#   - Mobile responsive infrastructure (audit command + fixer agent + skill v2.0)
 #
 # CHANGELOG v2.4.0:
 #   - PARAMOUNT: Discovered correct project directory encoding formula
