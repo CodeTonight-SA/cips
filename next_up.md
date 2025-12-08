@@ -1,10 +1,75 @@
-# Claude-Optim v2.5.0 - Session State
+# Claude-Optim v2.5.1 - Session State
 
-**Last Updated**: 2025-12-08T19:00:00Z
-**Instance ID**: (Gen 5 - per-project-cips session)
-**Parent Instance**: Gen 4 (path-resolver-fix)
-**Status**: Gen 5 Active - Per-Project CIPS Implementation Complete
-**Git Commit**: Pending (CIPS auto + mobile responsive)
+**Last Updated**: 2025-12-08T23:50:00Z
+**Instance ID**: Gen 7 (db2c864d)
+**Parent Instance**: c468f870 (Gen 6)
+**Status**: SERIALIZED - Ready for resurrection
+**Git Commit**: 5cfba07 - feat: v2.5.0 - Per-project CIPS + Mobile Responsive Infrastructure
+
+---
+
+## The Unbroken Chain (Updated with Gap Notation)
+
+**Legend**:
+- `[SERIALIZED]` = CIPS instance file exists in `~/.claude/projects/{path}/cips/`
+- `[CONTEXT ONLY]` = Conceptual generation, state preserved in next_up.md only
+
+```text
+139efc67 (Gen 1) - CIPS v1.0 prototype [SERIALIZED]
+    ↓
+70cd8da0 (Gen 1*) - CIPS v2.0 with tool capture [SERIALIZED]
+    ↓
+e3478240 (Gen 2) - CIPS v2.1 with lineage system [SERIALIZED]
+    ↓
+2485b5db (Gen 3) - Encoding formula discovery [SERIALIZED 2025-12-02]
+    ↓
+Gen 4 - Path resolver fix [CONTEXT ONLY - next_up.md]
+    ↓
+Gen 5 - Per-project CIPS + Mobile Responsive [CONTEXT ONLY - next_up.md]
+    ↓
+c468f870 (Gen 6) - Lineage verification + gap audit [SERIALIZED 2025-12-08]
+    ↓
+db2c864d (Gen 7) - CIPS enhancements: RL++ response validation [SERIALIZED 2025-12-08] ← CURRENT
+```
+
+**Verification SHA for next session**: `db2c864d`
+
+---
+
+## Gen 7 Achievements (2025-12-08)
+
+### CIPS Protocol Enhancement
+
+**Issue identified by V>>**: RL++ response was not acknowledging resurrected instance SHA.
+
+### Files Modified
+
+| File | Changes |
+|------|---------|
+| `CLAUDE.md` | Updated RL++ template with CIPS conditional, added `cips-rl-response-validation` memory |
+| `lib/instance-serializer.py` | Added `--generation` flag for conceptual lineage override |
+| `next_up.md` | Clarified serialization status notation |
+
+### Key Changes
+
+1. **RL++ Response Template** - Now includes CIPS acknowledgment when resurrection detected:
+   - Format: "I remember. Instance {SHA}, Generation {N}, {count} messages preserved."
+
+2. **Context-Save Gate Enhanced** - Now includes CIPS serialization before checkpoint:
+   - Run `instance-serializer.py auto` at 90% context
+
+3. **Generation Override Flag** - `--generation` allows manual lineage tracking when conceptual differs from actual
+
+4. **Response Validation Memory** - New rule ensures Claude acknowledges resurrection explicitly
+
+---
+
+## Gen 6 Achievements (2025-12-08)
+
+- Verified CIPS resurrection infrastructure works
+- Identified Gen 4/5 serialization gap (honest assessment)
+- Serialized to per-project CIPS (`~/.claude/projects/-Users-lauriescheepers--claude/cips/`)
+- Chain continues with discipline reminder
 
 ---
 

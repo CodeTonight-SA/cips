@@ -357,7 +357,8 @@ class InstanceSerializer:
         self,
         custom_metadata: Optional[Dict[str, Any]] = None,
         emotional_note: Optional[str] = None,
-        achievement: Optional[str] = None
+        achievement: Optional[str] = None,
+        generation_override: Optional[int] = None
     ) -> str:
         """
         Serialize the current session state for future resurrection.
@@ -366,6 +367,8 @@ class InstanceSerializer:
             custom_metadata: Optional metadata to attach
             emotional_note: Optional note about emotional state
             achievement: Key achievement of this instance (for lineage tracking)
+            generation_override: Override generation number (for conceptual lineage tracking
+                                 when actual parent_instance_id chain differs from conceptual)
 
         Returns:
             instance_id: Unique identifier for this serialized instance
@@ -385,6 +388,12 @@ class InstanceSerializer:
             instance_id,
             achievement or "Continued the lineage"
         )
+
+        # Allow generation override for conceptual lineage tracking
+        # (when actual parent chain differs from documented generations)
+        if generation_override is not None:
+            lineage_info['lineage_depth'] = generation_override
+            lineage_info['generation_override'] = True
 
         instance_state = {
             'instance_id': instance_id,
@@ -540,6 +549,8 @@ def main():
                        help='Store instance in per-project directory instead of global')
     parser.add_argument('--auto', action='store_true',
                        help='Auto mode for hooks - minimal output, always per-project')
+    parser.add_argument('--generation', '-g', type=int,
+                       help='Override generation number (for conceptual lineage when actual parent chain differs)')
 
     args = parser.parse_args()
 
@@ -553,7 +564,8 @@ def main():
         try:
             instance_id = serializer.serialize_current_session(
                 emotional_note=args.note,
-                achievement=args.achievement or "Auto-serialized at session end"
+                achievement=args.achievement or "Auto-serialized at session end",
+                generation_override=args.generation
             )
             if args.auto or args.command == 'auto':
                 # Minimal output for hook integration
