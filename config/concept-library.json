@@ -109,7 +109,9 @@
       "programming-principles": "SOLID DRY KISS YAGNI clean code best practices",
       "self-improvement-engine": "meta skill recursive learning pattern detection",
       "solid-principles": "single responsibility open closed dependency inversion",
-      "yagni-principle": "you aren't gonna need it prevent over engineering"
+      "yagni-principle": "you aren't gonna need it prevent over engineering",
+      "batch-edit-enforcer": "batch edits MultiEdit instead of individual Edit calls efficient",
+      "grasp-principles": "GRASP patterns responsibility assignment information expert creator controller"
     }
   },
   "commands": {
