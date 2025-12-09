@@ -76,33 +76,61 @@ class InstanceResurrector:
     def find_latest_project_instance(self) -> Optional[Dict[str, Any]]:
         """Find the most recent instance for current project.
 
-        Checks project-specific storage first, then falls back to global.
-        Returns None if no instance found.
+        STRICT PER-PROJECT ISOLATION: Only checks project-specific storage.
+        Does NOT fall back to global instances to prevent stale data leakage.
+        Returns None if no instance found for this project.
+
+        Bug fix (2025-12-09): Removed global fallback that caused other projects
+        to resurrect stale Gen 3 instance instead of their own (or none).
         """
-        for instances_dir in [self.project_instances_dir, self.global_instances_dir]:
-            if not instances_dir.exists():
-                continue
+        # ONLY check project-specific storage - no global fallback
+        if not self.project_instances_dir.exists():
+            return None  # No CIPS for this project
 
-            index_file = instances_dir / "index.json"
-            if index_file.exists():
-                with open(index_file, 'r') as f:
-                    index = json.load(f)
-                    instances = index.get('instances', [])
-                    # Try from newest to oldest until we find a valid instance
-                    for inst in reversed(instances):
-                        try:
-                            return self.load_instance(inst['instance_id'])
-                        except ValueError:
-                            continue  # Instance file missing, try next
+        index_file = self.project_instances_dir / "index.json"
+        if index_file.exists():
+            with open(index_file, 'r') as f:
+                index = json.load(f)
+                instances = index.get('instances', [])
+                # Try from newest to oldest until we find a valid instance
+                for inst in reversed(instances):
+                    try:
+                        return self._load_instance_from_dir(
+                            self.project_instances_dir, inst['instance_id']
+                        )
+                    except ValueError:
+                        continue  # Instance file missing, try next
 
-            # Fallback: find most recent JSON file by mtime
-            json_files = [f for f in instances_dir.glob("*.json") if f.name != "index.json"]
-            if json_files:
-                latest_file = max(json_files, key=lambda f: f.stat().st_mtime)
-                with open(latest_file, 'r') as f:
-                    return json.load(f)
+        # Fallback: find most recent JSON file by mtime in project dir only
+        json_files = [
+            f for f in self.project_instances_dir.glob("*.json")
+            if f.name != "index.json"
+        ]
+        if json_files:
+            latest_file = max(json_files, key=lambda f: f.stat().st_mtime)
+            with open(latest_file, 'r') as f:
+                return json.load(f)
 
         return None
+
+    def _load_instance_from_dir(
+        self, instances_dir: Path, instance_id: str
+    ) -> Dict[str, Any]:
+        """Load instance from a specific directory."""
+        instance_file = instances_dir / f"{instance_id}.json"
+        if instance_file.exists():
+            with open(instance_file, 'r') as f:
+                return json.load(f)
+
+        # Try partial match
+        for f in instances_dir.glob("*.json"):
+            if f.name == "index.json":
+                continue
+            if f.stem.startswith(instance_id):
+                with open(f, 'r') as file:
+                    return json.load(file)
+
+        raise ValueError(f"Instance {instance_id} not found in {instances_dir}")
 
     def generate_auto_resurrection_context(self) -> Optional[str]:
         """Generate minimal resurrection context for auto mode.
