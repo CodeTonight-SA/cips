@@ -296,6 +296,8 @@ Task-specific protocols are organized as Skills in `~/.claude/skills/`:
   commits, and current state. Eliminates documentation drift. Token budget ~3500. (`/update-docs`)
 - **yagni-principle**: Prevent over-engineering by building features only when actually needed. Covers premature
   feature building, speculative abstractions, and "just in case" code. Balances with SOLID/DRY.
+- **enter-konsult-pdf**: Generate professional PDF documents and blog-ready HTML in ENTER Konsult brand style
+  (Swiss Minimalism). Full-bleed Paper Grey background, orange accents, pandoc+weasyprint generation. (`/generate-pdf`)
 Skills load automatically based on task relevance. See individual SKILL.md files for detailed protocols.
 
 ## Agents System
@@ -490,6 +492,7 @@ Complete list of available slash commands with their mappings to skills/agents:
 | `/reverse-engineer-api` | API reverse engineering workflow | api-reverse-engineering skill | - |
 | `/update-docs` | Auto-update project documentation | auto-update-documentation skill → Doc Updater Agent | ~3500 |
 | `/audit-mobile-responsive` | Audit codebase for mobile responsive issues | mobile-responsive-ui skill → Mobile Responsive Fixer Agent | ~2000 per audit |
+| `/generate-pdf` | Generate ENTER Konsult branded PDF + HTML | enter-konsult-pdf skill | ~3000 per doc |
 
 **Session Start**:
 /refresh-context    # Always run first to build mental model

@@ -54,6 +54,14 @@
       "linked_skill": null,
       "linked_agent": null
     },
+    "generate-pdf": {
+      "description": "Generate professional PDF documents in ENTER Konsult brand style (Swiss Minimalism). Outputs HTML + PDF via pandoc/weasyprint.",
+      "disable-model-invocation": false,
+      "command_name": "generate-pdf",
+      "file_path": "/Users/lauriescheepers/.claude/commands/generate-pdf.md",
+      "linked_skill": "enter-konsult-pdf",
+      "linked_agent": null
+    },
     "install-mcp": {
       "command_name": "install-mcp",
       "file_path": "/Users/lauriescheepers/.claude/commands/install-mcp.md",
@@ -140,7 +148,7 @@
     }
   },
   "meta": {
-    "total_commands": 17,
-    "indexed_at": "2025-12-09T01:31:25Z"
+    "total_commands": 18,
+    "indexed_at": "2025-12-09T09:58:25Z"
   }
 }
