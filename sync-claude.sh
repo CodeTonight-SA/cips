@@ -49,7 +49,7 @@ FILES SYNCED:
     - agents/           Agent configurations
     - commands/         Slash commands
     - CLAUDE.md         Global rules
-    - crazy_script.sh   Self-improvement engine
+    - optim.sh   Self-improvement engine
     - *.md              Documentation
 
 FILES EXCLUDED (via .gitignore):

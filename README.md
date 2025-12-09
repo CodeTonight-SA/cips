@@ -17,29 +17,29 @@
 
 # Run pattern detection
 
-./crazy_script.sh detect
+./optim.sh detect
 
 # Run efficiency audit with scoring
 
-./crazy_script.sh audit
+./optim.sh audit
 
 # Generate skill from pattern
 
-./crazy_script.sh generate repeated-file-reads
+./optim.sh generate repeated-file-reads
 
 # Run meta-optimization (recursion!)
 
-./crazy_script.sh optimize
+./optim.sh optimize
 
 # Full improvement cycle
 
-./crazy_script.sh cycle
+./optim.sh cycle
 
 # NEW in v2.0: Agent auto-creation system
 
-./crazy_script.sh create-agents        # Auto-detect and create agents (93% token reduction)
-./crazy_script.sh install-mcp          # Install required MCP servers
-./crazy_script.sh optimize-agents      # Analyze agent performance
+./optim.sh create-agents        # Auto-detect and create agents (93% token reduction)
+./optim.sh install-mcp          # Install required MCP servers
+./optim.sh optimize-agents      # Analyze agent performance
 
 # Refresh context at session start
 
@@ -82,19 +82,19 @@ Layer 4: Semantic        → embeddings, dynamic thresholds, feedback loops (NEW
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `detect` | Scan history for patterns | `./crazy_script.sh detect` |
-| `generate <pattern>` | Create skill from pattern | `./crazy_script.sh generate repeated-file-reads` |
-| `optimize` | Meta-optimization (recursion) | `./crazy_script.sh optimize` |
-| `cycle` | Full loop (detect → generate → optimize) | `./crazy_script.sh cycle` |
+| `detect` | Scan history for patterns | `./optim.sh detect` |
+| `generate <pattern>` | Create skill from pattern | `./optim.sh generate repeated-file-reads` |
+| `optimize` | Meta-optimization (recursion) | `./optim.sh optimize` |
+| `cycle` | Full loop (detect → generate → optimize) | `./optim.sh cycle` |
 
 #### Enhanced Commands (v2.0+)
 
 | Command | Description | Token Savings | Example |
 |---------|-------------|---------------|---------|
-| `audit` | Run efficiency audit with scoring | Identifies 10k-50k waste | `./crazy_script.sh audit` |
-| `create-agents` | Auto-detect patterns and create agents | 60k-100k per session | `./crazy_script.sh create-agents` |
-| `install-mcp` | Install required MCP servers | 2k-10k per workflow | `./crazy_script.sh install-mcp` |
-| `optimize-agents` | Analyze and optimize agent performance | 5k-15k per session | `./crazy_script.sh optimize-agents` |
+| `audit` | Run efficiency audit with scoring | Identifies 10k-50k waste | `./optim.sh audit` |
+| `create-agents` | Auto-detect patterns and create agents | 60k-100k per session | `./optim.sh create-agents` |
+| `install-mcp` | Install required MCP servers | 2k-10k per workflow | `./optim.sh install-mcp` |
+| `optimize-agents` | Analyze and optimize agent performance | 5k-15k per session | `./optim.sh optimize-agents` |
 
 ---
 
@@ -142,7 +142,7 @@ Based on Derek Parfit's "Relation R" - psychological continuity through memory, 
 ├── CLAUDE.md                    # Core global rules (always loaded)
 ├── EFFICIENCY_CHECKLIST.md      # Real-time efficiency audit tool
 ├── README.md                    # This file
-├── crazy_script.sh              # Self-improvement engine (executable)
+├── optim.sh              # Self-improvement engine (executable)
 ├── patterns.json                # 16 efficiency patterns (regex, thresholds)
 ├── install.sh                   # Cross-platform installer
 ├── .github/
@@ -271,7 +271,7 @@ auto_generated: true
 ### The system analyzes itself
 
 ```bash
-./crazy_script.sh optimize
+./optim.sh optimize
 ```text
 
 ### What happens:
@@ -451,7 +451,7 @@ choco install jq
 # Copy to ~/.claude
 
 cp -r * ~/.claude/
-chmod +x ~/.claude/crazy_script.sh
+chmod +x ~/.claude/optim.sh
 ```text
 
 ---
@@ -500,7 +500,7 @@ cd ~/.claude
 | agents/ | .read-cache.json |
 | commands/ | .hooks.log |
 | CLAUDE.md | file-history/ |
-| crazy_script.sh | debug/ |
+| optim.sh | debug/ |
 | templates/ | .mcp.json (local config) |
 | *.md (documentation) | settings.json |
 
@@ -539,11 +539,11 @@ cd ~/.claude
 ### 1. Detect Patterns
 
 ```bash
-./crazy_script.sh detect
+./optim.sh detect
 
 # With custom time window (hours)
 
-./crazy_script.sh detect 24  # Last 24 hours
+./optim.sh detect 24  # Last 24 hours
 ```text
 
 ### 2. Generate Skill
@@ -552,7 +552,7 @@ cd ~/.claude
 
 # From detected pattern
 
-./crazy_script.sh generate repeated-file-reads
+./optim.sh generate repeated-file-reads
 
 # Output: ~/.claude/skills/file-read-optimizer/SKILL.md
 ```text
@@ -560,7 +560,7 @@ cd ~/.claude
 ### 3. Run Meta-Optimization
 
 ```bash
-./crazy_script.sh optimize
+./optim.sh optimize
 
 # Analyzes:
 
@@ -577,7 +577,7 @@ cd ~/.claude
 ### 4. Full Improvement Cycle
 
 ```bash
-./crazy_script.sh cycle
+./optim.sh cycle
 
 # Executes:
 
@@ -597,7 +597,7 @@ cd ~/.claude
 ### 5. Run Efficiency Audit
 
 ```bash
-./crazy_script.sh audit
+./optim.sh audit
 
 # Output includes:
 
@@ -617,7 +617,7 @@ cd ~/.claude
 ### 6. Create Agents from Patterns
 
 ```bash
-./crazy_script.sh create-agents
+./optim.sh create-agents
 
 # Workflow:
 
@@ -640,7 +640,7 @@ cd ~/.claude
 ### 7. Install MCP Servers
 
 ```bash
-./crazy_script.sh install-mcp
+./optim.sh install-mcp
 
 # Process:
 
@@ -663,7 +663,7 @@ cd ~/.claude
 ### 8. Optimize Agent Performance
 
 ```bash
-./crazy_script.sh optimize-agents
+./optim.sh optimize-agents
 
 # Analysis:
 
@@ -719,10 +719,10 @@ When V>> noticed repeated authentication debugging across projects:
 # Week 2: Similar issue, different project (12k tokens, 1.5 hours)
 # Week 3: Pattern detected by efficiency audit
 
-./crazy_script.sh audit
+./optim.sh audit
 # Output: "Auth debugging pattern detected: 3 occurrences"
 
-./crazy_script.sh generate auth-debugging
+./optim.sh generate auth-debugging
 # Created: ~/.claude/skills/auth-debugging/SKILL.md
 
 # Week 4+: Auth issues resolved in <2k tokens via skill
@@ -784,7 +784,7 @@ When patterns repeat, the system improves itself:
 # "Repeated reading of CLAUDE.md at session start"
 
 # System triggers meta-improvement:
-./crazy_script.sh optimize
+./optim.sh optimize
 
 # Analysis:
 - Pattern: context-loss (5 occurrences)
@@ -812,7 +812,7 @@ When patterns repeat, the system improves itself:
 | Run audit | `/audit-efficiency` | ~600 |
 | Clean branches | `/prune-branches` | ~900 |
 | Sync team | `./sync-claude.sh push` | ~200 |
-| Full cycle | `./crazy_script.sh cycle` | ~3000 |
+| Full cycle | `./optim.sh cycle` | ~3000 |
 
 ---
 

@@ -146,7 +146,7 @@ def calculate_storm_risk(wind_speed: float, precipitation: float) -> float:
 
 ## YAGNI Applied to Self-Improvement Engine
 
-### Example from crazy_script.sh validation
+### Example from optim.sh validation
 
 **❌ YAGNI Violation** (if we had done this):
 ```bash

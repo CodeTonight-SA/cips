@@ -65,7 +65,7 @@ Specific remediation steps for each detected pattern, including:
 
 This command executes:
 ```bash
-~/.claude/crazy_script.sh audit $ARGUMENTS
+~/.claude/optim.sh audit $ARGUMENTS
 ```text
 
 The underlying script:

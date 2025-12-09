@@ -124,7 +124,7 @@ lint_bash_file() {
             echo "$issues" | while IFS= read -r issue; do
                 echo "  $issue"
             done
-            echo "Run './crazy_script.sh lint-bash' for full scan."
+            echo "Run './optim.sh lint-bash' for full scan."
         fi
     fi
 }

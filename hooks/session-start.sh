@@ -223,7 +223,7 @@ run_bash_lint() {
         issues=$(lint_claude_scripts 2>&1) || true
 
         if echo "$issues" | rg -q "Issues in:"; then
-            log_warn "Bash lint issues detected - run './crazy_script.sh lint-bash' for details"
+            log_warn "Bash lint issues detected - run './optim.sh lint-bash' for details"
         else
             log_info "Bash lint check passed"
         fi

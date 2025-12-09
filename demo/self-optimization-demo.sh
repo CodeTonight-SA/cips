@@ -241,7 +241,7 @@ main() {
 
     echo ""
     echo -e "${CYAN}To run the full system:${NC}"
-    echo "  ./crazy_script.sh cycle"
+    echo "  ./optim.sh cycle"
     echo ""
 }
 

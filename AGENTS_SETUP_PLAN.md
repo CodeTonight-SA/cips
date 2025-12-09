@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This system transforms Claude Code agent creation from manual copy-paste workflows into fully automated, pattern-driven generation. Integrated with the existing self-improvement engine (`crazy_script.sh`), it enables:
+This system transforms Claude Code agent creation from manual copy-paste workflows into fully automated, pattern-driven generation. Integrated with the existing self-improvement engine (`optim.sh`), it enables:
 
 - **Auto-detection** of workflow patterns that would benefit from dedicated agents
 - **Programmatic creation** of agent Markdown files with proper YAML frontmatter
@@ -27,7 +27,7 @@ This system transforms Claude Code agent creation from manual copy-paste workflo
 ```text
 ┌─────────────────────────────────────────────────────────────┐
 │                   SELF-IMPROVEMENT ENGINE                   │
-│                    (crazy_script.sh)                        │
+│                    (optim.sh)                        │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
 │  │   Pattern    │→ │    Agent     │→ │     MCP      │     │
 │  │  Detection   │  │  Generation  │  │  Installation│     │
@@ -57,7 +57,7 @@ This system transforms Claude Code agent creation from manual copy-paste workflo
 ├── CLAUDE.md                            # Core instructions (existing)
 ├── EFFICIENCY_CHECKLIST.md              # Token efficiency rules (existing)
 ├── patterns.json                        # Pattern definitions (existing)
-├── crazy_script.sh                      # Self-improvement engine (enhanced)
+├── optim.sh                      # Self-improvement engine (enhanced)
 ├── settings.json                        # Global settings (existing)
 ├── .mcp.json                            # MCP server config (existing)
 ├── mcp-registry.json                    # MCP server registry (NEW)
@@ -213,7 +213,7 @@ Maximum: 3000 tokens
 ```text
 
 ### Automation Triggers:
-1. **Pattern Detection:** crazy_script.sh detects recurring workflow
+1. **Pattern Detection:** optim.sh detects recurring workflow
 2. **Template Fill:** Replaces {{PLACEHOLDERS}} in agent.template.md
 3. **Validation:** Checks YAML frontmatter, required fields
 4. **Registration:** Writes to ~/.claude/agents/
@@ -282,7 +282,7 @@ Maximum: 3000 tokens
 
 ### 4. Integration with Self-Improvement Engine
 
-**Enhanced:** `~/.claude/crazy_script.sh`
+**Enhanced:** `~/.claude/optim.sh`
 
 ### New Functions Added
 
@@ -500,7 +500,7 @@ For servers requiring environment variables (e.g., GitHub token), launches inter
 ### Phase 3: Self-Improvement Integration
 
 
-- Add agent generation to `crazy_script.sh`
+- Add agent generation to `optim.sh`
 - Create `agent-auto-creator` skill
 - Implement pattern detection for agents
 - Add recursive optimization
@@ -615,7 +615,7 @@ For servers requiring environment variables (e.g., GitHub token), launches inter
 
 - [ ] Agent invocation works
 - [ ] MCP server accessible from agent
-- [ ] crazy_script.sh enhancements functional
+- [ ] optim.sh enhancements functional
 - [ ] Slash commands execute correctly
 - [ ] Metrics logging operational
 - [ ] Recursive optimization safe
@@ -687,7 +687,7 @@ For servers requiring environment variables (e.g., GitHub token), launches inter
 
 **Issue:** Patterns detected but agents not created
 ### Solutions
-1. Check confidence threshold in crazy_script.sh
+1. Check confidence threshold in optim.sh
 2. Review pattern definitions: `cat ~/.claude/skills/agent-auto-creator/patterns.json`
 3. Verify metrics logging: `tail ~/.claude/metrics.jsonl`
 4. Manual trigger: `/create-agent`

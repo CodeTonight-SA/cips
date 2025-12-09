@@ -200,7 +200,7 @@ A skill generation cycle is considered "learned from" when:
 ## Integration
 
 - Uses data from `~/.claude/metrics.jsonl`
-- Enhances `~/.claude/crazy_script.sh` meta-optimization layer
+- Enhances `~/.claude/optim.sh` meta-optimization layer
 - Feeds improvements back to pattern detection
 - Works with all existing skills (analyzes their effectiveness)
 

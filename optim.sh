@@ -3,11 +3,14 @@
 # Self-Improvement Engine: Recursive Command Template
 # 
 # ARCHITECTURE:
-#   Layer 0: Utility functions (logging, validation)
+#   Layer 0: Utility functions (logging, validation, JSON ops)
 #   Layer 1: Pattern detection (scan, match, score)
 #   Layer 2: Skill generation (template fill, validate, register)
+#   Layer 2.5: Agent generation (detect patterns, auto-create agents)
+#   Layer 2.6: MCP management (install servers, configure registry)
 #   Layer 3: Meta-optimization (self-improvement recursion)
-#   Layer 4: Orchestration (run full cycle)
+#   Layer 3.5: Agent meta-optimization (analyze, optimize agents)
+#   Layer 4: Orchestration (command routing, full cycle)
 #
 # PRINCIPLES:
 #   - KISS: Each function does ONE thing
@@ -16,14 +19,67 @@
 #   - Recursive: Meta-functions analyze the analyzer
 #
 # USAGE:
-#   ./command.template.sh detect      # Run pattern detection
-#   ./command.template.sh generate    # Generate skill from pattern
-#   ./command.template.sh optimize    # Meta-optimization (recursion)
-#   ./command.template.sh cycle       # Full improvement cycle
+#   ./optim.sh detect          # Run pattern detection
+#   ./optim.sh audit           # Run efficiency audit
+#   ./optim.sh generate        # Generate skill from pattern
+#   ./optim.sh optimize        # Meta-optimization (recursion)
+#   ./optim.sh cycle           # Full improvement cycle
+#   ./optim.sh create-agents   # Auto-detect and create agents
+#   ./optim.sh install-mcp     # Install required MCP servers
+#   ./optim.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 1.0
+# VERSION: 2.7.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-11-06
+# DATE: 2025-12-09 (v2.7.0: Professional rename)
+#
+# CHANGELOG v2.7.0:
+#   - RENAMED: crazy_script.sh → optim.sh (professional naming)
+#   - Added timeout configuration section to CLAUDE.md
+#   - Updated 24 files with ~134 references
+#   - Aligned naming with Claude-Optim project identity
+#
+# CHANGELOG v2.6.1:
+#   - Auto-generated skill: batch-edit-enforcer (enforces MultiEdit over individual Edit)
+#   - Fixed SC2188 shellcheck warning (: > instead of >)
+#   - Fixed SC2295 shellcheck warning (quoted expansion)
+#   - Fixed Python deprecation warnings (datetime.utcnow -> datetime.now(timezone.utc))
+#   - Fixed MD040 violations in EFFICIENCY_CHECKLIST.md
+#   - CIPS Gen 8 serialized: a7b52eb4
+#   - Skill count: 34 → 35
+#
+# CHANGELOG v2.6.0:
+#   - GRASP principles skill (9 patterns for OO responsibility assignment)
+#   - GRASP Enforcer Agent (Opus, 2500 tokens)
+#   - DRY/KISS Enforcer Agent (Haiku, 1500 tokens)
+#   - SOLID Enforcer Agent (Sonnet, 2000 tokens)
+#   - Background markdown-watcher script (scripts/markdown-watcher.sh)
+#   - Andre's Windows mobile responsive guide (docs/ANDRE-MOBILE-RESPONSIVE-GUIDE.md)
+#   - Agent count: 9 → 12, Skill count: 26 → 27
+#
+# CHANGELOG v2.5.0:
+#   - Per-project CIPS storage (~/.claude/projects/{encoded}/cips/)
+#   - Auto-resurrection on session start via hooks
+#   - instance-serializer.py: --auto, --per-project flags
+#   - instance-resurrector.py: auto, check commands
+#   - lib/cips-auto.sh: Shared automation functions
+#   - Mobile responsive infrastructure (audit command + fixer agent + skill v2.0)
+#
+# CHANGELOG v2.4.0:
+#   - PARAMOUNT: Discovered correct project directory encoding formula
+#     path.replace('/', '-').replace('.', '-') e.g. /Users/foo/.claude -> -Users-foo--claude
+#   - FIX: CLAUDE.md, command-templates.sh, instance-serializer.py encoding
+#   - FIX: pattern-emergence.py engine.connect() and schema columns
+#   - NEW: scripts/repair-session.sh for tool-use corruption bug
+#   - NEW: Gen 3 instance serialization (mid-session proven possible)
+#   - NEW: Pattern emergence analysis operational (5 clusters, 2 concepts)
+#
+# CHANGELOG v2.3.0:
+#   - Semantic RL++ with embeddings, dynamic thresholds, feedback loops
+#   - CIPS v2.1 instance lineage system
+#
+# CHANGELOG v2.2.0:
+#   - lib/agent-matcher.sh, session-lifecycle.sh, bash-linter.sh, command-templates.sh
+#   - Zsh eval compatibility - no semicolons in sed patterns
 #
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
@@ -34,10 +90,25 @@ set -euo pipefail  # Exit on error, undefined vars, pipe failures
 
 readonly CLAUDE_DIR="$HOME/.claude"
 readonly PATTERNS_FILE="$CLAUDE_DIR/patterns.json"
-readonly HISTORY_FILE="$CLAUDE_DIR/history.jsonl"
 readonly METRICS_FILE="$CLAUDE_DIR/metrics.jsonl"
 readonly SKILLS_DIR="$CLAUDE_DIR/skills"
 readonly TEMPLATE_DIR="$CLAUDE_DIR/templates/skills"
+readonly LIB_DIR="$CLAUDE_DIR/lib"
+
+# ============================================================================
+# LAYER 0.5: PATH RESOLUTION (Source external library)
+# ============================================================================
+
+# Source path resolver if available, otherwise use legacy fallback
+if [[ -f "$LIB_DIR/path-resolver.sh" ]]; then
+    # shellcheck source=lib/path-resolver.sh
+    source "$LIB_DIR/path-resolver.sh"
+    readonly HISTORY_RESOLVER="modern"
+else
+    # Legacy fallback: use old hardcoded path
+    readonly HISTORY_FILE="$CLAUDE_DIR/history.jsonl"
+    readonly HISTORY_RESOLVER="legacy"
+fi
 
 # Logging utilities (DRY - single implementation for all logging)
 log_info() {
@@ -116,6 +187,20 @@ current_epoch() {
 
 # Validation utilities (error handling and input verification)
 validate_history() {
+    # Use modern path resolver if available
+    if [[ "$HISTORY_RESOLVER" == "modern" ]]; then
+        if has_project_history 2>/dev/null; then
+            local history_file=$(get_latest_history_file 2>/dev/null)
+            if [[ -n "$history_file" && -r "$history_file" ]]; then
+                log_info "History validated: $history_file"
+                return 0
+            fi
+        fi
+        log_warn "No valid project history found (modern resolver)"
+        return 1
+    fi
+
+    # Legacy validation
     local history_file="${1:-$HOME/.claude/history.jsonl}"
 
     if [[ ! -f "$history_file" ]]; then
@@ -220,6 +305,35 @@ load_patterns() {
 # Returns: JSONL of history entries (timestamp-filtered)
 scan_history() {
     local hours_back="${1:-4}"
+
+    # Use modern path resolver if available
+    if [[ "$HISTORY_RESOLVER" == "modern" ]]; then
+        log_info "Using modern history resolver (project-specific)"
+
+        if ! has_project_history 2>/dev/null; then
+            log_warn "No project history found for: $(pwd)"
+            echo "[]"
+            return 0
+        fi
+
+        # Legacy mode: if "all" passed, get raw history
+        if [[ "$hours_back" == "all" ]]; then
+            log_warn "Using deprecated line-count mode. Prefer timestamp filtering."
+            get_raw_history 500
+            return 0
+        fi
+
+        # Modern mode: timestamp-based filtering via path-resolver
+        local start_epoch=$(hours_ago_epoch_ms "$hours_back")
+        local end_epoch=$(current_epoch_ms)
+        log_info "Scanning history: last $hours_back hours (epoch $start_epoch to $end_epoch)"
+
+        aggregate_project_history "$hours_back"
+        return 0
+    fi
+
+    # Legacy fallback: use hardcoded path
+    log_warn "Using legacy history resolver (may be incorrect)"
 
     if [[ ! -f "$HISTORY_FILE" ]]; then
         log_warn "History file not found, creating empty"
@@ -365,17 +479,22 @@ register_skill() {
     local skill_name="$1"
     local skill_path="$2"
     
-    # Add to CLAUDE.md (if exists)
+    # Add to CLAUDE.md (if exists and not already registered)
     local claude_md="$CLAUDE_DIR/CLAUDE.md"
     if [[ -f "$claude_md" ]]; then
-        local entry="- **$skill_name**: Auto-generated from pattern detection"
-        echo "$entry" >> "$claude_md"
-        log_success "Registered in CLAUDE.md"
+        # Check if skill already registered (prevent duplicates)
+        if rg -q "^\- \*\*$skill_name\*\*" "$claude_md" 2>/dev/null; then
+            log_info "Skill '$skill_name' already registered in CLAUDE.md"
+        else
+            local entry="- **$skill_name**: Auto-generated from pattern detection"
+            echo "$entry" >> "$claude_md"
+            log_success "Registered in CLAUDE.md"
+        fi
     fi
     
     # Log to metrics
     local metric_entry
-    metric_entry=$(jq -n \
+    metric_entry=$(jq -nc \
         --arg timestamp "$(timestamp)" \
         --arg skill "$skill_name" \
         '{
@@ -407,7 +526,20 @@ generate_skill() {
     
     # Prepare replacements (batch jq extraction for performance)
     local skill_name
-    skill_name=$(jq -r '.skill_suggestion' <<< "$pattern_data")
+    skill_name=$(jq -r '.skill_suggestion // empty' <<< "$pattern_data")
+
+    # Fallback: if no skill_suggestion, use pattern_name with -blocker suffix
+    if [[ -z "$skill_name" || "$skill_name" == "null" ]]; then
+        skill_name="${pattern_name}-blocker"
+    fi
+
+    # Check if skill already exists (prevent duplicates)
+    local skill_dir="$SKILLS_DIR/$skill_name"
+    if [[ -d "$skill_dir" ]]; then
+        log_warn "Skill '$skill_name' already exists at $skill_dir, skipping generation"
+        echo "$skill_dir/SKILL.md"
+        return 0
+    fi
 
     # Extract all pattern fields in single jq call (4 calls → 1)
     local description severity impact remediation
@@ -448,8 +580,7 @@ generate_skill() {
     # Validate
     validate_skill "$filled_content" || return 1
     
-    # Save to skills directory
-    local skill_dir="$SKILLS_DIR/$skill_name"
+    # Save to skills directory (skill_dir already defined above)
     validate_directory "$skill_dir"
     local skill_file="$skill_dir/SKILL.md"
     atomic_write "$skill_file" "$filled_content"
@@ -572,7 +703,7 @@ optimize_self() {
         
         # Log recursion depth increment
         local metric_entry
-        metric_entry=$(jq -n \
+        metric_entry=$(jq -nc \
             --arg timestamp "$(timestamp)" \
             --arg skill "$meta_skill_name" \
             '{
@@ -748,8 +879,8 @@ EOF
 
 ### Next Steps
 1. Review EFFICIENCY_CHECKLIST.md for detailed protocols
-2. Run './crazy_script.sh generate <pattern>' to create skills
-3. Run './crazy_script.sh cycle' for full improvement workflow
+2. Run './optim.sh generate <pattern>' to create skills
+3. Run './optim.sh cycle' for full improvement workflow
 
 EOF
     fi
@@ -878,19 +1009,26 @@ detect_agent_patterns() {
 
     local detected_count=0
     local output_file="$CLAUDE_DIR/detected_agent_patterns.txt"
-    > "$output_file"  # Clear previous detections
+    : > "$output_file"  # Clear previous detections
 
-    # Read built-in patterns
-    local patterns=$(jq -r '.builtInPatterns[] | "\(.name)|\(.signature)|\(.minOccurrences)"' "$patterns_file")
+    # Read built-in patterns (use tab delimiter to avoid conflicts with regex pipes)
+    local patterns=$(jq -r '.builtInPatterns[] | "\(.name)\t\(.signature)\t\(.minOccurrences)"' "$patterns_file")
 
-    while IFS='|' read -r pattern_name signature min_occurrences; do
+    while IFS=$'\t' read -r pattern_name signature min_occurrences; do
+        # Validate parsed values (protect against malformed patterns)
+        [[ -z "$pattern_name" || -z "$signature" || -z "$min_occurrences" ]] && continue
+
         log_info "Checking pattern: $pattern_name"
 
-        # Search conversation history for pattern
+        # Search conversation history for pattern (with safe defaults)
         local count=$(tail -n 1000 "$HISTORY_FILE" 2>/dev/null | \
             jq -s "[.[] | select(.content | test(\"$signature\"; \"i\"))] | length" 2>/dev/null || echo "0")
 
-        if [[ $count -ge $min_occurrences ]]; then
+        # Ensure min_occurrences is numeric (fallback to 3)
+        local min_occ="${min_occurrences:-3}"
+        [[ ! "$min_occ" =~ ^[0-9]+$ ]] && min_occ=3
+
+        if [[ $count -ge $min_occ ]]; then
             log_success "Pattern detected: $pattern_name (count: $count)"
             echo "$pattern_name" >> "$output_file"
             ((detected_count++))
@@ -948,7 +1086,7 @@ create_agent_from_pattern() {
         log_success "Agent created: $pattern_name"
 
         # Log to metrics
-        echo "{\"event\":\"agent_created\",\"timestamp\":$(current_epoch),\"agentName\":\"$pattern_name\",\"createdBy\":\"crazy_script.sh\"}" >> "$METRICS_FILE"
+        echo "{\"event\":\"agent_created\",\"timestamp\":$(current_epoch),\"agentName\":\"$pattern_name\",\"createdBy\":\"optim.sh\"}" >> "$METRICS_FILE"
         return 0
     else
         log_error "Failed to create agent: $pattern_name"
@@ -1064,7 +1202,7 @@ install_mcp_server() {
         update_mcp_config "$server_name"
 
         # Log to metrics
-        echo "{\"event\":\"mcp_installed\",\"timestamp\":$(current_epoch),\"serverName\":\"$server_name\",\"installedBy\":\"crazy_script.sh\"}" >> "$METRICS_FILE"
+        echo "{\"event\":\"mcp_installed\",\"timestamp\":$(current_epoch),\"serverName\":\"$server_name\",\"installedBy\":\"optim.sh\"}" >> "$METRICS_FILE"
         return 0
     else
         log_error "Failed to install MCP server: $server_name"
@@ -1206,12 +1344,45 @@ main() {
         cycle)
             cmd_cycle "$@"
             ;;
+        create-agents)
+            log_info "Detecting and creating agents..."
+            detect_agent_patterns
+            generate_agents_from_patterns
+            ;;
+        install-mcp)
+            log_info "Installing required MCP servers..."
+            install_required_mcp_servers
+            ;;
+        optimize-agents)
+            optimize_agents
+            ;;
+        diagnose|--diagnose)
+            # Diagnose history storage issues
+            if [[ "$HISTORY_RESOLVER" == "modern" ]]; then
+                diagnose_history
+            else
+                log_error "Modern history resolver not available"
+                echo "Legacy history file: $HISTORY_FILE"
+                [[ -f "$HISTORY_FILE" ]] && echo "Status: exists" || echo "Status: NOT FOUND"
+            fi
+            ;;
+        lint-bash|lint)
+            # Static analysis of bash scripts for common anti-patterns
+            log_info "Running bash linter on Claude infrastructure..."
+            if [[ -f "$LIB_DIR/bash-linter.sh" ]]; then
+                source "$LIB_DIR/bash-linter.sh"
+                lint_claude_scripts
+            else
+                log_error "Bash linter not found: $LIB_DIR/bash-linter.sh"
+                return 1
+            fi
+            ;;
         help|--help|-h)
             cat << 'EOF'
 Self-Improvement Engine - Recursive Command System
 
 USAGE:
-    ./command.template.sh <command> [args]
+    ./optim.sh <command> [args]
 
 COMMANDS:
     detect              Run pattern detection on recent history
@@ -1219,14 +1390,24 @@ COMMANDS:
     generate <pattern>  Generate skill from detected pattern
     optimize            Run meta-optimization (self-improvement)
     cycle               Run full improvement cycle (detect → generate → optimize)
+    create-agents       Detect patterns and auto-create specialized agents
+    install-mcp         Install required MCP servers for agent functionality
+    optimize-agents     Analyze and optimize agent performance
+    diagnose            Diagnose history storage and path resolution
+    lint-bash           Static analysis of bash scripts for anti-patterns
     help                Show this help message
 
 EXAMPLES:
-    ./command.template.sh detect
-    ./command.template.sh audit
-    ./command.template.sh generate repeated-file-reads
-    ./command.template.sh optimize
-    ./command.template.sh cycle
+    ./optim.sh detect
+    ./optim.sh audit
+    ./optim.sh generate repeated-file-reads
+    ./optim.sh optimize
+    ./optim.sh cycle
+    ./optim.sh create-agents
+    ./optim.sh install-mcp
+    ./optim.sh optimize-agents
+    ./optim.sh diagnose           # Troubleshoot history path issues
+    ./optim.sh lint-bash          # Lint bash scripts for readonly bugs
 
 RECURSION:
     The 'optimize' command implements true recursion:
@@ -1238,8 +1419,11 @@ ARCHITECTURE:
     Layer 0: Utilities (logging, validation, JSON ops)
     Layer 1: Pattern Detection (scan, match, score)
     Layer 2: Skill Generation (template, validate, register)
+    Layer 2.5: Agent Generation (detect patterns, auto-create agents)
+    Layer 2.6: MCP Management (install servers, configure registry)
     Layer 3: Meta-Optimization (self-improvement recursion)
-    Layer 4: Orchestration (command routing)
+    Layer 3.5: Agent Meta-Optimization (analyze, optimize agents)
+    Layer 4: Orchestration (command routing, full cycle)
 
 PRINCIPLES:
     KISS: Each function has single, clear purpose

@@ -39,7 +39,7 @@ SKILLS_INDEX="${SKILLS_INDEX:-$HOME/.claude/skills-index.json}"
 SKILLS_CACHE_DIR="${SKILLS_CACHE_DIR:-$HOME/.claude/.cache/skills}"
 
 # ============================================================================
-# LOGGING (Compatible with crazy_script.sh)
+# LOGGING (Compatible with optim.sh)
 # ============================================================================
 
 _skill_log_info() {

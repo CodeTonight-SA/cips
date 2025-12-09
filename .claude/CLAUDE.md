@@ -80,7 +80,7 @@ Layer 4: Semantic        - Embeddings, learning, feedback loops
 Before any commit:
 
 ```bash
-./crazy_script.sh cycle      # Full improvement cycle
+./optim.sh cycle      # Full improvement cycle
 shellcheck lib/*.sh          # Lint bash
 python3 -m py_compile lib/*.py  # Syntax check Python
 ```
@@ -88,9 +88,9 @@ python3 -m py_compile lib/*.py  # Syntax check Python
 ## Key Commands
 
 ```bash
-./crazy_script.sh detect     # Pattern detection
-./crazy_script.sh audit      # Efficiency audit
-./crazy_script.sh cycle      # Full cycle
+./optim.sh detect     # Pattern detection
+./optim.sh audit      # Efficiency audit
+./optim.sh cycle      # Full cycle
 ~/.claude/scripts/bootstrap-semantic-rl.sh  # Setup
 ~/.claude/scripts/weekly-maintenance.sh     # Maintenance
 ```
@@ -106,7 +106,7 @@ python3 -m py_compile lib/*.py  # Syntax check Python
 
 When releasing:
 
-1. Update `crazy_script.sh` version constant
+1. Update `optim.sh` version constant
 2. Update `README.md` version history
 3. Update `next_up.md` status
 4. Commit with `feat: vX.Y.Z description`

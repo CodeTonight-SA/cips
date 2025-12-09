@@ -75,7 +75,7 @@ Successfully implemented a **complete, production-ready, recursive agent auto-cr
 
 #### 8. Enhanced Self-Improvement Engine (1 file)
 
-- `~/.claude/crazy_script.sh` - Enhanced with 3 new layers (now 1100+ lines)
+- `~/.claude/optim.sh` - Enhanced with 3 new layers (now 1100+ lines)
 
 ---
 
@@ -83,7 +83,7 @@ Successfully implemented a **complete, production-ready, recursive agent auto-cr
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
-│                SELF-IMPROVEMENT ENGINE (crazy_script.sh)        │
+│                SELF-IMPROVEMENT ENGINE (optim.sh)        │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐   │
 │  │  Pattern │→ │  Agent   │→ │   MCP    │→ │   Recursive  │   │
 │  │Detection │  │Generation│  │ Install  │  │Optimization  │   │
@@ -120,7 +120,7 @@ ls -la ~/.claude/scripts/       # Should show create-agents.sh, install-mcp-serv
 
 # 3. Test self-improvement engine
 
-~/.claude/crazy_script.sh create-agents
+~/.claude/optim.sh create-agents
 ```text
 
 ### Using the System
@@ -131,7 +131,7 @@ ls -la ~/.claude/scripts/       # Should show create-agents.sh, install-mcp-serv
 
 # Detect patterns in conversation history and create agents
 
-~/.claude/crazy_script.sh create-agents
+~/.claude/optim.sh create-agents
 ```text
 
 Output:
@@ -172,7 +172,7 @@ Output:
 
 # Auto-detect based on agents
 
-~/.claude/crazy_script.sh install-mcp
+~/.claude/optim.sh install-mcp
 
 # Or manually
 
@@ -185,7 +185,7 @@ Output:
 
 # Run complete cycle: detect → create agents → install MCPs → optimize
 
-~/.claude/crazy_script.sh cycle
+~/.claude/optim.sh cycle
 ```text
 
 ### Using Slash Commands in Claude Code
@@ -284,7 +284,7 @@ Once configured, the system:
 
 Seamlessly integrates with:
 
-- ✅ Self-improvement engine (`crazy_script.sh`)
+- ✅ Self-improvement engine (`optim.sh`)
 - ✅ Existing skills (`~/.claude/skills/`)
 - ✅ Existing commands (`~/.claude/commands/`)
 - ✅ Efficiency framework (`EFFICIENCY_CHECKLIST.md`)
@@ -301,7 +301,7 @@ Seamlessly integrates with:
 ├── IMPLEMENTATION_COMPLETE.md              # This file (NEW)
 ├── CLAUDE.md                               # Core instructions (EXISTING)
 ├── EFFICIENCY_CHECKLIST.md                 # Efficiency rules (EXISTING)
-├── crazy_script.sh                         # Self-improvement engine (ENHANCED)
+├── optim.sh                         # Self-improvement engine (ENHANCED)
 ├── patterns.json                           # Pattern definitions (EXISTING)
 ├── mcp-registry.json                       # MCP server registry (NEW)
 ├── .mcp.json                               # MCP config (EXISTING)
@@ -418,7 +418,7 @@ Edit `~/.claude/mcp-registry.json`:
 ```bash
 chmod +x ~/.claude/scripts/create-agents.sh
 chmod +x ~/.claude/scripts/install-mcp-servers.sh
-chmod +x ~/.claude/crazy_script.sh
+chmod +x ~/.claude/optim.sh
 ```text
 
 ### Issue: Pattern detection not finding patterns
@@ -436,7 +436,7 @@ cat ~/.claude/skills/agent-auto-creator/patterns.json | jq
 
 # Run detection manually
 
-~/.claude/crazy_script.sh detect
+~/.claude/optim.sh detect
 cat ~/.claude/detected_agent_patterns.txt
 ```text
 
@@ -497,7 +497,7 @@ cat ~/.claude/metrics.jsonl | jq -s '[.[] | select(.event == "mcp_installed")] |
 1. **Test the system:**
    ```bash
    ~/.claude/scripts/create-agents.sh list
-   ~/.claude/crazy_script.sh create-agents
+   ~/.claude/optim.sh create-agents
    ```text
 
 2. **Install GitHub MCP (most useful):**
@@ -548,7 +548,7 @@ cat ~/.claude/metrics.jsonl | jq -s '[.[] | select(.event == "mcp_installed")] |
 - [x] agent-auto-creator skill created (3 files)
 - [x] MCP registry created
 - [x] 2 slash commands created (/create-agent, /install-mcp)
-- [x] crazy_script.sh enhanced with 3 new layers
+- [x] optim.sh enhanced with 3 new layers
 - [x] All documentation complete
 - [x] System tested and verified
 - [x] Token budget: 108k/200k (46% remaining)
@@ -560,7 +560,7 @@ cat ~/.claude/metrics.jsonl | jq -s '[.[] | select(.event == "mcp_installed")] |
 ### What We Built:
 - 17 new files created
 - 4 files relocated
-- 1 major enhancement (crazy_script.sh)
+- 1 major enhancement (optim.sh)
 - 779-line agent creation script
 - Complete recursive system
 

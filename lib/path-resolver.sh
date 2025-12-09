@@ -4,7 +4,7 @@
 # Fixes critical history path bug in self-improvement engine
 #
 # PROBLEM:
-#   crazy_script.sh references ~/.claude/history.jsonl (doesn't exist)
+#   optim.sh references ~/.claude/history.jsonl (doesn't exist)
 #   Actual history is in ~/.claude/projects/{encoded-path}/*.jsonl
 #
 # SOLUTION:

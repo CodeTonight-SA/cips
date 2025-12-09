@@ -23,7 +23,7 @@ Be respectful, constructive, and professional. We welcome contributors from all 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feat/your-feature`
 3. Make your changes following our conventions (see below)
-4. Test your changes: `./crazy_script.sh cycle`
+4. Test your changes: `./optim.sh cycle`
 5. Commit with descriptive messages (see Commit Format)
 6. Push to your fork
 7. Open a Pull Request
@@ -80,7 +80,7 @@ Primary Author: Jane Developer
 Before submitting:
 
 ```bash
-./crazy_script.sh cycle      # Full improvement cycle
+./optim.sh cycle      # Full improvement cycle
 shellcheck lib/*.sh          # Lint bash
 python3 -m py_compile lib/*.py  # Syntax check Python
 ```
@@ -102,7 +102,7 @@ Layer 4: Semantic        - Embeddings, learning, feedback loops
 - **Skills** (`skills/*/SKILL.md`): Task-specific protocols
 - **Agents** (`agents/*.md`): Autonomous background workers
 - **Commands** (`commands/*.md`): Slash command definitions
-- **crazy_script.sh**: Self-improvement engine (core)
+- **optim.sh**: Self-improvement engine (core)
 
 ## What We Accept
 

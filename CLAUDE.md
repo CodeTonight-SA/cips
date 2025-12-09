@@ -104,7 +104,7 @@ Total: 76k-101k tokens saved per session (38-50% of 200k budget)
 - [AGENTS_SETUP_GUIDE.md](AGENTS_SETUP_GUIDE.md) - Complete agent documentation
 - [EFFICIENCY_CHECKLIST.md](EFFICIENCY_CHECKLIST.md) - Real-time audit checklist
 - [README.md](README.md) - Full system documentation
-- [crazy_script.sh](crazy_script.sh) - Self-improvement engine (1,307 lines)
+- [optim.sh](optim.sh) - Self-improvement engine (1,307 lines)
 - [scripts/markdown-watcher.sh](scripts/markdown-watcher.sh) - Background markdown lint fixer
 - [docs/ANDRE-MOBILE-RESPONSIVE-GUIDE.md](docs/ANDRE-MOBILE-RESPONSIVE-GUIDE.md) - Windows guide for mobile responsive agent
 
@@ -290,7 +290,7 @@ Task-specific protocols are organized as Skills in `~/.claude/skills/`:
   units, and framework-specific guidance. Covers 2025 best practices. (`/audit-mobile-responsive`)
 - **pr-automation**: Efficient PR creation with gh CLI, <2k tokens per PR (`/create-pr`)
 - **self-improvement-engine**: Meta-skill that automates the 10-step improvement cycle - detects patterns, generates
-  skills, creates commands. **FULLY OPERATIONAL** via `~/.claude/crazy_script.sh` with true recursion
+  skills, creates commands. **FULLY OPERATIONAL** via `~/.claude/optim.sh` with true recursion
   (`/auto-improve`, `/detect-inefficiency`, `/generate-skill`, `/audit-efficiency`)
 - **auto-update-documentation**: Automatically update project documentation by synthesising session history, git
   commits, and current state. Eliminates documentation drift. Token budget ~3500. (`/update-docs`)
@@ -590,8 +590,8 @@ Extend Claude Code capabilities via Model Context Protocol (MCP) servers:
 # Specific server
 /install-mcp github
 
-# Via crazy_script.sh
-./crazy_script.sh install-mcp
+# Via optim.sh
+./optim.sh install-mcp
 ```
 
 ### Agent Integration
@@ -655,6 +655,20 @@ jq '.dependencies | keys[]' package.json
 ### Performance Rule
 
 **If you can solve it in 1 CLI command, NEVER use multiple tool calls.**
+
+## Claude Code Timeout Configuration
+
+**Long-running operations require explicit timeouts.** Default is 120000ms (2 min), max is 600000ms (10 min).
+
+| Command | Timeout | Reason |
+|---------|---------|--------|
+| `optim.sh audit` | 300000 (5 min) | Scans all session history |
+| `optim.sh cycle` | 600000 (10 min) | Full improvement cycle |
+| `optim.sh detect` | 180000 (3 min) | Pattern detection |
+| `optim.sh create-agents` | 300000 (5 min) | Agent generation |
+| All other optim.sh | 120000 (default) | Quick operations |
+
+**Memory**: When running `optim.sh` commands via Bash tool, ALWAYS specify `timeout` parameter for audit/cycle/detect.
 
 ## Notes
 

@@ -3,7 +3,7 @@
 **Version:** 1.0.0
 **Purpose:** Recursive meta-skill that detects workflow patterns and automatically generates Claude Code agent definitions
 **Token Budget:** <5000 per generation
-**Integration:** Self-improvement engine (crazy_script.sh)
+**Integration:** Self-improvement engine (optim.sh)
 
 ---
 
@@ -21,14 +21,14 @@ The Agent Auto-Creator is a recursive meta-skill that:
 
 ## Triggers
 
-### Automatic Triggers:
+### Automatic Triggers
 
 - Workflow pattern appears 3+ times (Rule of Three)
 - Token waste >10k on repeated manual work
 - Efficiency Auditor flags inefficiency pattern
 - Self-improvement engine detects opportunity
 
-### Manual Triggers:
+### Manual Triggers
 
 - User says "create agent for X"
 - User invokes `/create-agent` command
@@ -42,7 +42,7 @@ The Agent Auto-Creator is a recursive meta-skill that:
 
 Track these signals across conversation history:
 
-### Repetition Signals:
+### Repetition Signals
 
 ```bash
 # Count repeated command patterns
@@ -251,12 +251,12 @@ fi
 
 ## Integration with Self-Improvement Engine
 
-### Hook into crazy_script.sh
+### Hook into optim.sh
 
 ### Detection Phase (Layer 1)
 
 ```bash
-# In crazy_script.sh detect() function
+# In optim.sh detect() function
 detect_agent_patterns() {
   local patterns=$(scan_conversation_patterns)
 
@@ -275,7 +275,7 @@ detect_agent_patterns() {
 ### Generation Phase (Layer 2)
 
 ```bash
-# In crazy_script.sh generate() function
+# In optim.sh generate() function
 generate_agents_from_patterns() {
   while read -r pattern; do
     log "Generating agent for pattern: $pattern"
@@ -292,7 +292,7 @@ generate_agents_from_patterns() {
 ### Optimization Phase (Layer 3 - Recursive)
 
 ```bash
-# In crazy_script.sh optimize_self() function
+# In optim.sh optimize_self() function
 optimize_agent_creator() {
   log "Optimizing agent-auto-creator recursively"
 

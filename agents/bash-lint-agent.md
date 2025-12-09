@@ -16,6 +16,7 @@ Background agent that proactively detects bash script anti-patterns before they 
 ## Purpose
 
 Implements Layer 3 of the 4-Layer Bash Safety System:
+
 1. Layer 0: Fix existing bugs (immediate)
 2. Layer 1: Pattern detection (patterns.json)
 3. Layer 2: Error signature learning (error-signatures.jsonl)
@@ -174,7 +175,7 @@ When a new error pattern is encountered:
 
 ```bash
 # Manual lint
-./crazy_script.sh lint-bash
+./optim.sh lint-bash
 
 # Check specific file
 source lib/bash-linter.sh && lint_file "lib/orchestrator.sh"

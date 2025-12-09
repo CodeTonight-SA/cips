@@ -96,9 +96,9 @@ install_files() {
         cd "$INSTALL_DIR"
     fi
 
-    if [[ -f "crazy_script.sh" ]]; then
-        chmod +x crazy_script.sh
-        log_success "crazy_script.sh is executable"
+    if [[ -f "optim.sh" ]]; then
+        chmod +x optim.sh
+        log_success "optim.sh is executable"
     fi
 
     log_success "Installation complete"
@@ -110,7 +110,7 @@ verify_installation() {
     local required_files=(
         "CLAUDE.md"
         "patterns.json"
-        "crazy_script.sh"
+        "optim.sh"
         "EFFICIENCY_CHECKLIST.md"
         "README.md"
     )
@@ -212,16 +212,16 @@ show_next_steps() {
     echo "   cd $INSTALL_DIR"
     echo ""
     echo "2. Run pattern detection:"
-    echo "   ./crazy_script.sh detect"
+    echo "   ./optim.sh detect"
     echo ""
     echo "3. Generate a skill from a pattern:"
-    echo "   ./crazy_script.sh generate repeated-file-reads"
+    echo "   ./optim.sh generate repeated-file-reads"
     echo ""
     echo "4. Run meta-optimization (recursion):"
-    echo "   ./crazy_script.sh optimize"
+    echo "   ./optim.sh optimize"
     echo ""
     echo "5. Run full improvement cycle:"
-    echo "   ./crazy_script.sh cycle"
+    echo "   ./optim.sh cycle"
     echo ""
     echo "================================================================"
     echo "Documentation: $INSTALL_DIR/README.md"

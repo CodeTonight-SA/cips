@@ -4,7 +4,7 @@
 # Generates agent definitions from templates and patterns
 #
 # PURPOSE:
-#   crazy_script.sh references this script but it didn't exist.
+#   optim.sh references this script but it didn't exist.
 #   This script provides:
 #   1. Agent template filling
 #   2. Agent registration

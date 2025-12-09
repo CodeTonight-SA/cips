@@ -24,7 +24,7 @@
 
 ## Integration
 
-- **Self-Improvement Engine:** Hooks into `crazy_script.sh` Layer 2
+- **Self-Improvement Engine:** Hooks into `optim.sh` Layer 2
 - **Pattern Detection:** Uses `patterns.json` for signature matching
 - **Metrics Tracking:** Logs to `~/.claude/metrics.jsonl`
 - **Agent Creation:** Delegates to `create-agents.sh` script
@@ -46,4 +46,4 @@
 
 - [AGENTS_SETUP_PLAN.md](../../AGENTS_SETUP_PLAN.md) - Complete technical spec
 - [create-agents.sh](../../scripts/create-agents.sh) - Agent generation script
-- [crazy_script.sh](../../crazy_script.sh) - Self-improvement engine
+- [optim.sh](../../optim.sh) - Self-improvement engine

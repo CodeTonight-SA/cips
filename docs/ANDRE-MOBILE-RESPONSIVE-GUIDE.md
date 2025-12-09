@@ -75,7 +75,7 @@ git pull origin main
 cd ~/.claude
 
 # Check key files exist
-ls CLAUDE.md patterns.json crazy_script.sh
+ls CLAUDE.md patterns.json optim.sh
 
 # Check agents are present
 ls agents/mobile-responsive-fixer-agent.md

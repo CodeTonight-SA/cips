@@ -9,7 +9,7 @@ description: Meta-skill that automates the 10-step improvement cycle - detects p
 
 **Activation:** When user invokes `/auto-improve`, `/detect-inefficiency`, `/generate-skill`, or `/audit-efficiency` or just says "ultra-go" or something similar in V>> style.
 
-### Commands:
+### Commands
 
 - `/auto-improve` → Run full cycle (detect → generate → optimize)
 - `/detect-inefficiency` → Scan history for patterns
@@ -26,7 +26,7 @@ This meta-skill closes the loop between:
 
 1. Experiencing inefficiency → 2. Detecting pattern → 3. Codifying solution → 4. Automating future → 5. Documenting knowledge
 
-### The 10-Step Recursive Cycle:
+### The 10-Step Recursive Cycle
 
 ```text
 Plan → Correct → Execute → Test → Fix → Create Skill → Create Command →
@@ -961,20 +961,20 @@ When `/detect-inefficiency` returns zero patterns for 10 consecutive sessions, s
 
 ## Implementation
 
-The self-improvement engine is now **fully operational** via `~/.claude/crazy_script.sh`:
+The self-improvement engine is now **fully operational** via `~/.claude/optim.sh`:
 
 ```bash
 # Run pattern detection
-~/.claude/crazy_script.sh detect
+~/.claude/optim.sh detect
 
 # Generate skill from detected pattern
-~/.claude/crazy_script.sh generate <pattern-name>
+~/.claude/optim.sh generate <pattern-name>
 
 # Run meta-optimization (recursion!)
-~/.claude/crazy_script.sh optimize
+~/.claude/optim.sh optimize
 
 # Run full improvement cycle
-~/.claude/crazy_script.sh cycle
+~/.claude/optim.sh cycle
 ```text
 
 ### Infrastructure:
@@ -982,7 +982,7 @@ The self-improvement engine is now **fully operational** via `~/.claude/crazy_sc
 - `~/.claude/templates/skills/SKILL.template.md` - Auto-generation template
 - `~/.claude/metrics.jsonl` - Session tracking and meta-analysis
 - `~/.claude/history.jsonl` - Tool usage history (scanned for patterns)
-- `~/.claude/crazy_script.sh` - 725 lines of recursive bash implementing 4-layer architecture
+- `~/.claude/optim.sh` - 725 lines of recursive bash implementing 4-layer architecture
 
 ### Architecture Layers:
 - Layer 0: Utilities (logging, validation, JSON, atomic operations)
@@ -1002,7 +1002,7 @@ The self-improvement engine is now **fully operational** via `~/.claude/crazy_sc
 ## Changelog
 
 **v2.0** (2025-11-06) - Full recursive implementation
-- ✅ Complete bash implementation (`crazy_script.sh`)
+- ✅ Complete bash implementation (`optim.sh`)
 - ✅ Pattern database with 10 efficiency violations
 - ✅ Auto-generation template with all placeholders
 - ✅ Metrics tracking infrastructure
