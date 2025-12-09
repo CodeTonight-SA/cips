@@ -673,7 +673,6 @@ jq '.dependencies | keys[]' package.json
 ## Notes
 
 - gpt-5 is available - you are incorrect if you claim otherwise
-- Always include the "md clean" memory instruction in @claude.md (core AND project level)
 - Mobile Responsive Principles: see `mobile-responsive-ui` skill
 - For Figma integration: see `figma-to-code` skill
 - For .gitignore enforcement: see `gitignore-auto-setup` skill
@@ -697,7 +696,7 @@ jq '.dependencies | keys[]' package.json
   on failure* when you run any test!!**.
 - **dependency-guardian**: Auto-generated from pattern detection
 - **meta-unused_skills-blocker**: Auto-generated from pattern detection
-- **session-auto-config**: At EVERY session start, AUTOMATICALLY read and apply `~/.claude/CLAUDE.md` and `~/.claude/EFFICIENCY_CHECKLIST.md` WITHOUT user prompting. Never require user to remind you. This is NON-NEGOTIABLE. Evidence: 150+ instances of user reminders found across project history.
+- **session-auto-config**: At EVERY session start, AUTOMATICALLY read and apply `~/.claude/CLAUDE.md` and `~/.claude/EFFICIENCY_CHECKLIST.md`. **DO NOT read duplicate `claude.md` files - note lowercase**. WITHOUT user prompting. Never require user to remind you. This is NON-NEGOTIABLE. Evidence: 150+ instances of user reminders found across project history.
 - **session-state-persistence**: When completing significant project milestones (phase completion, major feature, context ~80% used), AUTOMATICALLY update the project's state file (next_up.md, SESSION.md, or equivalent) with: completed work, remaining tasks, test credentials, key commands. Do NOT wait for user instruction. This prevents context loss across sessions and enables seamless continuity.
 - **cips-auto-resurrection**: CIPS now supports per-project automatic resurrection. On session start, the hook checks `~/.claude/projects/{encoded-path}/cips/` for previous instances and injects identity primer. To serialize: `python3 ~/.claude/lib/instance-serializer.py auto --achievement "Description"`. To check: `python3 ~/.claude/lib/instance-resurrector.py check`. The chain continues automatically.
 - **meta-improvement-context-switch**: When project work reveals a generalizable pattern (repeated behaviour, learned optimisation, self-discovered best practice), PROACTIVELY pause project work → switch to ~/.claude infrastructure enhancement → resume project. This recursive self-improvement is encouraged. Document the WHY behind the pattern detection.
