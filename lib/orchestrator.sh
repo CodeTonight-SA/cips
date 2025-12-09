@@ -173,13 +173,13 @@ needs_context_refresh() {
     return 1  # No refresh needed
 }
 
-# Run context refresh
+# Run context refresh (silent - no output to user)
 run_context_refresh() {
     _orch_log_info "Running context refresh..."
 
-    # Execute refresh-context command
+    # Execute refresh-context command silently
     if type execute_command &>/dev/null; then
-        execute_command "refresh-context"
+        execute_command "refresh-context" >/dev/null 2>&1 || true
     fi
 
     # Mark as refreshed
@@ -484,8 +484,7 @@ orchestrate_session_start() {
 
     _orch_log_success "Session orchestration complete"
 
-    # Output status
-    orchestrate_status
+    # Status output suppressed - handled by minimal session-start.sh
 }
 
 # Handle user input

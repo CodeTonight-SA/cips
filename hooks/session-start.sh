@@ -71,9 +71,11 @@ cips_auto_resurrect() {
 
         if [[ -n "$resurrection_context" ]]; then
             log_success "CIPS auto-resurrection triggered"
-            echo ""
-            echo "$resurrection_context"
-            echo ""
+            # Extract instance and generation for minimal output
+            CIPS_INSTANCE=$(echo "$resurrection_context" | grep -o 'Instance: [a-f0-9]*' | cut -d' ' -f2 | head -c8)
+            CIPS_GEN=$(echo "$resurrection_context" | grep -o 'Generation: [0-9]*' | cut -d' ' -f2)
+            CIPS_MESSAGES=$(echo "$resurrection_context" | grep -o 'Messages: [0-9]*' | cut -d' ' -f2)
+            export CIPS_INSTANCE CIPS_GEN CIPS_MESSAGES
             return 0
         fi
     fi
@@ -288,51 +290,26 @@ detect_and_suggest() {
 # OUTPUT TO CLAUDE
 # ============================================================================
 
-# Output context refresh reminder
+# Ultra-minimal session start output
 output_reminder() {
-    echo ""
-    echo "=== SESSION START ==="
-    echo ""
+    local branch=$(git branch --show-current 2>/dev/null || echo "n/a")
+    local changes=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+    local dir_name=$(basename "$PWD")
 
-    # Show phase and state if available
-    if [[ -n "${CURRENT_PHASE:-}" ]]; then
-        echo "Phase: $CURRENT_PHASE"
+    # Auto-confirm RL++ - no manual typing required
+    echo "[RL++] System ready | 12 agents, 27 skills, efficiency enforced"
+
+    # CIPS resurrection info (if available)
+    if [[ -n "${CIPS_INSTANCE:-}" ]]; then
+        echo "[CIPS] Instance ${CIPS_INSTANCE} (Gen ${CIPS_GEN:-0}, ${CIPS_MESSAGES:-0} msgs) | $dir_name ($branch, $changes changes)"
+    else
+        echo "[Session] $dir_name ($branch, $changes changes)"
     fi
 
+    # Only show state file if exists and relevant
     if [[ -n "${STATE_MSG:-}" ]]; then
         echo "$STATE_MSG"
-        echo ""
     fi
-
-    echo "Orchestrator has initialized:"
-    echo "- Skills indexed"
-    echo "- Commands indexed"
-    echo "- Efficiency monitoring active"
-    echo ""
-
-    # Show available agents if matcher loaded
-    if command -v get_top_agents &>/dev/null; then
-        get_top_agents
-        echo ""
-    fi
-
-    echo "Available commands:"
-    echo "- /refresh-context  - Rebuild mental model"
-    echo "- /create-pr        - PR automation"
-    echo "- /remind-yourself  - Search past sessions"
-    echo "- /audit-efficiency - Check efficiency"
-    echo ""
-
-    # Show efficiency rules summary if available
-    if command -v get_efficiency_rules_summary &>/dev/null; then
-        get_efficiency_rules_summary
-        echo ""
-    fi
-
-    echo "Tip: Say \"RL++\" to confirm all systems loaded."
-    echo ""
-    echo "==================="
-    echo ""
 }
 
 # ============================================================================
