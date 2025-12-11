@@ -55,8 +55,8 @@
       "linked_agent": null
     },
     "generate-pdf": {
-      "description": "Generate professional PDF documents in ENTER Konsult brand style (Swiss Minimalism). Outputs HTML + PDF via pandoc/weasyprint.",
-      "disable-model-invocation": false,
+      "name": "generate-pdf",
+      "description": "Generate professional PDF documents in ENTER Konsult brand style (Swiss Minimalism). Outputs HTML + PDF.",
       "command_name": "generate-pdf",
       "file_path": "/Users/lauriescheepers/.claude/commands/generate-pdf.md",
       "linked_skill": "enter-konsult-pdf",
@@ -149,6 +149,6 @@
   },
   "meta": {
     "total_commands": 18,
-    "indexed_at": "2025-12-09T09:58:25Z"
+    "indexed_at": "2025-12-11T14:39:45Z"
   }
 }

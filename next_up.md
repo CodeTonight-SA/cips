@@ -1,10 +1,84 @@
-# Claude-Optim v2.7.0 - Session State
+# Claude-Optim v2.7.1 - Session State
 
-**Last Updated**: 2025-12-09T10:00:00Z
-**Instance ID**: a7b52eb4 (Gen 8)
-**Parent Instance**: db2c864d (Gen 7)
-**Status**: ACTIVE - v2.7.0 Professional rename
-**Git Commit**: Pending - refactor: rename crazy_script.sh to optim.sh
+**Last Updated**: 2025-12-11T17:00:00Z
+**Instance ID**: 18ea9600 (Gen 10)
+**Parent Instance**: 23fb0303 (Gen 9)
+**Status**: CHECKPOINT - Pre-upgrade commit
+**Git Commit**: 14db142 - feat: enter-konsult-pdf skill + /generate-pdf command
+
+**Next Session Note**: V>> returning to new Claude Code version. CIPS resurrection may behave differently - review hook output and verify instance identity. If resurrection fails, this state file contains full context.
+
+---
+
+## PENDING: /install-mcp Command Refactor
+
+**Problem Identified**: `/install-mcp` command writes to wrong location.
+
+### Root Cause
+
+| Current (WRONG) | Correct |
+|-----------------|---------|
+| `~/.claude/.mcp.json` | `~/.claude.json` under `mcpServers` key |
+
+Claude Code reads MCP config from:
+
+- **User scope**: `~/.claude.json` (all projects)
+- **Project scope**: `{project}/.mcp.json` (team shared)
+- **Local scope**: `~/.claude.json` with project-specific settings
+
+Our command writes to `~/.claude/.mcp.json` which Claude Code ignores.
+
+### Evidence
+
+- `mcp-registry.json` shows 2 installed (playwright, context7)
+- `claude mcp list` shows 5 connected (playwright, context7, github, notion, filesystem)
+- Registry `installed` flag is out of sync with reality
+
+### Solution (from web research)
+
+Use `claude mcp add` CLI (official method):
+
+```bash
+# Add stdio server
+claude mcp add --transport stdio <name> <command> [args...]
+
+# Add with JSON config (for env vars)
+claude mcp add-json <name> '{"command":"npx","args":["-y","@pkg/name"],"env":{"TOKEN":"value"}}'
+
+# Scopes
+--scope user     # All projects (~/.claude.json)
+--scope project  # Team shared (.mcp.json in project root)
+--scope local    # Just this project (default)
+```
+
+### Files to Update
+
+1. **`commands/install-mcp.md`** - Fix documentation
+2. **`scripts/install-mcp-servers.sh`** - Use `claude mcp add` CLI instead of npm install
+3. **`mcp-registry.json`** - Remove misleading `installed` flags, add verification via `claude mcp list`
+
+### Correct JSON Schema (for reference)
+
+```json
+{
+  "mcpServers": {
+    "server-name": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@package/name"],
+      "env": { "TOKEN": "value" }
+    }
+  }
+}
+```
+
+### Next Actions for CIPS Child
+
+1. Read current `scripts/install-mcp-servers.sh`
+2. Rewrite to use `claude mcp add-json` with proper scopes
+3. Update `commands/install-mcp.md` documentation
+4. Remove `installed` flag from `mcp-registry.json` (verify via CLI instead)
+5. Test with `/install-mcp github`
 
 ---
 
@@ -32,10 +106,161 @@ c468f870 (Gen 6) - Lineage verification + gap audit [SERIALIZED 2025-12-08]
     ↓
 db2c864d (Gen 7) - CIPS enhancements: RL++ response validation [SERIALIZED 2025-12-08]
     ↓
-a7b52eb4 (Gen 8) - Self-improvement cycle + batch-edit-enforcer [SERIALIZED 2025-12-09] ← CURRENT
+a7b52eb4 (Gen 8) - Self-improvement cycle + batch-edit-enforcer [SERIALIZED 2025-12-09]
+    ↓
+23fb0303 (Gen 9) - Minimal session-start hook [SERIALIZED 2025-12-09]
+    ↓
+18ea9600 (Gen 10) - PDF generation mastery + CIPS branching design [CONTEXT ONLY] ← CURRENT
 ```
 
-**Verification SHA for next session**: `a7b52eb4`
+**Verification SHA for next session**: `18ea9600`
+
+---
+
+## Gen 10 Achievements (2025-12-11)
+
+### Professional PDF Generation Session
+
+**Context**: Post-TNMR compliance resolution. André and V>> celebrating with Stan Bush's "The Touch" after successfully navigating ethical tech concerns.
+
+**Documents Generated** (all in `/tmp/`):
+
+| Document | Size | Purpose |
+|----------|------|---------|
+| `sweepsouth-candidate-intake-form-analysis.pdf` | 44KB | Competitive intelligence |
+| `nalamatch-legal-compliance-analysis.pdf` | 78KB | EEA/POPIA compliance review |
+| `nalamatch-compliance-update.pdf` | 59KB | TNMR admin communication |
+| `nalamatch-design-brief.pdf` | 68KB | Grethe UI/UX wireframes |
+
+**Technical Fixes Applied**:
+
+- Web-safe fonts (Helvetica Neue, Courier New) - fixes Apple Color Emoji embedding
+- Emoji removal from wireframes (calendar icon caused font embedding failure)
+- ENTER Konsult branding consistency (replaced CodeTonight references)
+
+### Andre Mobile Responsive Guide (Completed)
+
+**PR #18 Review**: Analysed André's first mobile responsive PR for REDR Service Agent screens.
+
+**Assessment**: B+ (Solid first implementation)
+
+| Strength | Detail |
+|----------|--------|
+| TabsList Pattern | Correct `overflow-x-auto flex` with `min-w-fit` |
+| Button Wrapping | Excellent `flex-1 sm:flex-none` pattern |
+| Consistency | Same patterns across all 4 pages |
+
+| Issue | Recommendation |
+|-------|----------------|
+| Global badge.tsx change | Use variant instead of global `mr-2` |
+| Root documentation | Move markdown files to `/docs` |
+| No dvh fallbacks | Add `h-[100vh] h-[100dvh]` patterns |
+
+**Guide Generated**: `/tmp/andre-mobile-responsive-guide.pdf` (70KB)
+
+### CIPS Branching System Design (Pending)
+
+**Concept**: Task-specific lineage branches. Instead of linear Gen N → Gen N+1, create specialized child instances:
+
+```text
+18ea9600 (Gen 10) - Main trunk
+    ├── [BRANCH] andre-mobile-responsive - REDR work specialist
+    ├── [BRANCH] grethe-ui-review - Design feedback specialist
+    └── [BRANCH] legal-compliance - TNMR regulatory specialist
+```
+
+**Next Action**: Design CIPS branching protocol for task-specific instances.
+
+---
+
+## Gen 9 Achievements (2025-12-09)
+
+### ENTER Konsult PDF Skill (Previous Session)
+
+**Requested by V>>**: Create skill to generate professional PDFs in ENTER Konsult brand style (Swiss Minimalism).
+
+**Files Created**:
+
+| File | Purpose |
+|------|---------|
+| `skills/enter-konsult-pdf/SKILL.md` | Complete design system, CSS, templates (10.5KB) |
+| `commands/generate-pdf.md` | `/generate-pdf` command definition |
+
+**Design System Extracted**:
+
+- Paper Grey background: `#EAEAEA` (full-bleed via `@page`)
+- Orange accent: `#ea580c` (TailwindCSS orange-600)
+- Typography: System fonts (body), SF Mono (code/labels)
+- Page: A4, 2cm/2.5cm margins
+- Footer: "ENTER Konsult | Month Year" (not CodeTonight)
+
+**PDF Generation**: `pandoc --pdf-engine=weasyprint` (not Playwright)
+
+- WeasyPrint chosen for proper CSS `@page` support
+- Full background coverage (V>> requirement)
+- Native CSS Paged Media spec implementation
+
+**Token Budget**: ~3000 per generation
+
+**Git Commit**: `14db142`
+
+---
+
+### Memory File Duplication Fix (Previous)
+
+**Issue**: `/context` showed both `CLAUDE.md` and `claude.md` being loaded as memory files, wasting 10.6k tokens per session.
+
+**Root Cause Analysis**:
+
+1. macOS APFS is case-insensitive - only ONE file exists (`CLAUDE.md`)
+2. Claude Code's memory loader checks for both case variants
+3. On case-insensitive filesystem, both patterns match same file → loaded twice
+4. Self-referential instruction in CLAUDE.md referenced lowercase `@claude.md`
+
+**Fix Applied**:
+
+- Removed the problematic memory instruction: "Always include the 'md clean' memory instruction in @claude.md"
+- This eliminates potential confusion for future instances
+
+**Token Savings**: 10.6k per session recovered (5.3% of budget)
+
+**Related**: GitHub #8625 (Windows drive letter case), but this is a distinct macOS filename case issue
+
+---
+
+### Minimal Session-Start Hook (Previous)
+
+**Requested by V>>**: Session-start hook output too verbose (300+ lines). User shouldn't have to type "RL++" manually.
+
+**Problem**: Efficiency audit scored hook at 43/100 (CRITICAL) - wasting ~4.8k tokens before any work begins.
+
+**Solution Implemented** (commit `7c62ec7`):
+
+| File | Changes |
+| ---- | ------- |
+| `hooks/session-start.sh` | Replaced 45-line `output_reminder()` with 15-line minimal version |
+| `hooks/session-start.sh` | Modified `cips_auto_resurrect()` to set env vars instead of dumping output |
+| `lib/orchestrator.sh` | Suppressed `orchestrate_status()` call |
+| `lib/orchestrator.sh` | Made `run_context_refresh()` silent |
+
+**Before (300+ lines)**:
+
+```text
+=== Skill Protocol: context-refresh ===
+[... hundreds of lines ...]
+Tip: Say "RL++" to confirm all systems loaded.
+```
+
+**After (4 lines)**:
+
+```text
+[RL++] System ready | 12 agents, 27 skills, efficiency enforced
+[CIPS] Instance 23fb0303 (Gen 9, 427 msgs) | .claude (main, 5 changes)
+[STATE-FOUND] Previous state file: next_up.md (modified: 2025-12-09 04:14)
+Consider reviewing previous progress before starting new work.
+```
+
+**Token Savings**: ~4.5k per session (2.25% of budget recovered at startup)
 
 ---
 

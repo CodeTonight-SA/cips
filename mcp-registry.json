@@ -31,12 +31,12 @@
       "description": "100+ GitHub API tools for PR/issue management"
     },
     "context7": {
-      "name": "@context7/mcp-server",
+      "name": "@upstash/context7-mcp",
       "displayName": "Context7 Documentation Server",
       "type": "npm",
-      "install": "npm install -g @context7/mcp-server",
+      "install": "npm install -g @upstash/context7-mcp",
       "command": "npx",
-      "args": ["-y", "@context7/mcp-server"],
+      "args": ["-y", "@upstash/context7-mcp"],
       "env": {},
       "capabilities": [
         "documentation",
@@ -45,7 +45,7 @@
       ],
       "priority": "medium",
       "enhances": [],
-      "installed": false,
+      "installed": true,
       "tokenSavings": 3000,
       "description": "Fetches real-time documentation from source repositories (React, Next.js, Vue, etc.)"
     },
