@@ -1,12 +1,12 @@
 # Install MCP Server Command
 
-Automated MCP (Model Context Protocol) server installation and configuration.
+Automated MCP (Model Context Protocol) server installation using the official `claude mcp add` CLI.
 
 ## Usage
 
 ```text
-/install-mcp [server-name|--auto-detect|--all]
-```text
+/install-mcp [server-name|--list|--verify]
+```
 
 ## Examples
 
@@ -14,50 +14,53 @@ Automated MCP (Model Context Protocol) server installation and configuration.
 
 ```bash
 /install-mcp github
-```text
+```
 
-Installs GitHub MCP server with interactive token setup:
-1. Runs `npm install -g @modelcontextprotocol/server-github`
-2. Prompts for GitHub Personal Access Token
-3. Updates `~/.claude/.mcp.json` configuration
-4. Verifies installation
+Installs GitHub MCP server:
 
-### Auto-Detect Required Servers
+1. Runs `claude mcp add --scope user --transport stdio github -- npx -y @modelcontextprotocol/server-github`
+2. Prompts for GitHub Personal Access Token (if required)
+3. Verifies installation with `claude mcp list`
 
-```text
-/install-mcp --auto-detect
-```text
-
-Scans all agents in `~/.claude/agents/`, identifies required MCP servers based on their capabilities, and installs missing ones.
-
-Example output:
-```text
-🔍 Scanning agents for MCP requirements...
-
-Found requirements:
-- pr-workflow agent → Requires: github
-- (no other MCP requirements detected)
-
-📦 Installing required MCP servers:
-- github: @modelcontextprotocol/server-github
-
-✅ Installed 1 MCP server
-⚠️  Restart Claude Code to activate
-```text
-
-### Install All Registered Servers
+### List Available Servers
 
 ```text
-/install-mcp --all
+/install-mcp --list
+```
+
+Shows all servers from `~/.claude/mcp-registry.json` with their status.
+
+### Verify Current Installation
+
 ```text
+/install-mcp --verify
+```
 
-Installs ALL servers from `~/.claude/mcp-registry.json` (high and medium priority only).
+Runs `claude mcp list` to show connected servers and their health.
 
-**Warning:** This installs multiple packages. Approve each installation.
+## How It Works
+
+**IMPORTANT**: This command uses the official `claude mcp add` CLI, NOT npm install.
+
+```bash
+# Correct method (what this command does)
+claude mcp add --scope user --transport stdio github -- npx -y @modelcontextprotocol/server-github
+
+# Wrong method (deprecated)
+npm install -g @modelcontextprotocol/server-github  # DON'T DO THIS
+```
+
+### Configuration Locations
+
+| Scope | Location | Use Case |
+|-------|----------|----------|
+| `user` | `~/.claude.json` → `mcpServers` | All projects (recommended) |
+| `project` | `.mcp.json` in project root | Team shared |
+| `local` | Project-specific in ~/.claude.json | Just this project |
 
 ## Interactive Configuration
 
-For servers requiring environment variables (API tokens, credentials):
+For servers requiring environment variables:
 
 ```text
 Installing GitHub MCP Server...
@@ -69,66 +72,75 @@ Get token at: https://github.com/settings/tokens
 
 Enter token (input hidden): ********
 
-✅ Token saved to ~/.claude/.mcp.json
-```text
+Running: claude mcp add --scope user -e GITHUB_TOKEN=*** github -- npx -y @modelcontextprotocol/server-github
+
+Verifying...
+github: npx -y @modelcontextprotocol/server-github - Connected
+```
 
 ## Available Servers
 
 From `~/.claude/mcp-registry.json`:
 
-| Server | Priority | Enhances | Token Savings |
-|--------|----------|----------|---------------|
-| github | High | pr-workflow | 2k per PR |
-| context7 | Medium | (general) | 3k per lookup |
-| playwright | Medium | (testing) | 1k per test |
-| sequential-thinking | Low | (reasoning) | 5k per complex task |
-| notion | Low | (docs) | 1k per sync |
+| Server | Priority | Requires Token | Token Savings |
+|--------|----------|----------------|---------------|
+| github | High | GITHUB_TOKEN | 2k per PR |
+| context7 | Medium | No | 3k per lookup |
+| playwright | Medium | No | 1k per test |
+| notion | Low | NOTION_TOKEN | 1k per sync |
+| filesystem | Low | No | 500 |
 
 ## Verification
 
 After installation:
 
 ```bash
-# Test MCP server
-npx @modelcontextprotocol/server-github --version
+# Check all MCP servers
+claude mcp list
 
-# Check configuration
-cat ~/.claude/.mcp.json | jq
-
-# Verify in Claude Code
-# Restart Claude Code, then:
-# MCP servers should appear in available tools
-```text
+# Expected output:
+# github: npx -y @modelcontextprotocol/server-github - Connected
+# context7: npx -y @upstash/context7-mcp - Connected
+```
 
 ## Troubleshooting
 
-**Issue:** Installation fails with permission error
-### Solution
-```bash
-sudo npm install -g [package] --unsafe-perm
-```text
+**Issue:** Server not appearing after install
+
+**Solution:**
+
+1. Restart Claude Code completely
+2. Run `claude mcp list` to verify
+3. Check `~/.claude.json` for `mcpServers` key
 
 **Issue:** Token not working
-### Solution
-1. Verify token scopes at GitHub settings
-2. Regenerate token with correct scopes
-3. Update `~/.claude/.mcp.json` manually
 
-**Issue:** Server not appearing in Claude Code
-### Solution
-1. Restart Claude Code completely
-2. Check `~/.claude/.mcp.json` syntax with `jq`
-3. Review logs: `~/.claude/debug/*.log`
+**Solution:**
+
+1. Remove server: `claude mcp remove github`
+2. Re-add with correct token: `claude mcp add --scope user -e GITHUB_TOKEN=xxx github -- npx -y @modelcontextprotocol/server-github`
+
+**Issue:** Wrong scope used
+
+**Solution:**
+
+```bash
+# Remove from wrong scope
+claude mcp remove --scope local github
+
+# Add to correct scope
+claude mcp add --scope user github -- npx -y @modelcontextprotocol/server-github
+```
 
 ## Integration
 
-- Reads from `~/.claude/mcp-registry.json`
-- Updates `~/.claude/.mcp.json`
-- Delegates to `~/.claude/scripts/install-mcp-servers.sh`
-- Logs installations to `~/.claude/metrics.jsonl`
+- Reads server definitions from `~/.claude/mcp-registry.json`
+- Uses `claude mcp add` CLI (official method)
+- Stores config in `~/.claude.json` under `mcpServers` key
+- Verifies with `claude mcp list`
 
 ## See Also
 
-- `/create-agent` - Create agents that use MCP servers
+- `claude mcp --help` - Official MCP CLI documentation
 - `~/.claude/mcp-registry.json` - Available servers registry
-- `~/.claude/AGENTS_SETUP_PLAN.md` - MCP integration documentation
+- `~/.claude/CLAUDE.md` - MCP Server Integration section

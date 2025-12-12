@@ -1,7 +1,8 @@
 {
-  "version": "1.0.0",
-  "lastUpdated": "2025-01-14",
-  "description": "Local registry of available MCP servers for Claude Code",
+  "version": "2.0.0",
+  "lastUpdated": "2025-12-12",
+  "description": "Local registry of available MCP servers for Claude Code. Use 'claude mcp list' to check installed status.",
+  "note": "The 'installed' field is DEPRECATED. Always verify with 'claude mcp list'.",
   "servers": {
     "github": {
       "name": "@modelcontextprotocol/server-github",
