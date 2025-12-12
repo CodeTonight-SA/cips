@@ -176,10 +176,31 @@ detect_phase() {
 }
 
 check_state() {
+    # Source mtime cache library for change detection
+    if [[ -f "$LIB_DIR/file-mtime-cache.sh" ]]; then
+        # shellcheck source=/dev/null
+        source "$LIB_DIR/file-mtime-cache.sh"
+    fi
+
     if command -v check_previous_state &>/dev/null; then
         STATE_MSG=$(check_previous_state 2>/dev/null) || true
         if [[ -n "$STATE_MSG" ]]; then
             log_info "Previous state detected"
+
+            # Check if state file actually changed since last read
+            local state_file="$PWD/next_up.md"
+            if [[ -f "$state_file" ]] && command -v file_changed_since_cache &>/dev/null; then
+                if file_changed_since_cache "$state_file"; then
+                    STATE_CHANGED=true
+                    update_mtime_cache "$state_file"
+                    log_info "State file has changed since last session"
+                else
+                    STATE_CHANGED=false
+                    log_info "State file unchanged since last session"
+                fi
+            else
+                STATE_CHANGED=true  # Default to changed if we can't check
+            fi
         fi
     fi
 }
@@ -324,9 +345,15 @@ output_reminder() {
         echo "[Session] $dir_name ($branch, $changes changes)"
     fi
 
-    # Only show state file if exists and relevant
+    # State file info with change detection
     if [[ -n "${STATE_MSG:-}" ]]; then
-        echo "$STATE_MSG"
+        if [[ "${STATE_CHANGED:-true}" == "true" ]]; then
+            echo "[STATE-FOUND] Previous state file: next_up.md (MODIFIED since last session)"
+            echo "<system-reminder>File next_up.md has changed. READ this file to update context.</system-reminder>"
+        else
+            echo "[STATE-FOUND] Previous state file: next_up.md (unchanged)"
+            echo "<system-reminder>File next_up.md has NOT changed since last read. Do NOT re-read - use conversation summary. Token saving: ~2000</system-reminder>"
+        fi
     fi
 
     # Show cached plan info if available
