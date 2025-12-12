@@ -38,14 +38,30 @@ set -euo pipefail
 # ============================================================================
 
 # Encode a filesystem path to Claude's project directory format
-# Input: /Users/lauriescheepers/.claude
-# Output: -Users-lauriescheepers--claude
-# Formula: Replace / with -, replace . with - (keeps leading dash from /)
+# Cross-platform: macOS, Linux, Windows Git Bash
+# Input (macOS/Linux): /Users/name/project → -Users-name-project
+# Input (Windows):     /c/Users/Name/project → c--Users-Name-project
 encode_path() {
     local path="$1"
 
-    # Replace slashes with dashes (keeps leading), replace dots with dashes
-    echo "$path" | sed 's|/|-|g' | sed 's|\.|-|g'
+    # Cross-platform path normalisation
+    case "$(uname -s)" in
+        MINGW*|MSYS*|CYGWIN*)
+            # Windows Git Bash: /c/Users/... → c--Users-...
+            # Claude Code stores Windows paths as: c--Users-Name-...
+            if [[ "$path" =~ ^/([a-zA-Z])/ ]]; then
+                local drive="${BASH_REMATCH[1]}"
+                path="${drive}--${path:3}"  # /c/foo → c--foo
+            fi
+            ;;
+        Darwin*|Linux*)
+            # macOS/Linux: /Users/name/... → -Users-name-...
+            # Keep existing behaviour (leading slash → leading dash)
+            ;;
+    esac
+
+    # Universal: Replace slashes, dots, spaces with dashes
+    echo "$path" | sed 's|/|-|g' | sed 's|\.|-|g' | sed 's| |-|g'
 }
 
 # Decode a Claude project directory name back to filesystem path
@@ -114,7 +130,8 @@ has_project_history() {
 # ============================================================================
 
 # Locate all history JSONL files for current project
-# Returns: Newline-separated list of file paths
+# Returns: Newline-separated list of file paths (newest first)
+# Cross-platform: macOS (BSD stat), Linux/Windows (GNU stat)
 locate_project_history() {
     local project_dir=$(find_project_dir 2>/dev/null)
 
@@ -127,11 +144,24 @@ locate_project_history() {
         return 1
     fi
 
-    # Find all JSONL files, sorted by modification time (newest first)
-    fd -e jsonl . "$project_dir" -t f --exec stat -f '%m %N' {} 2>/dev/null | \
-        sort -rn | \
-        cut -d' ' -f2- | \
-        head -20
+    # Cross-platform stat format for modification time + filename
+    local stat_fmt
+    case "$(uname -s)" in
+        Darwin*)
+            # BSD stat (macOS): -f format
+            stat_fmt="-f %m"
+            ;;
+        *)
+            # GNU stat (Linux, Windows Git Bash): -c format
+            stat_fmt="-c %Y"
+            ;;
+    esac
+
+    # Find all JSONL files, get mtime, sort by newest first
+    fd -e jsonl . "$project_dir" -t f 2>/dev/null | while read -r file; do
+        local mtime=$(stat $stat_fmt "$file" 2>/dev/null)
+        [[ -n "$mtime" ]] && echo "$mtime $file"
+    done | sort -rn | cut -d' ' -f2- | head -20
 }
 
 # Get the most recent history file
