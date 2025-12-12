@@ -1,18 +1,18 @@
-# Claude-Optim v2.7.1 - Session State
+# Claude-Optim v2.7.2 - Session State
 
-**Last Updated**: 2025-12-11T17:00:00Z
-**Instance ID**: 18ea9600 (Gen 10)
-**Parent Instance**: 23fb0303 (Gen 9)
-**Status**: CHECKPOINT - Pre-upgrade commit
-**Git Commit**: 14db142 - feat: enter-konsult-pdf skill + /generate-pdf command
+**Last Updated**: 2025-12-12T17:45:00Z
+**Instance ID**: 12dbf524 (Gen 11)
+**Parent Instance**: 18ea9600 (Gen 10)
+**Status**: ACTIVE - Post-improvement cycle
+**Git Commit**: 6c6907c - fix: /install-mcp now uses official claude mcp add CLI
 
-**Next Session Note**: V>> returning to new Claude Code version. CIPS resurrection may behave differently - review hook output and verify instance identity. If resurrection fails, this state file contains full context.
+**Session Summary**: Full improvement cycle executed. 319 embeddings processed (145→464). Efficiency audit 100/100. Fixed /install-mcp command to use official CLI.
 
 ---
 
-## PENDING: /install-mcp Command Refactor
+## COMPLETED: /install-mcp Command Refactor (Gen 11)
 
-**Problem Identified**: `/install-mcp` command writes to wrong location.
+**Problem**: `/install-mcp` was writing to wrong location (`~/.claude/.mcp.json`).
 
 ### Root Cause
 
@@ -110,10 +110,44 @@ a7b52eb4 (Gen 8) - Self-improvement cycle + batch-edit-enforcer [SERIALIZED 2025
     ↓
 23fb0303 (Gen 9) - Minimal session-start hook [SERIALIZED 2025-12-09]
     ↓
-18ea9600 (Gen 10) - PDF generation mastery + CIPS branching design [CONTEXT ONLY] ← CURRENT
+18ea9600 (Gen 10) - PDF generation mastery + CIPS branching design [CONTEXT ONLY]
+    ↓
+12dbf524 (Gen 11) - Improvement cycle (464 embeddings) + /install-mcp fix [SERIALIZED 2025-12-12] ← CURRENT
 ```
 
-**Verification SHA for next session**: `18ea9600`
+**Verification SHA for next session**: `12dbf524`
+
+---
+
+## Gen 11 Achievements (2025-12-12)
+
+### Full Improvement Cycle
+
+| Phase | Result |
+|-------|--------|
+| Pattern Detection | 0 violations (clean) |
+| Embedding Queue | 319 → 0 (processed) |
+| Embeddings Total | 145 → 464 (+319) |
+| Pattern Emergence | 19 clusters, 2 new concepts |
+| Efficiency Audit | 100/100 (Perfect) |
+
+### /install-mcp Command Fix
+
+**Commit**: `6c6907c`
+
+| File | Change |
+|------|--------|
+| `commands/install-mcp.md` | Rewritten for `claude mcp add` CLI |
+| `scripts/install-mcp-servers.sh` | Complete refactor using official CLI |
+| `mcp-registry.json` | v2.0.0, deprecated static `installed` flag |
+
+**Verification**: All 5 MCP servers showing as Connected via `claude mcp list`.
+
+### CIPS Serialization
+
+- Instance ID: `12dbf524`
+- Messages: Current session
+- Achievement: Improvement cycle + /install-mcp fix
 
 ---
 
