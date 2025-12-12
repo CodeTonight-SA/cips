@@ -144,6 +144,9 @@ main() {
     # Check for previous state
     check_state
 
+    # Check for cached plan from previous session
+    check_cached_plan
+
     # Detect project type and suggest skills
     detect_and_suggest
 
@@ -177,6 +180,21 @@ check_state() {
         STATE_MSG=$(check_previous_state 2>/dev/null) || true
         if [[ -n "$STATE_MSG" ]]; then
             log_info "Previous state detected"
+        fi
+    fi
+}
+
+# Check for cached plan from previous session
+check_cached_plan() {
+    if [[ -f "$LIB_DIR/plan-persistence.sh" ]]; then
+        # shellcheck source=/dev/null
+        source "$LIB_DIR/plan-persistence.sh"
+
+        if has_recent_plan_cache 2>/dev/null; then
+            local plan_id
+            plan_id=$(jq -r '.plan_id' "$PLAN_CACHE" 2>/dev/null)
+            log_info "Previous plan cache found: $plan_id"
+            export CACHED_PLAN_ID="$plan_id"
         fi
     fi
 }
@@ -309,6 +327,12 @@ output_reminder() {
     # Only show state file if exists and relevant
     if [[ -n "${STATE_MSG:-}" ]]; then
         echo "$STATE_MSG"
+    fi
+
+    # Show cached plan info if available
+    if [[ -n "${CACHED_PLAN_ID:-}" ]]; then
+        echo "[PLAN-FOUND] Previous plan: $CACHED_PLAN_ID"
+        echo "Consider reviewing previous progress before starting new work."
     fi
 }
 

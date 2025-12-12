@@ -16,6 +16,12 @@
       "linked_skill": null,
       "linked_agent": null
     },
+    "check-last-plan": {
+      "command_name": "check-last-plan",
+      "file_path": "/Users/lauriescheepers/.claude/commands/check-last-plan.md",
+      "linked_skill": "check-last-plan",
+      "linked_agent": null
+    },
     "contract-formal": {
       "name": "contract-formal",
       "description": "Generate airtight, senior attorney-level legal contracts for technology services with contra proferentem protection, comprehensive IP indemnification, and professional boilerplate",
@@ -148,7 +154,7 @@
     }
   },
   "meta": {
-    "total_commands": 18,
-    "indexed_at": "2025-12-12T17:26:10Z"
+    "total_commands": 19,
+    "indexed_at": "2025-12-12T18:33:21Z"
   }
 }

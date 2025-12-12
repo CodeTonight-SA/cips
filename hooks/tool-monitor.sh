@@ -370,6 +370,10 @@ main() {
             # Check for agent invocation patterns
             monitor_task "$tool_args"
             ;;
+        ExitPlanMode)
+            # Cache current plan when exiting plan mode
+            monitor_exitplanmode "$tool_args"
+            ;;
         *)
             # No specific monitoring for other tools
             log_info "Tool: $tool_name (no specific monitoring)"
@@ -401,6 +405,38 @@ monitor_task() {
             echo ""
             echo "$suggestion"
         fi
+    fi
+
+    return 0
+}
+
+# Monitor ExitPlanMode to cache current plan
+monitor_exitplanmode() {
+    local args="$1"
+
+    log_info "ExitPlanMode detected - caching current plan"
+
+    # Cache current plan using plan-persistence library
+    if [[ -f "$LIB_DIR/plan-persistence.sh" ]]; then
+        # shellcheck source=/dev/null
+        source "$LIB_DIR/plan-persistence.sh"
+
+        local plan_file
+        plan_file=$(get_latest_plan_file 2>/dev/null) || true
+
+        if [[ -n "$plan_file" ]] && [[ -f "$plan_file" ]]; then
+            if cache_current_plan "$plan_file" 2>/dev/null; then
+                local plan_id
+                plan_id=$(basename "$plan_file" .md)
+                log_info "PLAN-PERSISTENCE: Cached plan: $plan_id"
+            else
+                log_warn "PLAN-PERSISTENCE: Failed to cache plan"
+            fi
+        else
+            log_info "PLAN-PERSISTENCE: No plan file found to cache"
+        fi
+    else
+        log_warn "PLAN-PERSISTENCE: Library not found"
     fi
 
     return 0

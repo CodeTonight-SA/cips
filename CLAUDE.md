@@ -296,6 +296,8 @@ Task-specific protocols are organized as Skills in `~/.claude/skills/`:
   commits, and current state. Eliminates documentation drift. Token budget ~3500. (`/update-docs`)
 - **yagni-principle**: Prevent over-engineering by building features only when actually needed. Covers premature
   feature building, speculative abstractions, and "just in case" code. Balances with SOLID/DRY.
+- **check-last-plan**: Persist plan context across sessions. Automatically caches plans on ExitPlanMode and retrieves
+  on session start. Demonstrates unified skill/command/agent architecture pattern. (`/check-last-plan`)
 - **enter-konsult-pdf**: Generate professional PDF documents and blog-ready HTML in ENTER Konsult brand style
   (Swiss Minimalism). Full-bleed Paper Grey background, orange accents, pandoc+weasyprint generation. (`/generate-pdf`)
 Skills load automatically based on task relevance. See individual SKILL.md files for detailed protocols.
@@ -418,6 +420,15 @@ Task-specific automation via Claude Code agents in `~/.claude/agents/`:
 - **Manual Review**: MD036 (bold as heading), MD024 (duplicate headings)
 - **Protocol**: Scans with patterns, applies safe fixes, flags semantic issues
 
+**Plan Persistence Agent** (Haiku 4.5)
+
+- **Purpose**: Background caching and retrieval of plan context across sessions
+- **Token Budget**: ~200 (minimal overhead)
+- **Activation**: Automatic (session-start, ExitPlanMode tool call)
+- **Savings**: Prevents cold-start context loss on plans
+- **Protocol**: Cache on ExitPlanMode, retrieve on session-start, expose via /check-last-plan
+- **Architecture**: Reference implementation of unified skill/command/agent pattern
+
 ### Agent vs Skill Distinction
 
 **Skills** (Passive Reference):
@@ -493,6 +504,7 @@ Complete list of available slash commands with their mappings to skills/agents:
 | `/update-docs` | Auto-update project documentation | auto-update-documentation skill → Doc Updater Agent | ~3500 |
 | `/audit-mobile-responsive` | Audit codebase for mobile responsive issues | mobile-responsive-ui skill → Mobile Responsive Fixer Agent | ~2000 per audit |
 | `/generate-pdf` | Generate ENTER Konsult branded PDF + HTML | enter-konsult-pdf skill | ~3000 per doc |
+| `/check-last-plan` | Load cached plan from previous session | check-last-plan skill → Plan Persistence Agent | ~200 |
 
 **Session Start**:
 /refresh-context    # Always run first to build mental model
