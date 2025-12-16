@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o pipefail
 #
 # File Modification Time Cache Library
 # Tracks file mtimes to prevent redundant reads across sessions

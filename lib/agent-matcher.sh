@@ -34,7 +34,7 @@ if [[ -f "$CLAUDE_DIR/lib/embeddings.sh" ]]; then
 fi
 
 [[ -z "${SEMANTIC_ENABLED:-}" ]] && SEMANTIC_ENABLED=true
-[[ -z "${SEMANTIC_THRESHOLD:-}" ]] && SEMANTIC_THRESHOLD=0.55
+[[ -z "${SEMANTIC_THRESHOLD:-}" ]] && SEMANTIC_THRESHOLD=0.75
 
 _match_log() {
     local level="$1"

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o pipefail
 #
 # Session State Library
 # Programmatic checkpoint functions for session state persistence

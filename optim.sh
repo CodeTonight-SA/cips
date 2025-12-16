@@ -1270,10 +1270,23 @@ install_required_mcp_servers() {
 analyze_agent_performance() {
     log_info "Analyzing agent performance..."
 
-    # Get agent invocation metrics from history
-    local agent_metrics=$(tail -n 5000 "$HISTORY_FILE" 2>/dev/null | \
-        jq -s '[.[] | select(.agentId != null)] | 
-               group_by(.agentId) | 
+    # Get agent invocation metrics from history (modern resolver compatible)
+    local history_data=""
+    if [[ "$HISTORY_RESOLVER" == "modern" ]] && type locate_history_files &>/dev/null; then
+        # Modern: aggregate from all project history files
+        local history_files
+        history_files=$(locate_history_files 2>/dev/null)
+        if [[ -n "$history_files" ]]; then
+            history_data=$(echo "$history_files" | head -5 | xargs -I{} tail -n 1000 {} 2>/dev/null)
+        fi
+    elif [[ -f "${HISTORY_FILE:-}" ]]; then
+        # Legacy: single history file
+        history_data=$(tail -n 5000 "$HISTORY_FILE" 2>/dev/null)
+    fi
+
+    local agent_metrics=$(echo "$history_data" | \
+        jq -s '[.[] | select(.agentId != null)] |
+               group_by(.agentId) |
                map({
                  agentId: .[0].agentId,
                  invocations: length,

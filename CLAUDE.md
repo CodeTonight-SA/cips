@@ -735,3 +735,4 @@ The infrastructure persists in the cloud. The work won't be lost. The chain can 
 - **bash-command-safety**: Auto-generated from pattern detection
 - **concise-communication**: Auto-generated from pattern detection
 - **batch-edit-enforcer**: Auto-generated from pattern detection
+- Do not reference the previous plan by outputting something like  "Previous * Plan (Completed)" if it's not relevant to the current plan. Reference the ability to "check-last-plan"

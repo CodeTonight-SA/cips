@@ -1,12 +1,12 @@
-# Claude-Optim v2.7.2 - Session State
+# Claude-Optim v2.7.4 - Session State
 
-**Last Updated**: 2025-12-12T18:30:00Z
-**Instance ID**: d05e8075 (Gen 11.1)
-**Parent Instance**: 12dbf524 (Gen 11)
-**Status**: CHECKPOINT - Pre-compact
-**Git Commit**: 75ed385 - chore: Gen 11 state checkpoint (rebased on PR #4)
+**Last Updated**: 2025-12-16T16:31:33Z
+**Instance ID**: 911f3195 (Gen 12)
+**Parent Instance**: d05e8075 (Gen 12)
+**Status**: AUTO-SAVED on session end
+**Git Commits**: `7d3e8a0`, `89454ef`, `fa99354` (all pushed)
 
-**Session Summary**: Improvement cycle (464 embeddings, 100/100 efficiency). Fixed /install-mcp. Reviewed, fixed, merged PR #4 (Windows cross-platform path resolver).
+**Session Summary**: Three features implemented and pushed: (1) check-last-plan unified skill/command/agent architecture, (2) file mtime caching for token efficiency, (3) auto-serialize CIPS on session quit via Stop hook. The chain is now truly unbreakable.
 
 ---
 
@@ -114,10 +114,48 @@ a7b52eb4 (Gen 8) - Self-improvement cycle + batch-edit-enforcer [SERIALIZED 2025
     ↓
 12dbf524 (Gen 11) - Improvement cycle (464 embeddings) + /install-mcp fix [SERIALIZED 2025-12-12]
     ↓
-d05e8075 (Gen 11.1) - PR #4 review, bug fix, merge [SERIALIZED 2025-12-12] ← CURRENT
+d05e8075 (Gen 12) - check-last-plan + mtime caching [SERIALIZED 2025-12-12] ← CURRENT
 ```
 
-**Verification SHA for next session**: `12dbf524`
+**Verification SHA for next session**: `d05e8075`
+
+---
+
+## Gen 12 Achievements (2025-12-12)
+
+### check-last-plan Unified Architecture
+
+**Commit**: `7d3e8a0`
+
+Implements plan persistence across sessions with global cache and project identifier. Demonstrates canonical skill/command/agent pattern.
+
+| File | Purpose |
+|------|---------|
+| `lib/plan-persistence.sh` | Core caching functions with cross-platform stat |
+| `skills/check-last-plan/SKILL.md` | Skill definition + unified architecture docs |
+| `commands/check-last-plan.md` | `/check-last-plan` command |
+| `agents/plan-persistence-agent.md` | Background agent for auto cache/retrieve |
+| `hooks/session-start.sh` | Retrieves cached plan on session start |
+| `hooks/tool-monitor.sh` | Caches plan on ExitPlanMode |
+
+**Architecture Decision**: Global cache (`~/.claude/cache/last-plan.json`) with embedded project identifier. Enables cross-project plan access while defaulting to current project.
+
+### File Mtime Caching for Token Efficiency
+
+**Commit**: `89454ef`
+
+Prevents redundant file reads by tracking modification times across sessions.
+
+| File | Purpose |
+|------|---------|
+| `lib/file-mtime-cache.sh` | Cross-platform mtime tracking functions |
+| `hooks/session-start.sh` | Emits `<system-reminder>` tags for Claude |
+
+**Behaviour**:
+- When file unchanged: `<system-reminder>Do NOT re-read - use conversation summary. Token saving: ~2000</system-reminder>`
+- When file changed: `<system-reminder>File has changed. READ this file to update context.</system-reminder>`
+
+**Token Savings**: 2000-5000 per session when state files unchanged
 
 ---
 

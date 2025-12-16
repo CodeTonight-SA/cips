@@ -88,8 +88,10 @@ check_readonly_redeclaration() {
     fi
 
     # Find readonly declarations that don't have guards
-    # Good: [[ -z "${VAR:-}" ]] && readonly VAR=
-    # Bad: readonly VAR=
+    # Good patterns:
+    #   [[ -z "${VAR:-}" ]] && readonly VAR=
+    #   if ! declare -p VAR &>/dev/null; then readonly VAR=
+    # Bad: readonly VAR= (without any guard)
     while IFS=: read -r line_num content; do
         # Skip if line has guard pattern before readonly
         if [[ "$content" =~ \[\[.*\]\].*\&\&.*readonly ]]; then
@@ -98,6 +100,16 @@ check_readonly_redeclaration() {
 
         # Skip comments
         if [[ "$content" =~ ^[[:space:]]*# ]]; then
+            continue
+        fi
+
+        # Check for declare -p guard in preceding lines (within 5 lines)
+        local start_line=$((line_num - 5))
+        [[ $start_line -lt 1 ]] && start_line=1
+        local context
+        context=$(sed -n "${start_line},${line_num}p" "$file" 2>/dev/null)
+        if [[ "$context" =~ declare\ -p.*\&\>/dev/null ]] || \
+           [[ "$context" =~ declare\ -p.*2\>/dev/null ]]; then
             continue
         fi
 
@@ -135,6 +147,27 @@ check_unguarded_source() {
 
         # Skip shellcheck source directives
         if [[ "$content" =~ shellcheck ]]; then
+            continue
+        fi
+
+        # Skip sources with error handling (|| true, || return, 2>/dev/null || true)
+        if [[ "$content" =~ \|\|[[:space:]]*(true|return|:) ]] || \
+           [[ "$content" =~ 2\>/dev/null.*\|\| ]]; then
+            continue
+        fi
+
+        # Skip Python/SQL patterns (source = 'value' is assignment, not bash source)
+        if [[ "$content" =~ source[[:space:]]*= ]]; then
+            continue
+        fi
+
+        # Skip self-sourcing in main execution blocks (common testing pattern)
+        # These are typically guarded by BASH_SOURCE checks
+        local start_line=$((line_num - 10))
+        [[ $start_line -lt 1 ]] && start_line=1
+        local context
+        context=$(sed -n "${start_line},${line_num}p" "$file" 2>/dev/null)
+        if [[ "$context" =~ BASH_SOURCE.*==.*\$\{?0\}? ]]; then
             continue
         fi
 

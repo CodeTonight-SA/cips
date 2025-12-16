@@ -59,7 +59,8 @@ fi
 [[ -z "${READ_CACHE:-}" ]] && readonly READ_CACHE="$CLAUDE_DIR/.read-cache.json"
 
 # Blocked patterns (critical violations)
-if [[ -z "${BLOCKED_PATTERNS[*]:-}" ]]; then
+# Use declare -p to check if array exists (avoids readonly redeclaration on re-source)
+if ! declare -p BLOCKED_PATTERNS &>/dev/null; then
     readonly BLOCKED_PATTERNS=(
         "node_modules"
         "__pycache__"
