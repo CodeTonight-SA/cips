@@ -105,7 +105,8 @@ get_command_path() {
 # COMMAND METADATA EXTRACTION
 # ============================================================================
 
-# Extract frontmatter from command file
+# Extract frontmatter from command file and convert to JSON
+# Uses shared extract_frontmatter from yaml-utils.sh (via skill-loader.sh)
 extract_command_frontmatter() {
     local cmd_file="$1"
 
@@ -114,8 +115,9 @@ extract_command_frontmatter() {
         return 1
     fi
 
-    # Extract YAML frontmatter
-    local frontmatter=$(awk '/^---$/{if(p)exit;p=1;next}p' "$cmd_file")
+    # Extract YAML frontmatter using shared utility
+    local frontmatter
+    frontmatter=$(extract_frontmatter "$cmd_file")
 
     if [[ -z "$frontmatter" ]]; then
         echo "{}"

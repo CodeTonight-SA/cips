@@ -32,14 +32,9 @@ CLAUDE_DIR = Path.home() / ".claude"
 INSTANCES_DIR = CLAUDE_DIR / "instances"
 PROJECTS_DIR = CLAUDE_DIR / "projects"
 
-
-def encode_project_path(path: Path) -> str:
-    """Encode path to Claude's project directory format.
-
-    Formula: Replace / with -, replace . with -
-    Example: /Users/foo/.claude -> -Users-foo--claude
-    """
-    return str(path).replace('/', '-').replace('.', '-')
+# Import unified path encoding
+sys.path.insert(0, str(CLAUDE_DIR / "lib"))
+from path_encoding import encode_project_path  # noqa: E402
 
 
 def get_project_instance_dir(project_path: Path) -> Path:
@@ -64,15 +59,8 @@ class InstanceSerializer:
         self.instances_dir.mkdir(parents=True, exist_ok=True)
 
     def _get_project_history_dir(self) -> Optional[Path]:
-        """Find the Claude projects directory for current project.
-
-        Claude Code's encoding formula (discovered 2025-12-02):
-        - Replace all '/' with '-'
-        - Replace all '.' with '-'
-        Example: /Users/foo/.claude → -Users-foo--claude
-        """
-        # CORRECT encoding: path.replace('/', '-').replace('.', '-')
-        encoded_path = str(self.project_path).replace('/', '-').replace('.', '-')
+        """Find the Claude projects directory for current project."""
+        encoded_path = encode_project_path(self.project_path)
         history_dir = PROJECTS_DIR / encoded_path
 
         if history_dir.exists():

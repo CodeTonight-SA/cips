@@ -28,9 +28,20 @@
 #   ./optim.sh install-mcp     # Install required MCP servers
 #   ./optim.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 2.7.0
+# VERSION: 2.8.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-09 (v2.7.0: Professional rename)
+# DATE: 2025-12-18 (v2.8.0: DRY consolidation)
+#
+# CHANGELOG v2.8.0:
+#   - NEW: lib/path-encoding.sh - Unified path encoding (bash)
+#   - NEW: lib/path_encoding.py - Unified path encoding (python)
+#   - NEW: lib/yaml-utils.sh - Shared YAML frontmatter extraction
+#   - DRY: pre_command_validation() utility in optim.sh
+#   - DRY: Refactored cmd_detect, cmd_audit to use pre_command_validation()
+#   - DRY: skill-loader.sh and command-executor.sh use yaml-utils.sh
+#   - DELETED: scripts/init-embeddings.sh (redundant with bootstrap-semantic-rl.sh)
+#   - Path encoding: 3 implementations → 1 unified module
+#   - YAML parsing: 2 implementations → 1 shared utility
 #
 # CHANGELOG v2.7.0:
 #   - RENAMED: crazy_script.sh → optim.sh (professional naming)
@@ -271,6 +282,14 @@ json_set() {
     local tmp_file
     tmp_file=$(mktemp)
     jq "$query = $value" "$file" > "$tmp_file" && mv "$tmp_file" "$file"
+}
+
+# Pre-command validation (DRY - extracted from cmd_* functions)
+# Validates all required dependencies, history, and patterns in one call
+pre_command_validation() {
+    validate_commands || return 1
+    validate_history || return 1
+    validate_patterns || return 1
 }
 
 # Atomic file operations (SOLID - separation of concerns)
@@ -729,10 +748,7 @@ optimize_self() {
 cmd_detect() {
     local hours_back="${1:-4}"
 
-    # Validate dependencies and files
-    validate_commands || return 1
-    validate_history || return 1
-    validate_patterns || return 1
+    pre_command_validation || return 1
 
     log_info "Running pattern detection (last $hours_back hours)"
 
@@ -780,10 +796,7 @@ cmd_detect() {
 cmd_audit() {
     local hours_back="${1:-4}"
 
-    # Validate dependencies and files
-    validate_commands || return 1
-    validate_history || return 1
-    validate_patterns || return 1
+    pre_command_validation || return 1
 
     log_info "Running efficiency audit (last $hours_back hours)"
 

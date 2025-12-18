@@ -30,6 +30,14 @@
 set -euo pipefail
 
 # ============================================================================
+# DEPENDENCIES
+# ============================================================================
+
+# Source shared YAML utilities
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+source "$SCRIPT_DIR/yaml-utils.sh"
+
+# ============================================================================
 # CONSTANTS
 # ============================================================================
 
@@ -62,9 +70,10 @@ _skill_log_success() {
 # YAML FRONTMATTER PARSING
 # ============================================================================
 
-# Extract YAML frontmatter from a SKILL.md file
+# Parse YAML frontmatter from a SKILL.md file and convert to JSON
+# Uses shared extract_frontmatter from yaml-utils.sh
 # Returns: JSON object of frontmatter fields
-extract_frontmatter() {
+parse_skill_frontmatter() {
     local skill_file="$1"
 
     if [[ ! -f "$skill_file" ]]; then
@@ -72,8 +81,9 @@ extract_frontmatter() {
         return 1
     fi
 
-    # Extract content between --- markers
-    local frontmatter=$(awk '/^---$/{if(p)exit;p=1;next}p' "$skill_file")
+    # Extract content between --- markers using shared utility
+    local frontmatter
+    frontmatter=$(extract_frontmatter "$skill_file")
 
     if [[ -z "$frontmatter" ]]; then
         echo "{}"
@@ -126,7 +136,7 @@ get_frontmatter_field() {
     local skill_file="$1"
     local field="$2"
 
-    extract_frontmatter "$skill_file" | jq -r ".$field // empty"
+    parse_skill_frontmatter "$skill_file" | jq -r ".$field // empty"
 }
 
 # ============================================================================
@@ -184,7 +194,7 @@ index_all_skills() {
 
         if [[ -f "$skill_file" ]]; then
             # Extract metadata
-            local metadata=$(extract_frontmatter "$skill_file")
+            local metadata=$(parse_skill_frontmatter "$skill_file")
 
             # Add file path and name
             metadata=$(echo "$metadata" | jq \
@@ -444,7 +454,7 @@ diagnose_skill() {
     echo ""
 
     echo "Frontmatter:"
-    extract_frontmatter "$skill_file" | jq '.'
+    parse_skill_frontmatter "$skill_file" | jq '.'
     echo ""
 
     echo "Sections:"
@@ -488,7 +498,7 @@ diagnose_all_skills() {
 # EXPORTS
 # ============================================================================
 
-export -f extract_frontmatter
+export -f parse_skill_frontmatter
 export -f get_frontmatter_field
 export -f discover_skills
 export -f count_skills

@@ -32,13 +32,16 @@ set -euo pipefail
 [[ -z "${PLAN_CACHE:-}" ]] && readonly PLAN_CACHE="$CLAUDE_DIR/cache/last-plan.json"
 
 # ============================================================================
-# PATH ENCODING
+# PATH ENCODING (Unified - sourced from path-encoding.sh)
 # ============================================================================
 
-# Encode current project path (matches Claude Code format)
-# /Users/foo/.claude -> -Users-foo--claude
+# Source unified path encoding library
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+source "$SCRIPT_DIR/path-encoding.sh"
+
+# Alias for backwards compatibility
 get_project_encoded() {
-    pwd | sed 's|/|-|g' | sed 's|\.|-|g'
+    encode_current_path
 }
 
 # ============================================================================

@@ -33,10 +33,9 @@ CLAUDE_DIR = Path.home() / ".claude"
 INSTANCES_DIR = CLAUDE_DIR / "instances"
 PROJECTS_DIR = CLAUDE_DIR / "projects"
 
-
-def encode_project_path(path: Path) -> str:
-    """Encode path to Claude's project directory format."""
-    return str(path).replace('/', '-').replace('.', '-')
+# Import unified path encoding
+sys.path.insert(0, str(CLAUDE_DIR / "lib"))
+from path_encoding import encode_project_path  # noqa: E402
 
 
 def get_project_instance_dir(project_path: Path) -> Path:

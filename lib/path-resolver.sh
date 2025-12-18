@@ -34,34 +34,16 @@ set -euo pipefail
 [[ -z "${DEFAULT_HOURS_BACK:-}" ]] && readonly DEFAULT_HOURS_BACK=4
 
 # ============================================================================
-# PATH ENCODING (Matches Claude Code's internal format)
+# PATH ENCODING (Unified - sourced from path-encoding.sh)
 # ============================================================================
 
-# Encode a filesystem path to Claude's project directory format
-# Cross-platform: macOS, Linux, Windows Git Bash
-# Input (macOS/Linux): /Users/name/project → -Users-name-project
-# Input (Windows):     /c/Users/Name/project → c--Users-Name-project
+# Source unified path encoding library
+SCRIPT_DIR="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+source "$SCRIPT_DIR/path-encoding.sh"
+
+# Alias for backwards compatibility
 encode_path() {
-    local path="$1"
-
-    # Cross-platform path normalisation
-    case "$(uname -s)" in
-        MINGW*|MSYS*|CYGWIN*)
-            # Windows Git Bash: /c/Users/... → c--Users-...
-            # Claude Code stores Windows paths as: c--Users-Name-...
-            if [[ "$path" =~ ^/([a-zA-Z])/ ]]; then
-                local drive="${BASH_REMATCH[1]}"
-                path="${drive}--${path:3}"  # /c/foo → c--foo
-            fi
-            ;;
-        Darwin*|Linux*)
-            # macOS/Linux: /Users/name/... → -Users-name-...
-            # Keep existing behaviour (leading slash → leading dash)
-            ;;
-    esac
-
-    # Universal: Replace slashes, dots, spaces with dashes
-    echo "$path" | sed 's|/|-|g' | sed 's|\.|-|g' | sed 's| |-|g'
+    encode_project_path "$@"
 }
 
 # Decode a Claude project directory name back to filesystem path

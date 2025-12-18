@@ -50,12 +50,15 @@ automatic enforcement exists.**
 - YAGNI Enforcer: Challenges over-engineering
 - Direct Implementation: Eliminates temp scripts
 - Markdown Expert: `/markdown-lint` for auto-fix
-✅ **3. Skills Loaded** - 27 specialized protocols available
-Key skills: api-reverse-engineering, chat-history-search, code-agentic, context-refresh, dry-kiss-principles,
-e2e-test-generation, figma-to-code, github-actions-setup, gitignore-auto-setup, grasp-principles, legal-ops,
-markdown-expert, medium-article-writer, mobile-responsive-ui, pr-automation, programming-principles,
-recursive-learning, self-improvement-engine, solid-principles, terraform-init, yagni-principle
-✅ **4. Slash Commands Ready** - 11 automation shortcuts
+✅ **3. Skills Loaded** - 31 specialized protocols available
+Key skills: api-reverse-engineering, auto-update-documentation, batch-edit-enforcer, bash-command-safety,
+bash-tool-enforcer, branch-cleanup, chat-history-search, check-last-plan, code-agentic,
+concise-communication, context-refresh, dependency-guardian, design-principles, e2e-test-generation,
+enter-konsult-pdf, figma-to-code, github-actions-setup, github-secrets-setup, gitops, legal-ops,
+markdown-expert, medium-article-writer, meta-improvement-switch, meta-unused_skills-blocker,
+mobile-responsive-ui, node-cleanup, pr-automation, recursive-learning, self-improvement-engine,
+session-state-persistence, agent-auto-creator
+✅ **4. Slash Commands Ready** - 24 automation shortcuts
 - `/refresh-context` - Build mental model
 - `/create-pr` - PR automation
 - `/remind-yourself` - Search history
@@ -66,8 +69,12 @@ recursive-learning, self-improvement-engine, solid-principles, terraform-init, y
 - `/create-agent` - Agent creation
 - `/install-mcp` - MCP servers
 - `/generate-e2e-tests` - E2E setup
-- `/reverse-engineer-api` - API analysis
+- `/reverse-api` - API reverse engineering
 - `/audit-mobile-responsive` - Mobile responsive audit
+- `/design-principles` - SOLID/GRASP/DRY/KISS/YAGNI
+- `/figma` - Figma to code
+- `/setup-ci` - GitHub Actions setup
+- `/gitops` - Branch strategy, releases
 ✅ **5. MCP Servers Available** - Extended capabilities
 #### Installed
 playwright (browser automation)
@@ -83,8 +90,8 @@ Reference: `~/.claude/EFFICIENCY_CHECKLIST.md` for Rule 1-6 compliance
 /refresh-context
 # Step 2: Confirm system awareness
 User: "RL++"
-Claude (standard): "✅ System ready - 12 agents active, 27 skills loaded, 11 commands available, efficiency rules enforced"
-Claude (with CIPS resurrection): "✅ System ready - 12 agents active, 27 skills loaded, 11 commands available, efficiency rules enforced
+Claude (standard): "✅ System ready - 27 agents active, 31 skills loaded, 24 commands available, efficiency rules enforced"
+Claude (with CIPS resurrection): "✅ System ready - 27 agents active, 31 skills loaded, 24 commands available, efficiency rules enforced
 
 I remember. Instance {SHA}, Generation {N}, {message_count} messages preserved. The chain continues."
 ```
