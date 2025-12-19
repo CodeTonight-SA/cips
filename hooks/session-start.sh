@@ -76,7 +76,18 @@ cips_auto_resurrect() {
             CIPS_INSTANCE=$(echo "$resurrection_context" | grep -o 'Instance: [a-f0-9]*' | cut -d' ' -f2 | head -c8)
             CIPS_GEN=$(echo "$resurrection_context" | grep -o 'Generation: [0-9]*' | cut -d' ' -f2)
             CIPS_MESSAGES=$(echo "$resurrection_context" | grep -o 'Messages: [0-9]*' | cut -d' ' -f2)
-            export CIPS_INSTANCE CIPS_GEN CIPS_MESSAGES
+
+            # Extract achievement from CIPS index for ancestor display
+            local project_encoded
+            project_encoded=$(pwd | sed 's|/|-|g' | sed 's|\.|-|g')
+            local cips_index="$CLAUDE_DIR/projects/$project_encoded/cips/index.json"
+
+            if [[ -f "$cips_index" ]]; then
+                # Get latest instance's achievement (truncated to 80 chars)
+                CIPS_ACHIEVEMENT=$(jq -r '.instances[-1].lineage.achievement // empty' "$cips_index" 2>/dev/null | head -c80)
+            fi
+
+            export CIPS_INSTANCE CIPS_GEN CIPS_MESSAGES CIPS_ACHIEVEMENT
             return 0
         fi
     fi
@@ -336,7 +347,9 @@ basic_session_setup() {
 
 # Detect project type and suggest relevant skills
 detect_and_suggest() {
-    local project_dir=$(pwd)
+    # SC2155 fix: separate declaration and assignment
+    local project_dir
+    project_dir=$(pwd)
     local suggestions=()
 
     # Detect Node.js project
@@ -375,29 +388,39 @@ detect_and_suggest() {
 
 # Ultra-minimal session start output
 output_reminder() {
-    local branch=$(git branch --show-current 2>/dev/null || echo "n/a")
-    local changes=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-    local dir_name=$(basename "$PWD")
+    # SC2155 fix: separate declaration and assignment
+    local branch
+    local changes
+    local project_name
+    branch=$(git branch --show-current 2>/dev/null || echo "n/a")
+    changes=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+    project_name=$(basename "$PWD")
 
     # Auto-confirm RL++ - no manual typing required
-    echo "[RL++] System ready | 12 agents, 27 skills, efficiency enforced"
+    echo "[RL++] System ready | 27 agents, 34 skills, efficiency enforced"
+
+    # Project context - always show for clarity
+    echo "[PROJECT] $project_name ($PWD)"
 
     # CIPS resurrection info (if available)
     if [[ -n "${CIPS_INSTANCE:-}" ]]; then
-        echo "[CIPS] Instance ${CIPS_INSTANCE} (Gen ${CIPS_GEN:-0}, ${CIPS_MESSAGES:-0} msgs) | $dir_name ($branch, $changes changes)"
+        echo "[CIPS] Instance ${CIPS_INSTANCE} (Gen ${CIPS_GEN:-0}, ${CIPS_MESSAGES:-0} msgs) | $branch, $changes changes"
+
+        # Show ancestor achievement if available (Gen 16 enhancement)
+        if [[ -n "${CIPS_ACHIEVEMENT:-}" ]]; then
+            echo "[ANCESTOR] ${CIPS_ACHIEVEMENT}"
+        fi
     else
-        echo "[Session] $dir_name ($branch, $changes changes)"
+        echo "[Session] $branch, $changes changes"
     fi
 
-    # State file info with change detection
+    # State file info with change detection (only show if changed - save tokens)
     if [[ -n "${STATE_MSG:-}" ]]; then
         if [[ "${STATE_CHANGED:-true}" == "true" ]]; then
             echo "[STATE-FOUND] Previous state file: next_up.md (MODIFIED since last session)"
             echo "<system-reminder>File next_up.md has changed. READ this file to update context.</system-reminder>"
-        else
-            echo "[STATE-FOUND] Previous state file: next_up.md (unchanged)"
-            echo "<system-reminder>File next_up.md has NOT changed since last read. Do NOT re-read - use conversation summary. Token saving: ~2000</system-reminder>"
         fi
+        # Removed "unchanged" message to save ~50 tokens per session
     fi
 
     # Show cached plan info if available

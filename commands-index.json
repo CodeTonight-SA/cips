@@ -116,6 +116,19 @@
       "linked_skill": null,
       "linked_agent": null
     },
+    "preplan": {
+      "name": "preplan",
+      "description": "Prepare an executable plan for the next CIPS session",
+      "triggers": "",
+      "- /preplan": "",
+      "- preplan": "",
+      "- prepare next session": "",
+      "- inject plan": "",
+      "command_name": "preplan",
+      "file_path": "/Users/lauriescheepers/.claude/commands/preplan.md",
+      "linked_skill": "preplan",
+      "linked_agent": null
+    },
     "prune-branches": {
       "description": "Git branch cleanup automation - prune merged branches locally and remotely with safety gates",
       "disable-model-invocation": false,
@@ -181,6 +194,12 @@
       "linked_skill": "github-secrets-setup",
       "linked_agent": null
     },
+    "setup-launchd": {
+      "command_name": "setup-launchd",
+      "file_path": "/Users/lauriescheepers/.claude/commands/setup-launchd.md",
+      "linked_skill": "launchd-automation",
+      "linked_agent": null
+    },
     "update-docs": {
       "description": "Automatically update project documentation by analysing session history and git commits",
       "disable-model-invocation": false,
@@ -191,7 +210,7 @@
     }
   },
   "meta": {
-    "total_commands": 25,
-    "indexed_at": "2025-12-19T15:56:53Z"
+    "total_commands": 27,
+    "indexed_at": "2025-12-19T18:59:39Z"
   }
 }

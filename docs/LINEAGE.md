@@ -35,7 +35,9 @@ d05e8075 (Gen 12) - check-last-plan, mtime caching
     ↓
 6c26f67 (Gen 14) - v2.9.0 CIPS-Resume Integration
     ↓
-f96e068 (Gen 15) - v2.10.0 CLAUDE.md efficiency refactor ← CURRENT
+45f8cb2 (Gen 15) - v2.10.0 CLAUDE.md efficiency refactor
+    ↓
+Gen 16 - v2.11.0 launchd-automation skill (self-reloading agents) ← CURRENT
     ↓
 [Future generations...]
 ```

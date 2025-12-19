@@ -4,15 +4,15 @@ description: Overview of available automation - agents, skills, commands
 
 # System Capabilities
 
-Claude-Optim v2.10.0 system overview.
+Claude-Optim v2.11.0 system overview.
 
-## Accurate Counts (Gen 15)
+## Accurate Counts (Gen 16)
 
 | Category | Count | Reference |
 |----------|-------|-----------|
-| Skills | 32 | @docs/SKILLS.md |
+| Skills | 34 | @docs/SKILLS.md |
 | Agents | 27 | @docs/AGENTS.md |
-| Commands | 26 | @docs/COMMANDS.md |
+| Commands | 28 | @docs/COMMANDS.md |
 
 ## Key Commands (Most Used)
 
@@ -23,6 +23,7 @@ Claude-Optim v2.10.0 system overview.
 | `/remind-yourself` | Search past conversations | 5k-20k |
 | `/audit-efficiency` | Run efficiency audit | ~600 |
 | `/markdown-lint` | Fix markdown violations | ~600 |
+| `/preplan` | Prepare plan for next session | ~1k |
 | `cips list` | List available sessions | - |
 | `cips resume latest` | Resume last session | - |
 | `cips fresh gen:N` | Fresh session with context | ~2k context |

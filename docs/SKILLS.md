@@ -1,6 +1,6 @@
 # Skills Reference
 
-Complete catalog of all 32 Claude-Optim skills.
+Complete catalog of all 33 Claude-Optim skills.
 
 Skills are task-specific protocols organized in `~/.claude/skills/`. They load automatically based on task relevance.
 
@@ -13,6 +13,7 @@ Skills are task-specific protocols organized in `~/.claude/skills/`. They load a
 | context-refresh | `/refresh-context` | Rebuild mental model at session start. 7-step discovery protocol in <3000 tokens. |
 | session-resume | `/resume-session` | Bridge CIPS with Claude Code's `--resume`. Fresh mode provides ~2k semantic context. |
 | check-last-plan | `/check-last-plan` | Persist plan context across sessions. Auto-caches on ExitPlanMode. |
+| preplan | `/preplan` | Intent Injection - prepare executable plans for future CIPS sessions. ~1000 token savings. |
 | session-state-persistence | - | Auto-update state files on milestone completion. |
 | chat-history-search | `/remind-yourself` | Search past conversations. Use epoch timestamp filtering for precision. |
 
@@ -95,6 +96,12 @@ Skills are task-specific protocols organized in `~/.claude/skills/`. They load a
 | gitignore-auto-setup | - | Automatic .gitignore creation to prevent token waste. |
 | meta-unused_skills-blocker | - | Block generation of low-usage skills. |
 
+### macOS Automation
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| launchd-automation | `/setup-launchd` | Self-reloading launchd agents with WatchPaths + plutil validation. |
+
 ## Full Skill Descriptions
 
 ### api-reverse-engineering
@@ -171,6 +178,18 @@ Meta-skill that automates the 10-step improvement cycle:
 ### session-resume
 
 Intelligent session resumption bridging CIPS with Claude Code's `--resume`. Supports resume by instance ID, generation, slug, or "latest". Fresh mode provides ~2k semantic context instead of full history.
+
+### launchd-automation
+
+Self-reloading macOS launchd agents with automatic plist validation:
+
+- Two-agent architecture (main + watcher)
+- WatchPaths triggers reload on plist edit
+- plutil syntax validation before reload
+- WakeFromSleep for reliable scheduled execution
+- Complete templates for common schedule patterns
+
+Origin: NalaMatch nannysync implementation (Gen 15, Dec 2025).
 
 ## Skill Location
 

@@ -1,6 +1,6 @@
 # Commands Reference
 
-Complete list of all 26 Claude-Optim slash commands.
+Complete list of all 27 Claude-Optim slash commands.
 
 ## Command Quick Reference
 
@@ -29,9 +29,11 @@ Complete list of all 26 Claude-Optim slash commands.
 | `/prune-branches` | Git branch cleanup | - |
 | `/setup-github-secrets` | Upload GitHub secrets securely | - |
 | `/node-clean` | Clean node_modules and build | - |
+| `/setup-launchd` | Self-reloading macOS launchd agents | ~1500 |
 | `/save-session-state` | Save session state to next_up.md | - |
 | `/resurrect-instance` | Resurrect CIPS instance | - |
 | `/write-medium-article` | Generate Medium-style article | - |
+| `/preplan` | Prepare executable plan for next CIPS session | ~1000 |
 
 ## Commands by Category
 
@@ -42,6 +44,7 @@ Complete list of all 26 Claude-Optim slash commands.
 /resume-session latest        # Resume last session
 /resume-session gen:5         # Resume specific generation
 /check-last-plan              # Load cached plan
+/preplan <task>               # Prepare plan for next session
 /save-session-state           # Checkpoint to next_up.md
 /resurrect-instance           # Resurrect CIPS instance
 ```
@@ -100,6 +103,7 @@ Complete list of all 26 Claude-Optim slash commands.
 ```bash
 /create-agent                 # Create new agent
 /node-clean                   # Clean node_modules
+/setup-launchd                # Self-reloading launchd agents
 ```
 
 ## Command Details

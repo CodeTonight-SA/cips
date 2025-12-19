@@ -1,3 +1,13 @@
+---
+name: auth-debugging
+description: Debug OAuth/OIDC authentication issues
+model: sonnet
+token_budget: 15000
+priority: high
+status: active
+created: 2025-11-15T00:00:00Z
+---
+
 # Auth Debugging Agent
 
 **Purpose:** Debug OAuth/OIDC authentication issues including callback errors, provider misconfigurations, and token validation failures

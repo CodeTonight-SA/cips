@@ -1,3 +1,13 @@
+---
+name: bash-lint-agent
+description: Proactive bash script anti-pattern detection
+model: haiku
+token_budget: 500
+priority: critical
+status: active
+created: 2025-12-01T00:00:00Z
+---
+
 # Bash Lint Agent
 
 ## Overview

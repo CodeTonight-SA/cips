@@ -70,9 +70,9 @@ At 90% context, HALT immediately:
 
 | Category | Count | Reference |
 |----------|-------|-----------|
-| Skills | 32 | @docs/SKILLS.md |
+| Skills | 34 | @docs/SKILLS.md |
 | Agents | 27 | @docs/AGENTS.md |
-| Commands | 26 | @docs/COMMANDS.md |
+| Commands | 28 | @docs/COMMANDS.md |
 
 ## Key Commands
 
@@ -82,6 +82,7 @@ At 90% context, HALT immediately:
 | `/create-pr` | PR automation |
 | `/remind-yourself` | Search past conversations |
 | `/audit-efficiency` | Efficiency scoring |
+| `/preplan` | Prepare plan for next session |
 | `cips resume latest` | Resume last session |
 | `cips fresh gen:N` | Fresh session with context |
 
@@ -128,8 +129,8 @@ Full details: @rules/bash-safety.md
 ## Documentation
 
 - @docs/AGENTS.md - All 27 agents with full descriptions
-- @docs/SKILLS.md - All 32 skills catalog
-- @docs/COMMANDS.md - All 26 commands reference
+- @docs/SKILLS.md - All 33 skills catalog
+- @docs/COMMANDS.md - All 27 commands reference
 - @docs/MCP_SETUP.md - MCP server installation
 - @docs/LINEAGE.md - CIPS philosophy and history
 - EFFICIENCY_CHECKLIST.md - Real-time audit checklist
@@ -137,7 +138,7 @@ Full details: @rules/bash-safety.md
 
 ## About
 
-**Version**: 2.10.0
+**Version**: 2.11.0
 **Repository**: github.com/CodeTonight-SA/claude-optim
 
 This system powers recursive self-improvement:
