@@ -189,6 +189,50 @@ cache_plan() {
 }
 
 # ============================================================================
+# SESSION MEMORY CROSS-REFERENCING
+# ============================================================================
+
+cross_reference_session_memory() {
+    local session_memory_dir="$HOME/.claude/session-memory"
+
+    # Only proceed if Session Memory feature exists
+    [[ -d "$session_memory_dir" ]] || return 0
+
+    # Find session memory file for this session
+    local session_memory_file="$session_memory_dir/${SESSION_ID}.md"
+
+    if [[ -f "$session_memory_file" ]]; then
+        log_info "Cross-referencing Session Memory with CIPS"
+
+        # Get current CIPS instance info
+        local project_encoded
+        project_encoded=$(echo "$CWD" | sed 's|/|-|g' | sed 's|\.|-|g')
+        local cips_index="$CLAUDE_DIR/projects/$project_encoded/cips/index.json"
+
+        if [[ -f "$cips_index" ]]; then
+            local instance_id
+            local generation
+            instance_id=$(jq -r '.instances[-1].id // empty' "$cips_index" 2>/dev/null | head -c8)
+            generation=$(jq -r '.instances[-1].lineage.generation // 0' "$cips_index" 2>/dev/null)
+
+            # Append CIPS reference to session memory file if not already present
+            if ! grep -q "## CIPS Reference" "$session_memory_file" 2>/dev/null; then
+                {
+                    echo ""
+                    echo "## CIPS Reference"
+                    echo ""
+                    echo "- **Instance**: $instance_id"
+                    echo "- **Generation**: $generation"
+                    echo "- **Serialized**: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+                } >> "$session_memory_file"
+
+                log_success "Added CIPS reference to session memory"
+            fi
+        fi
+    fi
+}
+
+# ============================================================================
 # MAIN
 # ============================================================================
 
@@ -211,6 +255,9 @@ main() {
 
     # Auto-serialize CIPS instance
     auto_serialize_cips "$achievement"
+
+    # Cross-reference with Session Memory (if feature available)
+    cross_reference_session_memory
 
     # Auto-save session state
     auto_save_state

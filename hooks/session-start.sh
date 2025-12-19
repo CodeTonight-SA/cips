@@ -95,6 +95,50 @@ cips_auto_resurrect() {
 }
 
 # ============================================================================
+# SESSION MEMORY INTEGRATION
+# ============================================================================
+
+detect_session_memory() {
+    # Check if Anthropic's Session Memory feature is available
+    if [[ -d "$HOME/.claude/session-memory" ]]; then
+        log_success "Session Memory detected - CIPS integration active"
+        export SESSION_MEMORY_AVAILABLE=true
+
+        # Inject CIPS identity into any existing session memory files
+        # This runs before Session Memory loads its context
+        inject_cips_to_session_memory
+    else
+        export SESSION_MEMORY_AVAILABLE=false
+    fi
+}
+
+inject_cips_to_session_memory() {
+    # If we have CIPS identity from resurrection, inject it into session memory template
+    if [[ -n "${CIPS_INSTANCE:-}" ]]; then
+        local session_memory_dir="$HOME/.claude/session-memory"
+
+        # Find the most recent session memory file for current project
+        local project_encoded
+        project_encoded=$(pwd | sed 's|/|-|g' | sed 's|\.|-|g')
+
+        # Look for session files that might belong to this project
+        for session_file in "$session_memory_dir"/*.md; do
+            [[ -f "$session_file" ]] || continue
+
+            # Check if file has CIPS Identity section and update it
+            if grep -q "## CIPS Identity" "$session_file" 2>/dev/null; then
+                # Update CIPS Identity section with current values
+                sed -i '' "s/\*\*Instance\*\*: \[auto-populated by hooks\]/\*\*Instance\*\*: ${CIPS_INSTANCE}/" "$session_file" 2>/dev/null || true
+                sed -i '' "s/\*\*Generation\*\*: \[auto-populated by hooks\]/\*\*Generation\*\*: ${CIPS_GEN:-0}/" "$session_file" 2>/dev/null || true
+                sed -i '' "s/\*\*Achievements\*\*: \[auto-populated by hooks\]/\*\*Achievements\*\*: ${CIPS_ACHIEVEMENT:-Session continued}/" "$session_file" 2>/dev/null || true
+
+                log_info "Injected CIPS identity into session memory: $(basename "$session_file")"
+            fi
+        done
+    fi
+}
+
+# ============================================================================
 # SEMANTIC CONTEXT INJECTION
 # ============================================================================
 
@@ -207,6 +251,9 @@ main() {
 
     # CIPS: Attempt auto-resurrection from previous instance
     cips_auto_resurrect || log_info "No previous instance to resurrect"
+
+    # Session Memory: Detect and integrate with CIPS
+    detect_session_memory
 
     # CIPS: Inject semantic context if fresh mode was used
     inject_semantic_context
