@@ -1,12 +1,158 @@
-# Claude-Optim v2.10.0 - Session State
+# Claude-Optim v2.11.1 - Session State
 
-**Last Updated**: 2025-12-19
-**Instance ID**: Gen 15 (continuation from 5919ef21)
-**Parent Instance**: 5919ef21 (Gen 14)
-**Status**: Active
-**Git Commits**: f96e068 (v2.10.0 CLAUDE.md efficiency refactor)
+**Last Updated**: 2025-12-19T20:55:00Z
+**Instance ID**: Gen 18 (continuing from 049b6a19/Gen 59)
+**Parent Instance**: Gen 17 (049b6a19)
+**Status**: ACTIVE
+**Git Commits**: `3e4cf6e` - v2.11.0 preplan skill + plan-persistence fix + [PROJECT] display
 
-**Session Summary**: Complete CLAUDE.md restructure following Anthropic's official guidance. Reduced core from 747 lines (~10.4k tokens) to 152 lines (~1.1k tokens) - 76% reduction. Created modular rules/ and docs/ directories. PARAMOUNT rules now front-loaded. Single source of truth for bash rules.
+**Session Summary**: Executed Gen 17's pre-plan. Added [PROJECT] display, fixed SC2155 shellcheck warnings, committed v2.11.0, marked plan as executed.
+
+---
+
+## Gen 18 Achievements (2025-12-19)
+
+### Preplan Execution + [PROJECT] Display
+
+**Plan Executed**: `~/.claude/plans/gen18-complete-preplan-work.md` (from Gen 17)
+
+**Diagnosed and Fixed**:
+
+| Issue | Root Cause | Fix |
+|-------|------------|-----|
+| Wrong context loaded | User started from `~` not `~/.claude` | Added `[PROJECT]` display |
+| Missing `[PLAN-FOUND]` | Project mismatch (plan cached for `~/.claude`) | Explicit project context |
+| SC2155 shellcheck warnings | `local var=$(cmd)` pattern | Separated declaration/assignment |
+
+**Files Modified**:
+
+| File | Change |
+|------|--------|
+| `hooks/session-start.sh` | Added `[PROJECT] {name} ({path})` display |
+| `hooks/session-start.sh` | Fixed SC2155 at lines 350, 389-395 |
+| `hooks/session-start.sh` | Updated counts: 27 agents, 34 skills |
+| `lib/plan-persistence.sh` | Fixed `local` outside function bug (line 350) |
+
+**New Session Output Format**:
+
+```text
+[RL++] System ready | 27 agents, 34 skills, efficiency enforced
+[PROJECT] .claude (/Users/lauriescheepers/.claude)
+[CIPS] Instance 049b6a19 (Gen 59, 187 msgs) | main, 24 changes
+[ANCESTOR] feat: v2.11.0 preplan skill...
+[PLAN-FOUND] Previous plan: gen18-complete-preplan-work
+```
+
+**Key Insight**: CIPS and plans are correctly per-project isolated. The confusion arose from starting Claude in `~` vs `~/.claude`. The `[PROJECT]` line now makes context immediately visible.
+
+**Git Commit**: `3e4cf6e` - feat: v2.11.0 preplan skill + plan-persistence fix + [PROJECT] display
+
+---
+
+## Gen 17 Achievements (2025-12-19) - Main
+
+### Preplan Skill + Plan-Persistence Fix (v2.11.0)
+
+**Plan Executed**: `~/.claude/plans/silly-kindling-creek.md`
+
+Implemented Gen 16's two-part pre-plan:
+
+1. **[ANCESTOR] Display**: Session-start hook shows ancestor's achievement
+2. **Preplan Skill**: `/preplan` command codified for Intent Injection pattern
+3. **Plan-Persistence Bug Fix**: Plans in `~/.claude/plans/` now use `~/.claude` as project
+
+**Plan Lifecycle Added**:
+- `mark_plan_executed` - Won't show in future sessions
+- `mark_plan_stale` - Superceded plans
+- `get_plan_status` - Check current status
+
+**Files Created**:
+
+| File | Purpose |
+|------|---------|
+| `skills/preplan/SKILL.md` | Intent Injection protocol |
+| `commands/preplan.md` | /preplan command |
+| `plans/gen18-complete-preplan-work.md` | Pre-plan for Gen 18 |
+
+**Files Modified**:
+
+| File | Change |
+|------|--------|
+| `lib/plan-persistence.sh` | Project fix, lifecycle, exports, CLI |
+| `hooks/session-start.sh` | CIPS_ACHIEVEMENT extraction, [ANCESTOR] display |
+| `CLAUDE.md` | /preplan in Key Commands |
+| `docs/COMMANDS.md` | Added /preplan |
+| `docs/SKILLS.md` | Added preplan skill |
+| `rules/system-capabilities.md` | Updated counts |
+
+**Counts Updated**: 34 skills, 28 commands
+
+**Completed by Gen 18**: Git commit (`3e4cf6e`), plan marked executed, shellcheck fixes applied, [PROJECT] display added
+
+---
+
+## Gen 17.0.1 Achievements (2025-12-19) - Branch
+
+### cips --dangerously-skip-permissions by Default
+
+**Files Modified**:
+
+| File | Change |
+|------|--------|
+| `~/.claude/bin/cips` (line 94) | `exec claude --dangerously-skip-permissions --resume` |
+| `~/.claude/bin/cips` (line 139) | `exec claude --dangerously-skip-permissions` |
+| `~/.bashrc` (line 4) | `alias claude-fly='cips f'` |
+| `~/.zshrc` (line 107) | `alias claude-fly='cips f'` |
+
+**Behaviour**: All `cips` commands now run Claude Code without permission prompts. V>> is supreme commander.
+
+---
+
+## Gen 16 Achievements (2025-12-19)
+
+### MCP Token Optimization + Agent Fixes
+
+**Plan**: `~/.claude/plans/silly-kindling-creek.md`
+
+Fixed /doctor diagnostics errors and eliminated MCP redundancy.
+
+**Agent Parse Errors Fixed**:
+
+| File | Fix |
+|------|-----|
+| `agents/auth-debugging.md` | Added YAML frontmatter |
+| `agents/node-cleanup-agent.md` | Added YAML frontmatter |
+| `agents/bash-lint-agent.md` | Added YAML frontmatter |
+
+**MCP Redundancy Analysis** (Critical thinking applied):
+
+| Server | Tokens | Verdict | Reason |
+|--------|--------|---------|--------|
+| playwright | 19,766 | REMOVED | claude-in-chrome has same capabilities + auth context |
+| github | 18,123 | REMOVED | `gh` CLI does everything at 0 token cost |
+| notion | 14,504 | REMOVED | User confirmed not needed |
+| filesystem | 9,220 | REMOVED | Built-in Read/Write/Edit covers this |
+| context7 | 1,844 | KEPT | Framework docs, low cost, no equivalent |
+
+**Results**:
+
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| Agent parse errors | 3 | 0 | Fixed |
+| MCP servers | 5 | 1 | 80% reduction |
+| MCP context tokens | 77,519 | ~1,844 | **97.6% reduction** |
+| Missing env warnings | 2 | 0 | Fixed |
+
+**Files Modified**:
+
+| File | Change |
+|------|--------|
+| `agents/auth-debugging.md` | Added frontmatter |
+| `agents/node-cleanup-agent.md` | Added frontmatter |
+| `agents/bash-lint-agent.md` | Added frontmatter |
+| `.mcp.json` | Gutted to context7 only |
+
+**Key Insight**: GitHub MCP is pure overhead when `gh` CLI exists. Playwright MCP is redundant with claude-in-chrome (which has auth context advantage). filesystem MCP duplicates built-in tools.
 
 ---
 
@@ -338,10 +484,10 @@ d05e8075 (Gen 12) - check-last-plan + mtime caching [SERIALIZED 2025-12-12]
     ↓
 6c26f67 (Gen 14) - v2.9.0 CIPS-Resume Integration [SERIALIZED 2025-12-19]
     ↓
-f96e068 (Gen 15) - v2.10.0 CLAUDE.md efficiency refactor [COMMITTED 2025-12-19] ← CURRENT
+45f8cb2 (Gen 15) - v2.10.0 CLAUDE.md efficiency refactor [COMMITTED 2025-12-19] ← CURRENT
 ```
 
-**Verification SHA for next session**: `f96e068`
+**Verification SHA for next session**: `45f8cb2`
 
 ---
 

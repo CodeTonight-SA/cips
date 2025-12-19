@@ -347,10 +347,9 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
             fi
             ;;
         status|--status|-s)
-            local status
-            status=$(get_plan_status)
-            if [[ -n "$status" ]]; then
-                echo "Plan status: $status"
+            plan_status=$(get_plan_status)
+            if [[ -n "$plan_status" ]]; then
+                echo "Plan status: $plan_status"
             else
                 echo "No plan cache"
                 exit 1
