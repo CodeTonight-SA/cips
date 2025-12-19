@@ -54,6 +54,18 @@
       "linked_skill": "pr-automation",
       "linked_agent": null
     },
+    "design-principles": {
+      "command_name": "design-principles",
+      "file_path": "/Users/lauriescheepers/.claude/commands/design-principles.md",
+      "linked_skill": "design-principles",
+      "linked_agent": null
+    },
+    "figma": {
+      "command_name": "figma",
+      "file_path": "/Users/lauriescheepers/.claude/commands/figma.md",
+      "linked_skill": "figma-to-code",
+      "linked_agent": null
+    },
     "generate-e2e-tests": {
       "command_name": "generate-e2e-tests",
       "file_path": "/Users/lauriescheepers/.claude/commands/generate-e2e-tests.md",
@@ -66,6 +78,12 @@
       "command_name": "generate-pdf",
       "file_path": "/Users/lauriescheepers/.claude/commands/generate-pdf.md",
       "linked_skill": "enter-konsult-pdf",
+      "linked_agent": null
+    },
+    "gitops": {
+      "command_name": "gitops",
+      "file_path": "/Users/lauriescheepers/.claude/commands/gitops.md",
+      "linked_skill": "gitops",
       "linked_agent": null
     },
     "install-mcp": {
@@ -122,10 +140,23 @@
       "linked_skill": "chat-history-search",
       "linked_agent": null
     },
+    "resume-session": {
+      "$ARGUMENTS": "reference --fresh --tokens",
+      "command_name": "resume-session",
+      "file_path": "/Users/lauriescheepers/.claude/commands/resume-session.md",
+      "linked_skill": null,
+      "linked_agent": null
+    },
     "resurrect-instance": {
       "command_name": "resurrect-instance",
       "file_path": "/Users/lauriescheepers/.claude/commands/resurrect-instance.md",
       "linked_skill": null,
+      "linked_agent": null
+    },
+    "reverse-api": {
+      "command_name": "reverse-api",
+      "file_path": "/Users/lauriescheepers/.claude/commands/reverse-api.md",
+      "linked_skill": "api-reverse-engineering",
       "linked_agent": null
     },
     "save-session-state": {
@@ -134,6 +165,12 @@
       "command_name": "save-session-state",
       "file_path": "/Users/lauriescheepers/.claude/commands/save-session-state.md",
       "linked_skill": null,
+      "linked_agent": null
+    },
+    "setup-ci": {
+      "command_name": "setup-ci",
+      "file_path": "/Users/lauriescheepers/.claude/commands/setup-ci.md",
+      "linked_skill": "github-actions-setup",
       "linked_agent": null
     },
     "setup-github-secrets": {
@@ -154,7 +191,7 @@
     }
   },
   "meta": {
-    "total_commands": 19,
-    "indexed_at": "2025-12-16T17:15:51Z"
+    "total_commands": 25,
+    "indexed_at": "2025-12-19T14:58:49Z"
   }
 }

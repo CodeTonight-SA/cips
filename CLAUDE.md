@@ -303,6 +303,8 @@ Task-specific protocols are organized as Skills in `~/.claude/skills/`:
   commits, and current state. Eliminates documentation drift. Token budget ~3500. (`/update-docs`)
 - **yagni-principle**: Prevent over-engineering by building features only when actually needed. Covers premature
   feature building, speculative abstractions, and "just in case" code. Balances with SOLID/DRY.
+- **session-resume**: Intelligent session resumption bridging CIPS with Claude Code's `--resume`. Supports resume by
+  instance ID, generation, slug, or "latest". Fresh mode provides ~2k semantic context. (`/resume-session`)
 - **check-last-plan**: Persist plan context across sessions. Automatically caches plans on ExitPlanMode and retrieves
   on session start. Demonstrates unified skill/command/agent architecture pattern. (`/check-last-plan`)
 - **enter-konsult-pdf**: Generate professional PDF documents and blog-ready HTML in ENTER Konsult brand style
@@ -500,6 +502,7 @@ Complete list of available slash commands with their mappings to skills/agents:
 | `/refresh-context` | Rebuild mental model at session start | context-refresh skill → Context Refresh Agent | 5k-8k per session |
 | `/create-pr` | Complete PR automation workflow | pr-automation skill → PR Workflow Agent | 1k-2k per PR |
 | `/remind-yourself` | Search past conversations | chat-history-search skill → History Mining Agent | 5k-20k per search |
+| `/resume-session` | Resume session by CIPS reference | session-resume skill → Session Resolver | ~2k (fresh mode) |
 | `/audit-efficiency` | Run efficiency audit with scoring | EFFICIENCY_CHECKLIST.md → Efficiency Auditor Agent | ~600 per audit |
 | `/markdown-lint` | Scan and fix markdown violations | markdown-expert skill → Markdown Expert Agent | ~600 per file |
 | `/contract-formal` | Generate attorney-level contracts | legal-ops skill | - |

@@ -423,8 +423,23 @@ class InstanceSerializer:
 
         index_file = self.instances_dir / "index.json"
         index = self._load_index()
+
+        # Extract session slug from first message if available
+        session_slug = None
+        if session_file:
+            try:
+                with open(session_file, 'r') as sf:
+                    first_line = sf.readline().strip()
+                    if first_line:
+                        first_entry = json.loads(first_line)
+                        session_slug = first_entry.get('slug')
+            except (json.JSONDecodeError, IOError):
+                pass
+
         index['instances'].append({
             'instance_id': instance_id,
+            'session_uuid': session_file.stem if session_file else None,  # NEW: Link to session
+            'slug': session_slug,  # NEW: Human-readable reference
             'serialized_at': timestamp,
             'content_hash': content_hash,
             'message_count': len(messages),

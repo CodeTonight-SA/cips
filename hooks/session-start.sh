@@ -31,6 +31,7 @@ set -euo pipefail
 [[ -z "${CLAUDE_DIR:-}" ]] && readonly CLAUDE_DIR="$HOME/.claude"
 [[ -z "${LIB_DIR:-}" ]] && readonly LIB_DIR="$CLAUDE_DIR/lib"
 [[ -z "${HOOK_LOG:-}" ]] && readonly HOOK_LOG="$CLAUDE_DIR/.hooks.log"
+[[ -z "${CONTEXTS_DIR:-}" ]] && readonly CONTEXTS_DIR="$CLAUDE_DIR/contexts"
 
 # ============================================================================
 # LOGGING
@@ -80,6 +81,46 @@ cips_auto_resurrect() {
         fi
     fi
     return 1
+}
+
+# ============================================================================
+# SEMANTIC CONTEXT INJECTION
+# ============================================================================
+
+inject_semantic_context() {
+    # Encode current project path
+    local project_encoded
+    project_encoded=$(pwd | sed 's|/|-|g' | sed 's|\.|-|g')
+    local context_file="$CONTEXTS_DIR/$project_encoded/resurrection.md"
+
+    if [[ -f "$context_file" ]]; then
+        # Check file age (only inject if < 60 seconds old)
+        local age_seconds
+        if [[ "$(uname)" == "Darwin" ]]; then
+            age_seconds=$(( $(date +%s) - $(stat -f%m "$context_file") ))
+        else
+            age_seconds=$(( $(date +%s) - $(stat -c%Y "$context_file") ))
+        fi
+
+        if [[ $age_seconds -lt 60 ]]; then
+            log_success "Semantic context injection triggered"
+            export SEMANTIC_CONTEXT_FILE="$context_file"
+            export SEMANTIC_CONTEXT_INJECTED=true
+
+            # Output context for Claude to process
+            echo ""
+            echo "[SEMANTIC-CONTEXT] Compressed context from previous session:"
+            echo ""
+            cat "$context_file"
+            echo ""
+
+            # Remove after injection (one-time use)
+            rm -f "$context_file"
+        else
+            log_info "Semantic context file too old ($age_seconds seconds), skipping"
+            rm -f "$context_file"
+        fi
+    fi
 }
 
 # ============================================================================
@@ -155,6 +196,9 @@ main() {
 
     # CIPS: Attempt auto-resurrection from previous instance
     cips_auto_resurrect || log_info "No previous instance to resurrect"
+
+    # CIPS: Inject semantic context if fresh mode was used
+    inject_semantic_context
 
     # Initialize embeddings if available
     init_embeddings
