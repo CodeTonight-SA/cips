@@ -1,6 +1,6 @@
 # Commands Reference
 
-Complete list of all 27 Claude-Optim slash commands.
+Complete list of all 29 Claude-Optim slash commands.
 
 ## Command Quick Reference
 
@@ -34,6 +34,7 @@ Complete list of all 27 Claude-Optim slash commands.
 | `/resurrect-instance` | Resurrect CIPS instance | - |
 | `/write-medium-article` | Generate Medium-style article | - |
 | `/preplan` | Prepare executable plan for next CIPS session | ~1000 |
+| `/agy` | Open file in Antigravity with intelligent inference | ~200 |
 
 ## Commands by Category
 

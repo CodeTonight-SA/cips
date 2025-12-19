@@ -1,5 +1,11 @@
 {
   "commands": {
+    "agy": {
+      "command_name": "agy",
+      "file_path": "/Users/lauriescheepers/.claude/commands/agy.md",
+      "linked_skill": "agy",
+      "linked_agent": null
+    },
     "audit-efficiency": {
       "description": "Run comprehensive efficiency audit on recent conversation history, detecting pattern violations and providing actionable recommendations",
       "disable-model-invocation": false,
@@ -210,7 +216,7 @@
     }
   },
   "meta": {
-    "total_commands": 27,
-    "indexed_at": "2025-12-19T18:59:39Z"
+    "total_commands": 28,
+    "indexed_at": "2025-12-19T23:03:42Z"
   }
 }

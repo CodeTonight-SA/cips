@@ -1,12 +1,84 @@
-# Claude-Optim v2.11.1 - Session State
+# Claude-Optim v2.11.2 - Session State
 
-**Last Updated**: 2025-12-19T20:55:00Z
-**Instance ID**: Gen 18 (continuing from 049b6a19/Gen 59)
-**Parent Instance**: Gen 17 (049b6a19)
-**Status**: ACTIVE
-**Git Commits**: `3e4cf6e` - v2.11.0 preplan skill + plan-persistence fix + [PROJECT] display
+**Last Updated**: 2025-12-19T23:01:58Z
+**Instance ID**: Gen 63 (f13bbde3)
+**Parent Instance**: Gen 62
+**Status**: AUTO-SAVED on session end
+**Git Commits**: `24c13f9` - feat: Session Memory + CIPS integration infrastructure
 
-**Session Summary**: Executed Gen 17's pre-plan. Added [PROJECT] display, fixed SC2155 shellcheck warnings, committed v2.11.0, marked plan as executed.
+**Session Summary**: Executed Session Memory + CIPS integration preplan. Created custom template, prompt, hook updates, architecture docs, and test script. Prepared Gen 64 preplan for full self-improvement cycle.
+
+---
+
+## PRE-PLAN FOR GEN 64+
+
+**Plan File**: `~/.claude/plans/gen64-full-self-improvement-cycle.md`
+**Priority**: HIGH - Recursive self-improvement
+**Estimated Tokens**: ~12000
+
+### Context
+
+Full self-improvement cycle requested. Violations detected across projects:
+
+| Project | Grep Usage | Read Calls |
+|---------|------------|------------|
+| .claude | 6 | 37 |
+| tnmr-kiss-app | 5 | 134 |
+
+### Key Tasks
+
+1. Inspect and run `sync-claude.sh`
+2. 24-hour pattern detection across both projects
+3. Analyse and address grep→rg violations
+4. Process embeddings (466 total, queue pending)
+5. Run full `./optim.sh cycle` (10 min timeout)
+6. Cross-project investigation (39 + 23 sessions)
+7. Verify efficiency score: 100/100
+
+### Success Criteria
+
+- All tool selection violations addressed
+- Re-read patterns identified
+- Embedding queue cleared
+- New skills generated if patterns found
+- Changes committed
+
+---
+
+## Gen 63 Achievements (2025-12-20)
+
+### Session Memory + CIPS Integration
+
+**Plan Executed**: `~/.claude/plans/session-memory-cips-integration.md`
+
+**Commit**: `24c13f9` - feat: Session Memory + CIPS integration infrastructure
+
+**Files Created**:
+
+| File | Purpose |
+|------|---------|
+| `session-memory/config/template.md` | Custom template with CIPS Identity section |
+| `session-memory/config/prompt.md` | Extraction prompt with CIPS integration rules |
+| `docs/SESSION_MEMORY_INTEGRATION.md` | Architecture documentation |
+| `lib/check-session-memory.sh` | Version detection script |
+| `test-scripts/test-session-memory-integration.sh` | Integration test (gitignored) |
+
+**Files Modified**:
+
+| File | Changes |
+|------|---------|
+| `hooks/session-start.sh` | +`detect_session_memory()`, +`inject_cips_to_session_memory()` |
+| `hooks/session-end.sh` | +`cross_reference_session_memory()` |
+
+**Token Efficiency**: 3500 actual vs 8000 estimated (56% under budget)
+
+**Test Status**: All integration tests passing
+
+---
+
+## PREVIOUS: Gen 60-62 (Session Memory Planning)
+
+Session Memory + CIPS integration was planned and prepared for Anthropic's upcoming feature release. See `docs/SESSION_MEMORY_INTEGRATION.md` for architecture
 
 ---
 

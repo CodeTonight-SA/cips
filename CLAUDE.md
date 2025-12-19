@@ -70,9 +70,9 @@ At 90% context, HALT immediately:
 
 | Category | Count | Reference |
 |----------|-------|-----------|
-| Skills | 34 | @docs/SKILLS.md |
+| Skills | 35 | @docs/SKILLS.md |
 | Agents | 27 | @docs/AGENTS.md |
-| Commands | 28 | @docs/COMMANDS.md |
+| Commands | 29 | @docs/COMMANDS.md |
 
 ## Key Commands
 

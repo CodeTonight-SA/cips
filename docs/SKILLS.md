@@ -1,6 +1,6 @@
 # Skills Reference
 
-Complete catalog of all 33 Claude-Optim skills.
+Complete catalog of all 35 Claude-Optim skills.
 
 Skills are task-specific protocols organized in `~/.claude/skills/`. They load automatically based on task relevance.
 
@@ -92,6 +92,7 @@ Skills are task-specific protocols organized in `~/.claude/skills/`. They load a
 
 | Skill | Command | Description |
 |-------|---------|-------------|
+| agy | `/agy` | Open file in Google Antigravity IDE with intelligent inference. Fast-fail if ambiguous. |
 | node-cleanup | `/node-clean` | Clean up node_modules and build artifacts. |
 | gitignore-auto-setup | - | Automatic .gitignore creation to prevent token waste. |
 | meta-unused_skills-blocker | - | Block generation of low-usage skills. |

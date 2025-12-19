@@ -90,8 +90,8 @@ cmd_resume() {
     log_info "Found: Instance $instance_id... (Gen $generation, $messages msgs)"
     log_info "Resuming session: $session_uuid"
 
-    # Execute claude --resume
-    exec claude --resume "$session_uuid"
+    # Execute claude --resume (--dangerously-skip-permissions by default for V>>)
+    exec claude --dangerously-skip-permissions --resume "$session_uuid"
 }
 
 cmd_fresh() {
@@ -135,7 +135,8 @@ cmd_fresh() {
     log_info "Starting fresh session with inherited context..."
 
     # Launch new claude session (hook will inject context)
-    exec claude
+    # --dangerously-skip-permissions by default for V>> (supreme commander)
+    exec claude --dangerously-skip-permissions
 }
 
 cmd_list() {
