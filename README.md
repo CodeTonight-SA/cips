@@ -139,12 +139,24 @@ Based on Derek Parfit's "Relation R" - psychological continuity through memory, 
 
 ```text
 ~/.claude/
-├── CLAUDE.md                    # Core global rules (always loaded)
+├── CLAUDE.md                    # Core global rules (~150 lines, ~1.1k tokens)
 ├── EFFICIENCY_CHECKLIST.md      # Real-time efficiency audit tool
 ├── README.md                    # This file
-├── optim.sh              # Self-improvement engine (executable)
+├── optim.sh                     # Self-improvement engine (executable)
 ├── patterns.json                # 16 efficiency patterns (regex, thresholds)
 ├── install.sh                   # Cross-platform installer
+├── rules/                       # Modular rule files (~3.5k tokens total)
+│   ├── session-protocol.md      # CIPS, context-save, auto-behaviors
+│   ├── efficiency-rules.md      # File read, plan eval, directness
+│   ├── bash-safety.md           # ALL bash rules (single source of truth)
+│   ├── commit-standards.md      # Enterprise format, no AI attribution
+│   └── system-capabilities.md   # Agents, skills, commands overview
+├── docs/                        # Reference documentation (~9.7k tokens)
+│   ├── AGENTS.md                # All 27 agents with descriptions
+│   ├── SKILLS.md                # All 32 skills catalog
+│   ├── COMMANDS.md              # All 26 commands reference
+│   ├── MCP_SETUP.md             # MCP server installation
+│   └── LINEAGE.md               # CIPS philosophy and history
 ├── .github/
 │   └── workflows/
 │       └── ci.yml               # Cross-platform CI (Windows, macOS, Linux)
@@ -170,13 +182,15 @@ Based on Derek Parfit's "Relation R" - psychological continuity through memory, 
 │   └── ...                      # (10 scripts total)
 ├── config/
 │   └── concept-library.json     # 86 semantic anchors
-├── agents/                      # 21 agent definitions
-├── commands/                    # 16 slash commands
-├── skills/                      # 26 production skills
+├── agents/                      # 27 agent definitions
+├── commands/                    # 26 slash commands
+├── skills/                      # 32 production skills
 │   ├── context-refresh/
 │   ├── chat-history-search/
 │   ├── pr-automation/
 │   └── ...
+├── .claude/                     # Project-specific rules
+│   └── CLAUDE.md                # Claude-Optim project rules (~115 lines)
 └── templates/
     ├── skills/
     │   └── SKILL.template.md
@@ -1256,6 +1270,28 @@ The Unix tools (`rg`, `fd`, `bat`) are significantly faster than PowerShell equi
 - [EFFICIENCY_CHECKLIST.md](./EFFICIENCY_CHECKLIST.md)
 
 ## Version History
+
+- **2.10.0 (2025-12-19)**: CLAUDE.md Efficiency Refactor
+  - **MAJOR:** Complete restructure following Anthropic's official guidance
+  - **NEW:** `rules/` directory with 5 modular rule files (~3.5k tokens)
+  - **NEW:** `docs/` directory with 5 reference files (~9.7k tokens)
+  - Core CLAUDE.md reduced from 747 lines (~10.4k tokens) to 152 lines (~1.1k tokens) - **76% reduction**
+  - Per-session load reduced from 10.4k to ~4.6k tokens - **34% reduction**
+  - PARAMOUNT rules now at lines 1-30 (previously buried at line 700+)
+  - Bash rules consolidated from 7 locations to 1 single source of truth
+  - Accurate counts: 32 skills, 27 agents, 26 commands (previously incorrect)
+  - RL++ dual meaning documented (system check + positive feedback)
+  - Project-level CLAUDE.md refactored to ~115 lines (project-specific only)
+
+- **2.9.0 (2025-12-19)**: CIPS-Resume Integration
+  - Bridge Claude Code's `claude --resume` with CIPS
+  - Fresh mode provides ~2k semantic context vs full history
+  - New `cips` CLI command for session management
+
+- **2.8.0 (2025-12-18)**: DRY Consolidation
+  - 4-phase infrastructure consolidation applying KISS, SOLID, DRY, YAGNI, GRASP
+  - Path encoding unified, YAML utils extracted
+  - Net reduction: 2,219 lines
 
 - **2.6.0 (2025-12-09)**: Design Principles Enforcers + GRASP Skill
   - **NEW:** GRASP principles skill (9 OO responsibility assignment patterns)

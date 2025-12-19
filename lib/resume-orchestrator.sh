@@ -113,7 +113,7 @@ cmd_fresh() {
     if [[ -z "$session_uuid" ]] || [[ "$session_uuid" == "null" ]]; then
         log_error "No session UUID found for reference: $reference"
         exit 1
-    }
+    fi
 
     log_info "Generating compressed context (~$max_tokens tokens)..."
 

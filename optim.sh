@@ -28,9 +28,17 @@
 #   ./optim.sh install-mcp     # Install required MCP servers
 #   ./optim.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 2.8.0
+# VERSION: 2.10.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-18 (v2.8.0: DRY consolidation)
+# DATE: 2025-12-19 (v2.10.0: CLAUDE.md efficiency refactor)
+#
+# CHANGELOG v2.10.0:
+#   - MAJOR: Complete CLAUDE.md restructure (76% token reduction)
+#   - NEW: rules/ directory with 5 modular rule files
+#   - NEW: docs/ directory with 5 reference files
+#   - PARAMOUNT rules front-loaded (lines 1-30)
+#   - Bash rules consolidated to single source of truth
+#   - Accurate counts: 32 skills, 27 agents, 26 commands
 #
 # CHANGELOG v2.8.0:
 #   - NEW: lib/path-encoding.sh - Unified path encoding (bash)
