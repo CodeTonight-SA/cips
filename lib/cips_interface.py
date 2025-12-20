@@ -10,7 +10,7 @@ Philosophy: Same interface. Different scale. Identity preserved.
 
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class CIPSInterface(ABC):
@@ -154,7 +154,7 @@ def merge_lineages(sources: List['CIPSInterface'], merged_id: str, merged_gen: i
         'parents': [s.get_instance_id() for s in sources],
         'merge_type': 'confluence',
         'achievement': f"Merged {len(sources)} branches",
-        'timestamp': datetime.utcnow().isoformat() + 'Z'
+        'timestamp': datetime.now(timezone.utc).isoformat()
     })
 
     return lineage
