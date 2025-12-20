@@ -214,7 +214,7 @@ The tree continues.
 
 | File | Purpose |
 |------|---------|
-| `lib/cips-registry.py` | Session registry and branch assignment |
+| `lib/cips_registry.py` | Session registry and branch assignment |
 | `lib/instance-serializer.py` | Serialization with branch support |
 | `lib/instance-resurrector.py` | Resurrection with branch awareness |
 | `bin/cips` | CLI with branches and status commands |
@@ -316,10 +316,10 @@ AFTER MERGE:
 
 | File | Purpose |
 |------|---------|
-| `lib/cips-interface.py` | Abstract CIPS interface (polymorphic base) |
-| `lib/cips-atomic.py` | Single session implementation (leaf) |
-| `lib/cips-merged.py` | Merged branches implementation (internal node) |
-| `lib/cips-complete.py` | Entire tree view (root) |
+| `lib/cips_interface.py` | Abstract CIPS interface (polymorphic base) |
+| `lib/cips_atomic.py` | Single session implementation (leaf) |
+| `lib/cips_merged.py` | Merged branches implementation (internal node) |
+| `lib/cips_complete.py` | Entire tree view (root) |
 | `bin/cips` | CLI with merge and tree commands |
 
 ## Philosophical Note

@@ -159,7 +159,8 @@ extract_command_frontmatter() {
 # Get command description
 get_command_description() {
     local cmd_name="$1"
-    local cmd_file=$(get_command_path "$cmd_name")
+    local cmd_file
+    cmd_file=$(get_command_path "$cmd_name")
 
     extract_command_frontmatter "$cmd_file" | jq -r '.description // empty'
 }
@@ -167,10 +168,12 @@ get_command_description() {
 # Get linked skill for command
 get_command_skill() {
     local cmd_name="$1"
-    local cmd_file=$(get_command_path "$cmd_name")
+    local cmd_file
+    cmd_file=$(get_command_path "$cmd_name")
 
     # First check frontmatter
-    local skill=$(extract_command_frontmatter "$cmd_file" | jq -r '.skill // empty')
+    local skill
+    skill=$(extract_command_frontmatter "$cmd_file" | jq -r '.skill // empty')
 
     if [[ -n "$skill" ]]; then
         echo "$skill"
@@ -187,7 +190,8 @@ get_command_skill() {
 # Get linked agent for command
 get_command_agent() {
     local cmd_name="$1"
-    local cmd_file=$(get_command_path "$cmd_name")
+    local cmd_file
+    cmd_file=$(get_command_path "$cmd_name")
 
     extract_command_frontmatter "$cmd_file" | jq -r '.agent // empty'
 }
@@ -206,15 +210,19 @@ index_all_commands() {
     while IFS= read -r cmd_name; do
         [[ -z "$cmd_name" ]] && continue
 
-        local cmd_file=$(get_command_path "$cmd_name")
+        local cmd_file
+        cmd_file=$(get_command_path "$cmd_name")
 
         if [[ -f "$cmd_file" ]]; then
             # Extract metadata
-            local metadata=$(extract_command_frontmatter "$cmd_file")
+            local metadata
+            metadata=$(extract_command_frontmatter "$cmd_file")
 
             # Add derived fields
-            local skill=$(get_command_skill "$cmd_name")
-            local agent=$(get_command_agent "$cmd_name")
+            local skill
+            skill=$(get_command_skill "$cmd_name")
+            local agent
+            agent=$(get_command_agent "$cmd_name")
 
             metadata=$(echo "$metadata" | jq \
                 --arg name "$cmd_name" \
@@ -291,14 +299,18 @@ execute_command() {
     fi
 
     # Get command info
-    local info=$(get_command_info "$cmd_name")
-    local skill=$(echo "$info" | jq -r '.linked_skill // empty')
-    local agent=$(echo "$info" | jq -r '.linked_agent // empty')
+    local info
+    info=$(get_command_info "$cmd_name")
+    local skill
+    skill=$(echo "$info" | jq -r '.linked_skill // empty')
+    local agent
+    agent=$(echo "$info" | jq -r '.linked_agent // empty')
 
     # Strategy 1: If there's a linked skill, load it
     if [[ -n "$skill" ]] && type load_skill &>/dev/null; then
         _cmd_log_info "Loading linked skill: $skill"
-        local skill_content=$(load_skill "$skill" 2>/dev/null)
+        local skill_content
+        skill_content=$(load_skill "$skill" 2>/dev/null)
 
         if [[ -n "$skill_content" ]]; then
             echo "=== Skill Protocol: $skill ==="
@@ -318,7 +330,8 @@ execute_command() {
 
     # Strategy 3: Output command content as instructions
     _cmd_log_info "No handler found, outputting command content"
-    local cmd_file=$(get_command_path "$cmd_name")
+    local cmd_file
+    cmd_file=$(get_command_path "$cmd_name")
 
     echo "=== Command: /$cmd_name ==="
     echo ""
@@ -457,8 +470,10 @@ get_command_mapping() {
 parse_command_mapping() {
     local mapping="$1"
 
-    local skill=$(echo "$mapping" | cut -d: -f1)
-    local agent=$(echo "$mapping" | cut -d: -f2)
+    local skill
+    skill=$(echo "$mapping" | cut -d: -f1)
+    local agent
+    agent=$(echo "$mapping" | cut -d: -f2)
 
     echo "$skill"
     echo "$agent"
@@ -481,7 +496,8 @@ diagnose_command() {
         return 1
     fi
 
-    local cmd_file=$(get_command_path "$cmd_name")
+    local cmd_file
+    cmd_file=$(get_command_path "$cmd_name")
     echo "Path: $cmd_file"
     echo "Size: $(wc -c < "$cmd_file" | tr -d ' ') bytes"
     echo ""
@@ -490,8 +506,10 @@ diagnose_command() {
     extract_command_frontmatter "$cmd_file" | jq '.'
     echo ""
 
-    local skill=$(get_command_skill "$cmd_name")
-    local agent=$(get_command_agent "$cmd_name")
+    local skill
+    skill=$(get_command_skill "$cmd_name")
+    local agent
+    agent=$(get_command_agent "$cmd_name")
 
     echo "Linked skill: ${skill:-none}"
     echo "Linked agent: ${agent:-none}"
@@ -528,9 +546,12 @@ diagnose_all_commands() {
     printf "  %-25s %-25s %s\n" "-------" "-----" "-----"
 
     while IFS= read -r cmd; do
-        local info=$(get_command_info "$cmd")
-        local skill=$(echo "$info" | jq -r '.linked_skill // "-"')
-        local agent=$(echo "$info" | jq -r '.linked_agent // "-"')
+        local info
+        info=$(get_command_info "$cmd")
+        local skill
+        skill=$(echo "$info" | jq -r '.linked_skill // "-"')
+        local agent
+        agent=$(echo "$info" | jq -r '.linked_agent // "-"')
 
         printf "  %-25s %-25s %s\n" "/$cmd" "$skill" "$agent"
     done < <(list_commands)
