@@ -65,9 +65,9 @@ log_warn() {
 
 cips_register_session() {
     # Register this session with CIPS registry for branch management
-    if [[ -f "$LIB_DIR/cips-registry.py" ]]; then
+    if [[ -f "$LIB_DIR/cips_registry.py" ]]; then
         local branch
-        branch=$(python3 "$LIB_DIR/cips-registry.py" register 2>/dev/null) || return 1
+        branch=$(python3 "$LIB_DIR/cips_registry.py" register 2>/dev/null) || return 1
 
         if [[ -n "$branch" ]]; then
             export CIPS_BRANCH="$branch"

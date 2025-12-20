@@ -123,8 +123,8 @@ auto_serialize_cips() {
 
     # Get branch from registry (if available)
     local branch=""
-    if [[ -f "$LIB_DIR/cips-registry.py" ]]; then
-        branch=$(python3 "$LIB_DIR/cips-registry.py" branch 2>/dev/null) || branch=""
+    if [[ -f "$LIB_DIR/cips_registry.py" ]]; then
+        branch=$(python3 "$LIB_DIR/cips_registry.py" branch 2>/dev/null) || branch=""
     fi
 
     # Run serialization with branch (if detected)
@@ -144,13 +144,13 @@ auto_serialize_cips() {
 
 # Deregister session from CIPS registry
 deregister_cips_session() {
-    if [[ ! -f "$LIB_DIR/cips-registry.py" ]]; then
+    if [[ ! -f "$LIB_DIR/cips_registry.py" ]]; then
         return 0
     fi
 
     cd "$CWD" 2>/dev/null || cd "$CLAUDE_DIR"
 
-    if python3 "$LIB_DIR/cips-registry.py" deregister 2>/dev/null; then
+    if python3 "$LIB_DIR/cips_registry.py" deregister 2>/dev/null; then
         log_info "CIPS session deregistered"
     else
         log_warn "CIPS session deregistration failed (non-blocking)"

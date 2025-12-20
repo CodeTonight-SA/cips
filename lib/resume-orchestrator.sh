@@ -175,7 +175,7 @@ cmd_branches() {
 cmd_status() {
     log_info "Active sessions for current project..."
 
-    python3 "$LIB_DIR/cips-registry.py" status || {
+    python3 "$LIB_DIR/cips_registry.py" status || {
         log_error "No active sessions found."
         exit 1
     }
@@ -183,12 +183,12 @@ cmd_status() {
 
 cmd_register() {
     # Internal: Register current session with registry
-    python3 "$LIB_DIR/cips-registry.py" register
+    python3 "$LIB_DIR/cips_registry.py" register
 }
 
 cmd_deregister() {
     # Internal: Deregister current session from registry
-    python3 "$LIB_DIR/cips-registry.py" deregister
+    python3 "$LIB_DIR/cips_registry.py" deregister
 }
 
 cmd_merge() {
