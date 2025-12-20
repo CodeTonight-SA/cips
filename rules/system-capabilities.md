@@ -4,15 +4,15 @@ description: Overview of available automation - agents, skills, commands
 
 # System Capabilities
 
-Claude-Optim v2.11.0 system overview.
+Claude-Optim v3.1.0 system overview.
 
 ## Accurate Counts (Gen 16)
 
 | Category | Count | Reference |
 |----------|-------|-----------|
-| Skills | 34 | @docs/SKILLS.md |
-| Agents | 27 | @docs/AGENTS.md |
-| Commands | 28 | @docs/COMMANDS.md |
+| Skills | 36 | @docs/SKILLS.md |
+| Agents | 28 | @docs/AGENTS.md |
+| Commands | 29 | @docs/COMMANDS.md |
 
 ## Key Commands (Most Used)
 

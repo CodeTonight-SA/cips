@@ -1,7 +1,7 @@
 #!/bin/bash
 # agy.sh - Open file in Google Antigravity with intelligent inference
 # Usage: agy.sh <target>
-# Part of Claude-Optim v2.11.0
+# Part of Claude-Optim v3.1.0
 
 set -euo pipefail
 

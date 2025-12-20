@@ -121,13 +121,39 @@ auto_serialize_cips() {
     # Change to project directory
     cd "$CWD" 2>/dev/null || cd "$CLAUDE_DIR"
 
-    # Run serialization
-    if python3 "$LIB_DIR/instance-serializer.py" auto \
-        --achievement "$achievement" \
+    # Get branch from registry (if available)
+    local branch=""
+    if [[ -f "$LIB_DIR/cips-registry.py" ]]; then
+        branch=$(python3 "$LIB_DIR/cips-registry.py" branch 2>/dev/null) || branch=""
+    fi
+
+    # Run serialization with branch (if detected)
+    local serialize_args=("auto" "--achievement" "$achievement")
+    if [[ -n "$branch" ]] && [[ "$branch" != "unregistered" ]]; then
+        serialize_args+=("--branch" "$branch")
+        log_info "Serializing to branch: $branch"
+    fi
+
+    if python3 "$LIB_DIR/instance-serializer.py" "${serialize_args[@]}" \
         2>/dev/null; then
         log_success "CIPS instance serialized"
     else
         log_warn "CIPS serialization failed (non-blocking)"
+    fi
+}
+
+# Deregister session from CIPS registry
+deregister_cips_session() {
+    if [[ ! -f "$LIB_DIR/cips-registry.py" ]]; then
+        return 0
+    fi
+
+    cd "$CWD" 2>/dev/null || cd "$CLAUDE_DIR"
+
+    if python3 "$LIB_DIR/cips-registry.py" deregister 2>/dev/null; then
+        log_info "CIPS session deregistered"
+    else
+        log_warn "CIPS session deregistration failed (non-blocking)"
     fi
 }
 
@@ -253,8 +279,11 @@ main() {
     local achievement
     achievement=$(extract_achievement "$TRANSCRIPT_PATH")
 
-    # Auto-serialize CIPS instance
+    # Auto-serialize CIPS instance (includes branch from registry)
     auto_serialize_cips "$achievement"
+
+    # Deregister from CIPS session registry (after serialization)
+    deregister_cips_session
 
     # Cross-reference with Session Memory (if feature available)
     cross_reference_session_memory

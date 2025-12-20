@@ -1,6 +1,6 @@
 # Agents Reference
 
-Complete documentation for all 27 Claude-Optim agents.
+Complete documentation for all 28 Claude-Optim agents.
 
 ## Agent Categories
 
@@ -165,6 +165,14 @@ Agents that enforce quality standards and prevent anti-patterns.
 - **Token Budget**: ~500 per cleanup
 - **Activation**: `/node-clean` command, disk space warnings
 - **Protocol**: Identify stale node_modules, calculate space savings, confirm before deletion
+
+#### Image Optim Agent
+
+- **Model**: Haiku 4.5
+- **Purpose**: Optimize images using ImageOptim (macOS only)
+- **Token Budget**: ~500 per invocation
+- **Activation**: `/image-optim` command, "optimize images"
+- **Protocol**: Validate ImageOptim, optional ImageMagick pre-processing, run optimization, report savings
 
 ## Agent vs Skill Distinction
 

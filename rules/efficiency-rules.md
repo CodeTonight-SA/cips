@@ -86,6 +86,60 @@ Only use intermediate scripts when:
 - Start with action, end when action completes
 - Minimal explanation unless user asks
 
+## Rule 5: Skill Tool Optimization
+
+BEFORE invoking Skill tool, ask: "Do I already know what to do?"
+
+### Decision Gate
+
+```text
+Is the action trivially inferable?
+├── YES → Execute directly (Bash/Read/Edit), skip Skill tool
+└── NO  → Invoke Skill tool for protocol reference
+```
+
+### Trivial Inference Examples (Skip Skill Tool)
+
+| User Request | Direct Action |
+|--------------|---------------|
+| `/agy SKILL.md` | `$AGY_BIN ~/.claude/skills/agy/SKILL.md` |
+| `/agy config.json` | `$AGY_BIN ./config.json` |
+| `/create-pr` (simple) | `gh pr create` with standard template |
+| `/markdown-lint README.md` | Run linter directly on known file |
+
+### Complex Inference Examples (Use Skill Tool)
+
+| User Request | Why Skill Needed |
+|--------------|------------------|
+| `/agy that auth thing` | Semantic inference required |
+| `/agy the hook we worked on` | Git history + context needed |
+| `/reverse-api` | Multi-step protocol reference |
+| `/generate-e2e-tests` | Complex setup with many options |
+
+### Anti-Pattern (Token Waste)
+
+```text
+User: /agy skill md
+Claude: [Invokes Skill tool, loads 3k tokens of SKILL.md]
+Claude: [Runs simple bash command anyway]
+Result: 3k tokens wasted
+```
+
+### Good Pattern (Direct Execution)
+
+```text
+User: /agy skill md
+Claude: [Infers ~/.claude/skills/agy/SKILL.md]
+Claude: [Runs bash directly]
+Result: ~100 tokens
+```
+
+### Token Impact
+
+- Unnecessary Skill tool invocation: ~2000-4000 tokens
+- Direct execution: ~100-300 tokens
+- Savings: 90-95% reduction for trivial cases
+
 ## Verify Before Claiming
 
 Before stating "X is required" or "X is needed":

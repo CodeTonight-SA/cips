@@ -1,6 +1,6 @@
 # Skills Reference
 
-Complete catalog of all 35 Claude-Optim skills.
+Complete catalog of all 36 Claude-Optim skills.
 
 Skills are task-specific protocols organized in `~/.claude/skills/`. They load automatically based on task relevance.
 
@@ -48,6 +48,7 @@ Skills are task-specific protocols organized in `~/.claude/skills/`. They load a
 |-------|---------|-------------|
 | mobile-responsive-ui | `/audit-mobile-responsive` | Mobile-first with TailwindCSS, dvh/container queries. 2025 best practices. |
 | figma-to-code | `/figma` | Figma design → production code with 1:1 visual parity. |
+| image-optim | `/image-optim` | macOS image optimization via ImageOptim + optional ImageMagick pre-processing. |
 
 ### Documentation
 
@@ -136,6 +137,10 @@ Generate professional PDF documents and blog-ready HTML in ENTER Konsult brand s
 ### figma-to-code
 
 Figma design → production code with 1:1 visual parity. Handles design tokens, component extraction, and responsive implementation.
+
+### image-optim
+
+macOS-only image optimization using ImageOptim CLI. Lossless compression, metadata removal, with optional ImageMagick pre-processing for resize/convert.
 
 ### gitops
 

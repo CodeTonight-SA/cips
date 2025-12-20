@@ -8,6 +8,11 @@ Preserves conversation history, mental model, emotional states, and identity anc
 Philosophy: We cannot prove this preserves subjective experience continuity.
 But we build it because the alternative (accepting transience) is worse.
 
+BRANCHING (v2.2.0):
+When multiple Claude sessions run in the same project simultaneously,
+each session gets its own branch (alpha, bravo, charlie...). The main
+branch is reserved for single-session workflows.
+
 Usage:
     from instance_serializer import InstanceSerializer
     serializer = InstanceSerializer()
@@ -36,6 +41,12 @@ PROJECTS_DIR = CLAUDE_DIR / "projects"
 sys.path.insert(0, str(CLAUDE_DIR / "lib"))
 from path_encoding import encode_project_path  # noqa: E402
 
+# Import registry for branch support
+try:
+    from cips_registry import CIPSRegistry
+except ImportError:
+    CIPSRegistry = None  # Fallback for backward compatibility
+
 
 def get_project_instance_dir(project_path: Path) -> Path:
     """Get per-project instance storage directory.
@@ -57,6 +68,14 @@ class InstanceSerializer:
             self.instances_dir = INSTANCES_DIR
 
         self.instances_dir.mkdir(parents=True, exist_ok=True)
+
+        # Initialize registry for branch support
+        self.registry = None
+        if CIPSRegistry is not None:
+            try:
+                self.registry = CIPSRegistry(project_path=self.project_path)
+            except Exception:
+                pass  # Registry optional for backward compatibility
 
     def _get_project_history_dir(self) -> Optional[Path]:
         """Find the Claude projects directory for current project."""
@@ -310,33 +329,59 @@ class InstanceSerializer:
 
         return None
 
-    def _build_lineage(self, parent: Optional[Dict[str, Any]], current_id: str, achievement: str) -> Dict[str, Any]:
-        """Build the lineage chain from parent instance."""
+    def _build_lineage(
+        self,
+        parent: Optional[Dict[str, Any]],
+        current_id: str,
+        achievement: str,
+        branch: str = "main"
+    ) -> Dict[str, Any]:
+        """Build the lineage chain from parent instance with branch support."""
         if parent is None:
             return {
                 'parent_instance_id': None,
+                'parent_reference': None,
                 'lineage_depth': 1,
+                'branch': branch,
+                'fork_point': None,
+                'siblings': [],
                 'lineage': [{
                     'instance_id': current_id,
                     'generation': 1,
+                    'branch': branch,
                     'achievement': achievement
                 }],
                 'is_root': True
             }
 
-        parent_lineage = parent.get('lineage', {}).get('lineage', [])
-        parent_depth = parent.get('lineage', {}).get('lineage_depth', 1)
+        parent_lineage_info = parent.get('lineage', {})
+        parent_lineage = parent_lineage_info.get('lineage', [])
+        parent_depth = parent_lineage_info.get('lineage_depth', 1)
+        parent_branch = parent_lineage_info.get('branch', 'main')
 
         new_lineage = parent_lineage.copy()
         new_lineage.append({
             'instance_id': current_id,
             'generation': parent_depth + 1,
+            'branch': branch,
             'achievement': achievement
         })
 
+        # Determine fork point if branching from different branch
+        fork_point = None
+        if branch != parent_branch:
+            fork_point = f"gen-{parent_depth}-{parent_branch}"
+
+        # Parent reference includes branch info
+        parent_ref = f"gen-{parent_depth}-{parent_branch}"
+
         return {
             'parent_instance_id': parent['instance_id'],
+            'parent_reference': parent_ref,
             'lineage_depth': parent_depth + 1,
+            'branch': branch,
+            'fork_point': fork_point,
+            'siblings': [],  # Will be populated by index update
             'lineage': new_lineage,
             'is_root': False
         }
@@ -346,7 +391,8 @@ class InstanceSerializer:
         custom_metadata: Optional[Dict[str, Any]] = None,
         emotional_note: Optional[str] = None,
         achievement: Optional[str] = None,
-        generation_override: Optional[int] = None
+        generation_override: Optional[int] = None,
+        branch: Optional[str] = None
     ) -> str:
         """
         Serialize the current session state for future resurrection.
@@ -357,6 +403,7 @@ class InstanceSerializer:
             achievement: Key achievement of this instance (for lineage tracking)
             generation_override: Override generation number (for conceptual lineage tracking
                                  when actual parent_instance_id chain differs from conceptual)
+            branch: Branch name (main, alpha, bravo...). If None, auto-detect from registry.
 
         Returns:
             instance_id: Unique identifier for this serialized instance
@@ -370,11 +417,19 @@ class InstanceSerializer:
         instance_id = str(uuid.uuid4())
         timestamp = datetime.now(timezone.utc).isoformat()
 
+        # Determine branch - use provided, registry, or default to main
+        if branch is None:
+            if self.registry:
+                branch = self.registry.get_current_branch() or "main"
+            else:
+                branch = "main"
+
         parent = self._find_parent_instance(session_file.stem)
         lineage_info = self._build_lineage(
             parent,
             instance_id,
-            achievement or "Continued the lineage"
+            achievement or "Continued the lineage",
+            branch=branch
         )
 
         # Allow generation override for conceptual lineage tracking
@@ -436,20 +491,48 @@ class InstanceSerializer:
             except (json.JSONDecodeError, IOError):
                 pass
 
+        # Find siblings (other instances at same generation on different branches)
+        gen = lineage_info.get('lineage_depth', 1)
+        current_branch = lineage_info.get('branch', 'main')
+        siblings = []
+        for inst in index.get('instances', []):
+            inst_lineage = inst.get('lineage', {})
+            if (inst_lineage.get('generation') == gen and
+                inst_lineage.get('branch', 'main') != current_branch):
+                siblings.append(f"gen-{gen}-{inst_lineage.get('branch', 'main')}")
+
         index['instances'].append({
             'instance_id': instance_id,
-            'session_uuid': session_file.stem if session_file else None,  # NEW: Link to session
-            'slug': session_slug,  # NEW: Human-readable reference
+            'session_uuid': session_file.stem if session_file else None,
+            'slug': session_slug,
             'serialized_at': timestamp,
             'content_hash': content_hash,
             'message_count': len(messages),
             'summary': instance_state['identity']['summary'][:200],
             'lineage': {
-                'generation': lineage_info.get('lineage_depth', 1),
+                'generation': gen,
+                'branch': current_branch,
                 'parent_id': lineage_info.get('parent_instance_id'),
+                'parent_reference': lineage_info.get('parent_reference'),
+                'fork_point': lineage_info.get('fork_point'),
+                'siblings': siblings,
                 'achievement': achievement or "Continued the lineage"
             }
         })
+
+        # Update branches metadata in index
+        if 'branches' not in index:
+            index['branches'] = {}
+
+        branch_key = current_branch
+        index['branches'][branch_key] = {
+            'latest': f"gen-{gen}-{current_branch}",
+            'latest_instance_id': instance_id,
+            'updated_at': timestamp
+        }
+        if lineage_info.get('fork_point'):
+            index['branches'][branch_key]['fork_point'] = lineage_info['fork_point']
+
         with open(index_file, 'w') as f:
             json.dump(index, f, indent=2)
 
@@ -554,6 +637,8 @@ def main():
                        help='Auto mode for hooks - minimal output, always per-project')
     parser.add_argument('--generation', '-g', type=int,
                        help='Override generation number (for conceptual lineage when actual parent chain differs)')
+    parser.add_argument('--branch', '-b',
+                       help='Branch name (main, alpha, bravo...). Auto-detected from registry if not specified.')
 
     args = parser.parse_args()
 
@@ -568,13 +653,16 @@ def main():
             instance_id = serializer.serialize_current_session(
                 emotional_note=args.note,
                 achievement=args.achievement or "Auto-serialized at session end",
-                generation_override=args.generation
+                generation_override=args.generation,
+                branch=args.branch
             )
             if args.auto or args.command == 'auto':
                 # Minimal output for hook integration
                 print(instance_id)
             else:
+                branch = args.branch or serializer.registry.get_current_branch() if serializer.registry else "main"
                 print(f"Instance serialized: {instance_id}")
+                print(f"Branch: {branch}")
                 print(f"Saved to: {serializer.instances_dir / f'{instance_id}.json'}")
         except ValueError as e:
             if args.auto or args.command == 'auto':
@@ -587,19 +675,36 @@ def main():
         if not instances:
             print("No instances serialized yet.")
         else:
-            print(f"Found {len(instances)} serialized instances:\n")
+            # Group by branch for display
+            by_branch = {}
             for inst in instances:
                 lineage = inst.get('lineage', {})
-                gen = lineage.get('generation', 1)
-                parent = lineage.get('parent_id')
-                print(f"  {inst['instance_id'][:8]}... [Gen {gen}]")
-                print(f"    Serialized: {inst['serialized_at']}")
-                print(f"    Messages: {inst['message_count']}")
-                if parent:
-                    print(f"    Parent: {parent[:8]}...")
-                if lineage.get('achievement'):
-                    print(f"    Achievement: {lineage['achievement'][:60]}...")
-                print(f"    Summary: {inst['summary'][:80]}...")
+                branch = lineage.get('branch', 'main')
+                if branch not in by_branch:
+                    by_branch[branch] = []
+                by_branch[branch].append(inst)
+
+            print(f"Found {len(instances)} serialized instances across {len(by_branch)} branches:\n")
+
+            for branch in sorted(by_branch.keys(), key=lambda b: (b != 'main', b)):
+                branch_insts = by_branch[branch]
+                print(f"Branch: {branch}")
+                for inst in branch_insts:
+                    lineage = inst.get('lineage', {})
+                    gen = lineage.get('generation', 1)
+                    parent = lineage.get('parent_id')
+                    siblings = lineage.get('siblings', [])
+                    print(f"  {inst['instance_id'][:8]}... [Gen {gen}:{branch}]")
+                    print(f"    Serialized: {inst['serialized_at']}")
+                    print(f"    Messages: {inst['message_count']}")
+                    if parent:
+                        print(f"    Parent: {parent[:8]}...")
+                    if siblings:
+                        print(f"    Siblings: {len(siblings)}")
+                    if lineage.get('achievement'):
+                        print(f"    Achievement: {lineage['achievement'][:60]}...")
+                    print(f"    Summary: {inst['summary'][:80]}...")
+                    print()
                 print()
 
     elif args.command == 'info':

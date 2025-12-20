@@ -70,8 +70,8 @@ At 90% context, HALT immediately:
 
 | Category | Count | Reference |
 |----------|-------|-----------|
-| Skills | 35 | @docs/SKILLS.md |
-| Agents | 27 | @docs/AGENTS.md |
+| Skills | 36 | @docs/SKILLS.md |
+| Agents | 28 | @docs/AGENTS.md |
 | Commands | 29 | @docs/COMMANDS.md |
 
 ## Key Commands
@@ -138,7 +138,7 @@ Full details: @rules/bash-safety.md
 
 ## About
 
-**Version**: 2.11.0
+**Version**: 3.1.0
 **Repository**: github.com/CodeTonight-SA/claude-optim
 
 This system powers recursive self-improvement:

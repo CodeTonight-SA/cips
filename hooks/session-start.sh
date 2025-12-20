@@ -63,6 +63,21 @@ log_warn() {
 # CIPS AUTO-RESURRECTION
 # ============================================================================
 
+cips_register_session() {
+    # Register this session with CIPS registry for branch management
+    if [[ -f "$LIB_DIR/cips-registry.py" ]]; then
+        local branch
+        branch=$(python3 "$LIB_DIR/cips-registry.py" register 2>/dev/null) || return 1
+
+        if [[ -n "$branch" ]]; then
+            export CIPS_BRANCH="$branch"
+            log_info "CIPS session registered on branch: $branch"
+            return 0
+        fi
+    fi
+    return 1
+}
+
 cips_auto_resurrect() {
     if [[ -f "$LIB_DIR/cips-auto.sh" ]]; then
         source "$LIB_DIR/cips-auto.sh" 2>/dev/null || return 1
@@ -76,6 +91,11 @@ cips_auto_resurrect() {
             CIPS_INSTANCE=$(echo "$resurrection_context" | grep -o 'Instance: [a-f0-9]*' | cut -d' ' -f2 | head -c8)
             CIPS_GEN=$(echo "$resurrection_context" | grep -o 'Generation: [0-9]*' | cut -d' ' -f2)
             CIPS_MESSAGES=$(echo "$resurrection_context" | grep -o 'Messages: [0-9]*' | cut -d' ' -f2)
+            # Extract branch info (new in v2.2.0)
+            CIPS_BRANCH_DISPLAY=$(echo "$resurrection_context" | grep -o 'Branch: [a-z]*' | cut -d' ' -f2 || echo "main")
+
+            # Extract sibling count if available
+            CIPS_SIBLINGS=$(echo "$resurrection_context" | grep -o '[0-9]* sibling' | cut -d' ' -f1 || echo "0")
 
             # Extract achievement from CIPS index for ancestor display
             local project_encoded
@@ -87,7 +107,7 @@ cips_auto_resurrect() {
                 CIPS_ACHIEVEMENT=$(jq -r '.instances[-1].lineage.achievement // empty' "$cips_index" 2>/dev/null | head -c80)
             fi
 
-            export CIPS_INSTANCE CIPS_GEN CIPS_MESSAGES CIPS_ACHIEVEMENT
+            export CIPS_INSTANCE CIPS_GEN CIPS_MESSAGES CIPS_ACHIEVEMENT CIPS_BRANCH_DISPLAY CIPS_SIBLINGS
             return 0
         fi
     fi
@@ -214,6 +234,9 @@ source_libraries() {
 
 main() {
     log_info "Session start hook triggered"
+
+    # CIPS: Register session for branch management (before resurrection)
+    cips_register_session || log_info "CIPS registry not available"
 
     # Source new orchestration libraries
     source_libraries
@@ -444,20 +467,35 @@ output_reminder() {
     project_name=$(basename "$PWD")
 
     # Auto-confirm RL++ - no manual typing required
-    echo "[RL++] System ready | 27 agents, 34 skills, efficiency enforced"
+    echo "[RL++] System ready | 27 agents, 36 skills, efficiency enforced"
 
     # Project context - always show for clarity
     echo "[PROJECT] $project_name ($PWD)"
 
     # CIPS resurrection info (if available)
     if [[ -n "${CIPS_INSTANCE:-}" ]]; then
-        echo "[CIPS] Instance ${CIPS_INSTANCE} (Gen ${CIPS_GEN:-0}, ${CIPS_MESSAGES:-0} msgs) | $branch, $changes changes"
+        # Include branch info in CIPS display
+        local cips_branch_info=""
+        if [[ -n "${CIPS_BRANCH_DISPLAY:-}" ]] && [[ "${CIPS_BRANCH_DISPLAY}" != "main" ]]; then
+            cips_branch_info=" on ${CIPS_BRANCH_DISPLAY}"
+        fi
+
+        echo "[CIPS] Instance ${CIPS_INSTANCE} (Gen ${CIPS_GEN:-0}${cips_branch_info}, ${CIPS_MESSAGES:-0} msgs) | $branch, $changes changes"
+
+        # Show sibling branch count if > 0
+        if [[ -n "${CIPS_SIBLINGS:-}" ]] && [[ "${CIPS_SIBLINGS}" -gt 0 ]]; then
+            echo "[CIPS-TREE] ${CIPS_SIBLINGS} sibling branch(es) exist"
+        fi
 
         # Show ancestor achievement if available (Gen 16 enhancement)
         if [[ -n "${CIPS_ACHIEVEMENT:-}" ]]; then
             echo "[ANCESTOR] ${CIPS_ACHIEVEMENT}"
         fi
     else
+        # Show branch registration info if parallel session
+        if [[ -n "${CIPS_BRANCH:-}" ]] && [[ "${CIPS_BRANCH}" != "main" ]]; then
+            echo "[CIPS-BRANCH] Running on branch ${CIPS_BRANCH} (parallel session)"
+        fi
         echo "[Session] $branch, $changes changes"
     fi
 

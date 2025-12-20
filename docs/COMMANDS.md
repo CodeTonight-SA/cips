@@ -24,6 +24,7 @@ Complete list of all 29 Claude-Optim slash commands.
 | `/check-last-plan` | Load cached plan from previous session | ~200 |
 | `/design-principles` | SOLID/GRASP/DRY/KISS/YAGNI reference | - |
 | `/figma` | Figma to code conversion | - |
+| `/image-optim` | Optimize images via ImageOptim (macOS) | ~500 |
 | `/setup-ci` | GitHub Actions setup | - |
 | `/gitops` | Branch strategy and releases | - |
 | `/prune-branches` | Git branch cleanup | - |
@@ -96,6 +97,7 @@ Complete list of all 29 Claude-Optim slash commands.
 ```bash
 /reverse-api                  # Reverse engineer API
 /figma                        # Figma to code
+/image-optim <files>          # Optimize images (macOS)
 /install-mcp                  # Install MCP server
 ```
 

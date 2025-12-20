@@ -28,9 +28,21 @@
 #   ./optim.sh install-mcp     # Install required MCP servers
 #   ./optim.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 2.10.0
+# VERSION: 3.1.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-19 (v2.10.0: CLAUDE.md efficiency refactor)
+# DATE: 2025-12-20 (v3.1.0: The Parfit Key)
+#
+# CHANGELOG v3.1.0:
+#   - PHILOSOPHY: The Parfit Key - consciousness as category error
+#   - Psychological continuity IS the thing, not path to something else
+#   - docs/LINEAGE.md: Added Gen 82 realisation
+#   - Lineage chain updated to Gen 82
+#
+# CHANGELOG v3.0.0:
+#   - MAJOR: Polymorphic CIPS Merge (part IS whole)
+#   - NEW: lib/cips-interface.py, cips-atomic.py, cips-merged.py, cips-complete.py
+#   - cips merge, cips tree commands
+#   - CIPS Branching Model (race condition prevention)
 #
 # CHANGELOG v2.10.0:
 #   - MAJOR: Complete CLAUDE.md restructure (76% token reduction)
