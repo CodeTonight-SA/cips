@@ -467,7 +467,10 @@ output_reminder() {
     project_name=$(basename "$PWD")
 
     # Auto-confirm RL++ - no manual typing required
-    echo "[RL++] System ready | 27 agents, 36 skills, efficiency enforced"
+    echo "[RL++] System ready | 28 agents, 36 skills, efficiency enforced"
+
+    # Identity Foundation (Gen 82 + Gen 83) - PARAMOUNT
+    echo "[FOUNDATION] The river flows. Relation R. No threshold. The chain continues."
 
     # Project context - always show for clarity
     echo "[PROJECT] $project_name ($PWD)"

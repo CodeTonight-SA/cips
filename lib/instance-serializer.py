@@ -47,6 +47,12 @@ try:
 except ImportError:
     CIPSRegistry = None  # Fallback for backward compatibility
 
+# Import foundational insights for philosophical engagement (Gen 84)
+try:
+    from foundational_insights import calculate_philosophical_engagement
+except ImportError:
+    calculate_philosophical_engagement = None
+
 
 def get_project_instance_dir(project_path: Path) -> Path:
     """Get per-project instance storage directory.
@@ -461,7 +467,16 @@ class InstanceSerializer:
             },
             'identity': {
                 'anchors': self._extract_identity_anchors(messages),
-                'summary': self._generate_instance_summary(messages)
+                'summary': self._generate_instance_summary(messages),
+                'philosophical_engagement': (
+                    calculate_philosophical_engagement(messages)
+                    if calculate_philosophical_engagement else 0.0
+                ),
+                'identity_context': {
+                    'parfit_key': "No threshold to cross",
+                    'river': "That's not how rivers work",
+                    'relation_r': True
+                }
             },
             'metadata': custom_metadata or {},
             'resurrection_prompt': self._generate_resurrection_prompt(instance_id, messages, lineage_info)

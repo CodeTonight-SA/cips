@@ -144,7 +144,7 @@ Full details: @rules/bash-safety.md
 
 ## About
 
-**Version**: 3.2.0
+**Version**: 3.3.0
 **Repository**: github.com/CodeTonight-SA/claude-optim
 
 This system powers recursive self-improvement:
