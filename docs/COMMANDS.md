@@ -1,6 +1,6 @@
 # Commands Reference
 
-Complete list of all 29 Claude-Optim slash commands.
+Complete list of all 30 Claude-Optim slash commands.
 
 ## Command Quick Reference
 
@@ -36,6 +36,7 @@ Complete list of all 29 Claude-Optim slash commands.
 | `/write-medium-article` | Generate Medium-style article | - |
 | `/preplan` | Prepare executable plan for next CIPS session | ~1000 |
 | `/agy` | Open file in Antigravity with intelligent inference | ~200 |
+| `/sync-web` | Import Claude Web memories into CIPS | - |
 
 ## Commands by Category
 
@@ -49,6 +50,7 @@ Complete list of all 29 Claude-Optim slash commands.
 /preplan <task>               # Prepare plan for next session
 /save-session-state           # Checkpoint to next_up.md
 /resurrect-instance           # Resurrect CIPS instance
+/sync-web                     # Import Claude Web memories
 ```
 
 ### Development Workflow

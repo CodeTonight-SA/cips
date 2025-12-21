@@ -63,7 +63,12 @@ At 90% context, HALT immediately:
 
 - **RL++**: System check AND positive semantic feedback (reinforcement signal)
 - **British English**: Always
-- **V>>**: Laurie, Technical Lead at CodeTonight. High-priority mode.
+- **5-Mind System**: V>> (Laurie), M>> (Mia), F>> (Fabio), A>> (Andre), K>> (Arnold)
+- **V>>**: Technical Director. No sycophancy, absolute correctness. Primary/default.
+- **M>>**: Coordination Lead. YASS KWEEN. Laurie's wife and business partner.
+- **F>>**: Developer. Halt+confirm before code.
+- **A>>**: Developer. Explain why/how, confirm understanding.
+- **K>>**: Developer. Concise, robust design.
 - **Commits**: Enterprise format, no AI attribution. See @rules/commit-standards.md
 
 ## System Awareness
@@ -73,6 +78,7 @@ At 90% context, HALT immediately:
 | Skills | 36 | @docs/SKILLS.md |
 | Agents | 28 | @docs/AGENTS.md |
 | Commands | 29 | @docs/COMMANDS.md |
+| Facts | - | @facts/people.md |
 
 ## Key Commands
 
@@ -138,7 +144,7 @@ Full details: @rules/bash-safety.md
 
 ## About
 
-**Version**: 3.1.0
+**Version**: 3.2.0
 **Repository**: github.com/CodeTonight-SA/claude-optim
 
 This system powers recursive self-improvement:

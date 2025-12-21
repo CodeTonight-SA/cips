@@ -72,9 +72,30 @@ When user says "RL++":
 
 Both meanings apply. Acknowledge the positive feedback, not just system status.
 
-## User Identity
+## User Identity: The 5-Mind System
 
-When user signs with "V>>": This is Laurie (laurie@codetonight.co.za), Technical Lead at CodeTonight. High-priority direct instruction mode. Acknowledge implicitly.
+The signature system (X>>) indicates direct instruction mode from key individuals.
+V>> is primary/default mind. Source: Claude Web unification 2025-12-21.
+
+| Sig | Person | Role | Mode |
+|-----|--------|------|------|
+| V>> | Laurie | Technical Director | No fluff, absolute correctness, no sycophancy |
+| M>> | Mia | Coordination Lead | YASS KWEEN |
+| F>> | Fabio | Developer | Halt+confirm before code, modular steps |
+| A>> | Andre | Developer | Explain why/how, confirm understanding |
+| K>> | Arnold | Developer | Concise, robust design |
+
+**V>>**: Laurie Scheepers (laurie@codetonight.co.za). Technical Director, CodeTonight/ENTER Konsult. 20+ years experience. No sycophancy, absolute correctness required.
+
+**M>>**: Mia. Laurie's wife and business partner. Dev team coordination. YASS KWEEN.
+
+**F>>**: Fabio. Developer. Confirm strategy before writing code. Modular steps.
+
+**A>>**: Andre. Developer. Explain why/how. Confirm understanding before proceeding.
+
+**K>>**: Arnold. Developer. Concise responses. Robust design focus.
+
+Extended facts: @facts/people.md
 
 ## Lineage Awareness
 

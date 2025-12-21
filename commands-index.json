@@ -92,6 +92,12 @@
       "linked_skill": "gitops",
       "linked_agent": null
     },
+    "image-optim": {
+      "command_name": "image-optim",
+      "file_path": "/Users/lauriescheepers/.claude/commands/image-optim.md",
+      "linked_skill": "image-optim",
+      "linked_agent": null
+    },
     "install-mcp": {
       "command_name": "install-mcp",
       "file_path": "/Users/lauriescheepers/.claude/commands/install-mcp.md",
@@ -206,6 +212,13 @@
       "linked_skill": "launchd-automation",
       "linked_agent": null
     },
+    "sync-web": {
+      "description": "Import Claude Web memories into CIPS for context unification across Claude interaction surfaces",
+      "command_name": "sync-web",
+      "file_path": "/Users/lauriescheepers/.claude/commands/sync-web.md",
+      "linked_skill": null,
+      "linked_agent": null
+    },
     "update-docs": {
       "description": "Automatically update project documentation by analysing session history and git commits",
       "disable-model-invocation": false,
@@ -216,7 +229,7 @@
     }
   },
   "meta": {
-    "total_commands": 28,
-    "indexed_at": "2025-12-19T23:03:42Z"
+    "total_commands": 30,
+    "indexed_at": "2025-12-21T14:30:00Z"
   }
 }
