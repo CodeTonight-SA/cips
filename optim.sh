@@ -1032,6 +1032,8 @@ cmd_cycle() {
 readonly AGENTS_DIR="$CLAUDE_DIR/agents"
 readonly AGENT_TEMPLATE="$CLAUDE_DIR/templates/agent.template.md"
 readonly CREATE_AGENTS_SCRIPT="$CLAUDE_DIR/scripts/create-agents.sh"
+readonly LEARNING_DIR="$CLAUDE_DIR/learning"
+readonly LEARNING_DETECTOR="$LIB_DIR/learning-detector.py"
 
 # Detect patterns that would benefit from dedicated agents
 detect_agent_patterns() {
@@ -1364,6 +1366,95 @@ optimize_agents() {
     log_success "Agent optimization complete"
 }
 
+# ============================================================================
+# LAYER 4.5: AUTONOMOUS LEARNING COMMANDS
+# ============================================================================
+
+# Process message for learning
+cmd_learning() {
+    local message="${1:-}"
+
+    if [[ -z "$message" ]]; then
+        log_error "Usage: $0 learning <message>"
+        return 1
+    fi
+
+    if [[ ! -f "$LEARNING_DETECTOR" ]]; then
+        log_error "Learning detector not found: $LEARNING_DETECTOR"
+        return 1
+    fi
+
+    log_info "Processing message for learning..."
+    python3 "$LEARNING_DETECTOR" process "$message" --project "$(pwd)"
+}
+
+# List pending skill candidates
+cmd_learning_list() {
+    if [[ ! -f "$LEARNING_DETECTOR" ]]; then
+        log_error "Learning detector not found: $LEARNING_DETECTOR"
+        return 1
+    fi
+
+    log_info "Listing pending skill candidates..."
+    python3 "$LEARNING_DETECTOR" list
+}
+
+# Approve skill candidate
+cmd_learning_approve() {
+    local candidate_id="${1:-}"
+
+    if [[ -z "$candidate_id" ]]; then
+        log_error "Usage: $0 learning-approve <candidate_id>"
+        return 1
+    fi
+
+    if [[ ! -f "$LEARNING_DETECTOR" ]]; then
+        log_error "Learning detector not found: $LEARNING_DETECTOR"
+        return 1
+    fi
+
+    log_info "Approving skill candidate: $candidate_id"
+    local result
+    result=$(python3 "$LEARNING_DETECTOR" approve "$candidate_id")
+
+    if echo "$result" | jq -e '.status == "ok"' &>/dev/null; then
+        log_success "Candidate approved: $candidate_id"
+
+        # Generate skill from approved candidate
+        log_info "Generating skill from approved candidate..."
+        if [[ -f "$LIB_DIR/learning.sh" ]]; then
+            source "$LIB_DIR/learning.sh"
+            generate_skill_from_candidate "$candidate_id" 2>/dev/null || log_warn "Skill generation failed"
+        fi
+    else
+        log_error "Failed to approve candidate: $candidate_id"
+        echo "$result"
+    fi
+}
+
+# Reject skill candidate
+cmd_learning_reject() {
+    local candidate_id="${1:-}"
+    local reason="${2:-}"
+
+    if [[ -z "$candidate_id" ]]; then
+        log_error "Usage: $0 learning-reject <candidate_id> [reason]"
+        return 1
+    fi
+
+    if [[ ! -f "$LEARNING_DETECTOR" ]]; then
+        log_error "Learning detector not found: $LEARNING_DETECTOR"
+        return 1
+    fi
+
+    log_info "Rejecting skill candidate: $candidate_id"
+    if [[ -n "$reason" ]]; then
+        python3 "$LEARNING_DETECTOR" reject "$candidate_id" --reason "$reason"
+    else
+        python3 "$LEARNING_DETECTOR" reject "$candidate_id"
+    fi
+}
+
 main() {
     # Validate environment
     validate_directory "$CLAUDE_DIR"
@@ -1402,6 +1493,18 @@ main() {
         optimize-agents)
             optimize_agents
             ;;
+        learning|learn)
+            cmd_learning "$@"
+            ;;
+        learning-list)
+            cmd_learning_list
+            ;;
+        learning-approve)
+            cmd_learning_approve "$@"
+            ;;
+        learning-reject)
+            cmd_learning_reject "$@"
+            ;;
         diagnose|--diagnose)
             # Diagnose history storage issues
             if [[ "$HISTORY_RESOLVER" == "modern" ]]; then
@@ -1439,6 +1542,10 @@ COMMANDS:
     create-agents       Detect patterns and auto-create specialized agents
     install-mcp         Install required MCP servers for agent functionality
     optimize-agents     Analyze and optimize agent performance
+    learning <msg>      Process message through dialectical learning detector
+    learning-list       List pending skill candidates awaiting approval
+    learning-approve    Approve skill candidate (generates skill)
+    learning-reject     Reject skill candidate with optional reason
     diagnose            Diagnose history storage and path resolution
     lint-bash           Static analysis of bash scripts for anti-patterns
     help                Show this help message
@@ -1452,6 +1559,10 @@ EXAMPLES:
     ./optim.sh create-agents
     ./optim.sh install-mcp
     ./optim.sh optimize-agents
+    ./optim.sh learning "This is the YSH principle"    # Detect learning
+    ./optim.sh learning-list                           # List pending skills
+    ./optim.sh learning-approve skill-20251221120000   # Approve candidate
+    ./optim.sh learning-reject skill-20251221120000 "Too specific"
     ./optim.sh diagnose           # Troubleshoot history path issues
     ./optim.sh lint-bash          # Lint bash scripts for readonly bugs
 

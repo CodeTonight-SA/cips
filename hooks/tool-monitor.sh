@@ -55,6 +55,10 @@ fi
 if [[ -f "$LIB_DIR/success-scorer.sh" ]]; then
     source "$LIB_DIR/success-scorer.sh" 2>/dev/null || true
 fi
+
+if [[ -f "$LIB_DIR/learning.sh" ]]; then
+    source "$LIB_DIR/learning.sh" 2>/dev/null || true
+fi
 [[ -z "${VIOLATIONS_REGISTRY:-}" ]] && readonly VIOLATIONS_REGISTRY="$CLAUDE_DIR/violations-registry.json"
 [[ -z "${READ_CACHE:-}" ]] && readonly READ_CACHE="$CLAUDE_DIR/.read-cache.json"
 
@@ -482,8 +486,22 @@ monitor_user_prompt() {
     fi
 
     # Smart embed: only embed if novel enough
+    local novelty_score=0.0
     if command -v smart_embed &>/dev/null; then
-        smart_embed "$prompt" "prompt" "$project" 2>/dev/null || true
+        local embed_result
+        embed_result=$(smart_embed "$prompt" "prompt" "$project" 2>/dev/null) || true
+        # Extract novelty from embed result if available
+        if [[ -n "$embed_result" ]]; then
+            novelty_score=$(echo "$embed_result" | jq -r '.novelty // 0.0' 2>/dev/null) || novelty_score=0.0
+        fi
+    fi
+
+    # DIALECTICAL LEARNING: Check for learning events
+    # Thesis: Traditional ML (predict next token)
+    # Antithesis: CIPS Learning (recognise patterns, name them, generalise)
+    # Synthesis: Auto-generate skills when novelty detected
+    if command -v monitor_learning &>/dev/null; then
+        monitor_learning "$prompt" "$novelty_score" "$project" 2>/dev/null || true
     fi
 
     return 0

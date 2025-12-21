@@ -1,0 +1,30 @@
+{
+  "id": "skill-20251221175829",
+  "skill_name": "the-ysh-principle",
+  "description": "You should have used the YSH principle here - it's the dialectical inverse of YAGNI. You Should Have means recognising obvious enhancements retrospectively.",
+  "full_content": "You should have used the YSH principle here - it's the dialectical inverse of YAGNI. You Should Have means recognising obvious enhancements retrospectively.",
+  "learning_score": 0.9,
+  "triggers": {
+    "high_novelty": true,
+    "teaching_moment": true,
+    "new_term": true,
+    "generalisation": false
+  },
+  "evaluation": {
+    "is_generalisable": true,
+    "action": "generate_skill",
+    "reason": "Learning appears generalisable across projects",
+    "is_project_specific": false,
+    "is_infra_improvement": false,
+    "suggested_skill_name": "the-ysh-principle",
+    "project_path": "/Users/lauriescheepers/.claude"
+  },
+  "status": "rejected",
+  "created_at": "2025-12-21T17:58:29.369371+00:00",
+  "source": {
+    "type": "dialectical_learning",
+    "project": "/Users/lauriescheepers/.claude"
+  },
+  "rejected_at": "2025-12-21T17:58:47.846584+00:00",
+  "rejection_reason": "Test candidate - removing after successful verification"
+}

@@ -19,6 +19,7 @@ Real-time audit checklist for adherence to Critical Efficiency Rules. Use during
 - Reading from node_modules/ or venv/ without exclusions
 - Executing plan item that doesn't improve code
 - Building features before they're requested (YAGNI violation)
+- Invoking Skill tool when action is trivially inferable (3k+ token waste)
 
 ### Minor Violations (3 points each)
 
@@ -321,6 +322,42 @@ Use `/markdown-lint` command or let Markdown Expert Agent auto-trigger on .md fi
 
 - MD036: Bold text might be intentional emphasis, not a heading
 - MD024: Duplicate headings under different parents are allowed
+
+## Rule 7: Skill Tool Optimization
+
+### Checklist
+
+- [ ] Is the action trivially inferable?
+- [ ] Do I already know the file path/command?
+- [ ] Does this need protocol reference or just execution?
+- [ ] Can I skip Skill tool and execute directly?
+
+### Common Violations
+
+❌ Loading Skill tool for `/agy known-file.md` (path obvious)
+❌ Loading Skill tool for `/create-pr` on simple single-file change
+❌ Loading entire skill protocol when action is one bash command
+✅ Direct bash execution when path/action is clear
+✅ Skill tool only for semantic inference or complex protocols
+
+### Token Impact
+
+- Unnecessary Skill invocation: ~2000-4000 tokens
+- Direct execution: ~100-300 tokens
+- **Savings: 90-95% for trivial cases**
+
+### Decision Gate
+
+```text
+Before Skill tool invocation, ask:
+"Do I already know what to do?"
+├── YES → Execute directly, skip Skill tool
+└── NO  → Invoke Skill tool for protocol
+```
+
+### Origin
+
+Gen 60 (2025-12-20): Detected 3k token waste on `/agy skill md` when direct bash would suffice.
 
 ## Core Bash Tools Violations
 

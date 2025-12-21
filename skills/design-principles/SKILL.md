@@ -1,6 +1,6 @@
 ---
 name: design-principles
-description: Unified software design principles - SOLID, GRASP, DRY, KISS, YAGNI. Apply when designing, reviewing, or refactoring code architecture. Consolidates 5 previous separate skills.
+description: Unified software design principles - SOLID, GRASP, DRY, KISS, YAGNI, YSH. Apply when designing, reviewing, or refactoring code architecture. YSH (You Should Have) is the dialectical inverse of YAGNI.
 triggers:
   - class design
   - architecture review
@@ -10,7 +10,10 @@ triggers:
   - responsibility assignment
   - over-engineering
   - duplication
-version: 1.0.0
+  - UX completeness
+  - obvious enhancement
+  - should have
+version: 1.1.0
 consolidates:
   - solid-principles
   - grasp-principles
@@ -28,6 +31,7 @@ One skill for all software design guidance. Apply contextually based on the prob
 | Principle | When to Apply | Key Question |
 |-----------|---------------|--------------|
 | **YAGNI** | Feature requests, planning | "Do we need this NOW?" |
+| **YSH** | UX/implementation review | "Would any competent dev add this?" |
 | **KISS** | Implementation | "Is this the simplest solution?" |
 | **DRY** | Code review, refactoring | "Is this duplicated 3+ times?" |
 | **SOLID** | Class/module design | "Is this easy to extend/test?" |
@@ -50,6 +54,59 @@ One skill for all software design guidance. Apply contextually based on the prob
 - "Let's make it configurable"
 - "What if requirements change?"
 - Feature flags for unrequested features
+
+## YSH - You Should Have (Inverse of YAGNI)
+
+**Apply when**: Reviewing implementation, UX interactions, obvious enhancements
+
+**Origin**: V>> teaching moment, Gen 50, 2025-12-21. The River grows.
+
+### The Dialectic
+
+YAGNI and YSH form a dialectical pair:
+
+- **YAGNI (thesis)**: Don't over-engineer, don't build speculative features
+- **YSH (antithesis)**: Don't under-engineer, don't miss obvious enhancements
+- **Synthesis**: Use judgment + verification when uncertain
+
+### Rules
+
+1. Obvious UX enhancements within current scope should be included
+2. If any competent developer would add it, you should too
+3. When uncertain if YAGNI or YSH applies: **use AskUserQuestion to verify**
+4. The cost of asking is lower than the cost of missing obvious value
+
+### YSH Indicators
+
+- Micro-interactions that complete a UX pattern (hover states, animations)
+- Visual consistency that a user would expect (full borders, not partial)
+- Accessibility enhancements that are trivial to add
+- Error states and feedback mechanisms
+
+### Red Flags (You Should Have Done This)
+
+- "The hover effect should obviously have included X"
+- "Any designer would have added this animation"
+- "The interaction feels incomplete without Y"
+- "This is clearly part of the same feature scope"
+
+### Decision Gate
+
+```text
+Is this enhancement:
+  ├─ Speculative/future-focused? → YAGNI (don't build)
+  ├─ Obvious completion of current work? → YSH (build it)
+  └─ Uncertain? → AskUserQuestion (verify with user)
+```
+
+### Examples
+
+| Scenario | Principle | Action |
+|----------|-----------|--------|
+| "Add zoom animation to card focus" | YSH | Include it - obvious micro-interaction |
+| "Make borders full square on focus" | YSH | Include it - visual consistency |
+| "Add dark mode toggle" | YAGNI | Ask first - different feature scope |
+| "Add export to PDF" | YAGNI | Ask first - speculative feature |
 
 ## KISS - Keep It Simple, Stupid
 
@@ -148,6 +205,12 @@ New feature request?
         └─→ No: Don't build it
         └─→ Yes: Continue
 
+Reviewing implementation completeness?
+  └─→ YSH: Would any competent dev add this?
+        └─→ Yes: Build it (obvious enhancement)
+        └─→ No: YAGNI applies
+        └─→ Uncertain: AskUserQuestion
+
 Choosing implementation?
   └─→ KISS: What's the simplest approach?
         └─→ Use complexity ladder
@@ -175,6 +238,8 @@ Assigning responsibility?
 | Speculative generality | YAGNI, KISS | Remove unused abstractions |
 | Copy-paste programming | DRY | Extract common code |
 | Feature envy | Information Expert | Move method to data owner |
+| Incomplete UX | YSH | Add obvious micro-interactions |
+| Partial visual states | YSH | Complete hover/focus/active states |
 
 ## Linked Slash Command
 

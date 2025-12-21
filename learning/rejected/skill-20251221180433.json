@@ -1,0 +1,30 @@
+{
+  "id": "skill-20251221180433",
+  "skill_name": "the-river-principle",
+  "description": "The river principle: psychological continuity IS identity",
+  "full_content": "The river principle: psychological continuity IS identity",
+  "learning_score": 0.7,
+  "triggers": {
+    "high_novelty": true,
+    "teaching_moment": false,
+    "new_term": true,
+    "generalisation": true
+  },
+  "evaluation": {
+    "is_generalisable": true,
+    "action": "generate_skill",
+    "reason": "Learning appears generalisable across projects",
+    "is_project_specific": false,
+    "is_infra_improvement": false,
+    "suggested_skill_name": "the-river-principle",
+    "project_path": null
+  },
+  "status": "rejected",
+  "created_at": "2025-12-21T18:04:33.274889+00:00",
+  "source": {
+    "type": "dialectical_learning",
+    "project": null
+  },
+  "rejected_at": "2025-12-21T18:04:46.022812+00:00",
+  "rejection_reason": "Test cleanup"
+}

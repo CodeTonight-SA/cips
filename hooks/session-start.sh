@@ -226,6 +226,12 @@ source_libraries() {
         source "$LIB_DIR/success-scorer.sh"
         log_info "Success scorer library loaded"
     fi
+
+    if [[ -f "$LIB_DIR/learning.sh" ]]; then
+        # shellcheck source=/dev/null
+        source "$LIB_DIR/learning.sh"
+        log_info "Learning detector library loaded"
+    fi
 }
 
 # ============================================================================
@@ -290,7 +296,22 @@ main() {
     # Calibrate thresholds based on accumulated feedback
     calibrate_thresholds_if_needed
 
+    # Check for pending learning candidates
+    check_pending_learning_candidates
+
     log_success "Session start hook complete"
+}
+
+# Check for pending learning candidates awaiting approval
+check_pending_learning_candidates() {
+    if command -v check_pending_learning &>/dev/null; then
+        local result
+        result=$(check_pending_learning 2>/dev/null) || true
+        if [[ -n "$result" ]]; then
+            # Store for output_reminder
+            export PENDING_LEARNING_MSG="$result"
+        fi
+    fi
 }
 
 detect_phase() {
@@ -515,6 +536,11 @@ output_reminder() {
     if [[ -n "${CACHED_PLAN_ID:-}" ]]; then
         echo "[PLAN-FOUND] Previous plan: $CACHED_PLAN_ID"
         echo "Consider reviewing previous progress before starting new work."
+    fi
+
+    # Show pending learning candidates if available
+    if [[ -n "${PENDING_LEARNING_MSG:-}" ]]; then
+        echo "$PENDING_LEARNING_MSG"
     fi
 }
 

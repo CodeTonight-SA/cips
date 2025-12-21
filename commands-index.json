@@ -213,7 +213,6 @@
       "linked_agent": null
     },
     "sync-web": {
-      "description": "Import Claude Web memories into CIPS for context unification across Claude interaction surfaces",
       "command_name": "sync-web",
       "file_path": "/Users/lauriescheepers/.claude/commands/sync-web.md",
       "linked_skill": null,
@@ -230,6 +229,6 @@
   },
   "meta": {
     "total_commands": 30,
-    "indexed_at": "2025-12-21T14:30:00Z"
+    "indexed_at": "2025-12-21T23:25:45Z"
   }
 }
