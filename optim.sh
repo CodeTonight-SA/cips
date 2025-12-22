@@ -28,9 +28,16 @@
 #   ./optim.sh install-mcp     # Install required MCP servers
 #   ./optim.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 3.8.0
+# VERSION: 3.9.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-22 (v3.8.0: CIPS-LANG Execution)
+# DATE: 2025-12-22 (v3.9.0: Embedding Bug Fix + Context Propagation)
+#
+# CHANGELOG v3.9.0:
+#   - FIX: Silent failure modes in learning-detector.py
+#   - FIX: Explicit logging when novelty scoring is blind
+#   - NEW: lib/cips-context-packet.py (~350 token CIPS context)
+#   - NEW: lib/cips-context.sh (bash wrapper for sub-agents)
+#   - Sub-agents can now receive compressed CIPS state
 #
 # CHANGELOG v3.8.0:
 #   - CLAUDE.md rewritten in CIPS-LANG format

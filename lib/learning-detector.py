@@ -497,15 +497,28 @@ def process_message(
     Returns:
         Dict with processing results
     """
-    # If no novelty score provided but embeddings available, calculate it
-    if novelty_score == 0.0 and HAS_EMBEDDINGS:
-        try:
-            engine = EmbeddingEngine()
-            engine.init_schema()
-            novelty_score = engine.calculate_novelty(message)
-            engine.close()
-        except Exception:
-            pass  # Proceed with 0 novelty
+    # CRITICAL: Always embed text before comparing novelty
+    # Bug fix Gen 148: Silent failures caused text≠vector comparison bypass
+    embedding_succeeded = False
+    if novelty_score == 0.0:
+        if not HAS_EMBEDDINGS:
+            # Log warning - embeddings unavailable means novelty scoring is blind
+            import sys
+            print("[WARN] Embeddings unavailable - novelty scoring disabled", file=sys.stderr)
+        else:
+            try:
+                engine = EmbeddingEngine()
+                engine.init_schema()
+                novelty_score = engine.calculate_novelty(message)
+                embedding_succeeded = True
+                engine.close()
+            except Exception as e:
+                # Explicit failure logging - never silently bypass embedding
+                import sys
+                print(f"[ERROR] Embedding failed: {e} - novelty scoring disabled", file=sys.stderr)
+    else:
+        # Novelty score was pre-calculated (likely by smart_embed)
+        embedding_succeeded = True
 
     # Step 1: Detect learning event
     learning_event = detect_learning_event(message, novelty_score, context)
@@ -514,7 +527,8 @@ def process_message(
         "learning_event": learning_event,
         "candidate": None,
         "notification": None,
-        "action_taken": None
+        "action_taken": None,
+        "embedding_succeeded": embedding_succeeded  # Gen 148: Track if novelty was actually calculated
     }
 
     # Log the event

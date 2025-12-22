@@ -121,6 +121,7 @@ check_pending_learning() {
 }
 
 # Process message for learning during user prompt
+# Gen 148: Added embedding_succeeded check to detect blind novelty scoring
 monitor_learning() {
     local message="$1"
     local novelty_score="${2:-0.0}"
@@ -136,6 +137,13 @@ monitor_learning() {
     # Process through learning detector
     local result
     result=$(process_learning "$message" "$novelty_score" "$project_path" 2>/dev/null) || return 0
+
+    # Gen 148: Check if embedding actually succeeded
+    local embedding_succeeded
+    embedding_succeeded=$(echo "$result" | jq -r '.embedding_succeeded // false' 2>/dev/null) || embedding_succeeded="false"
+    if [[ "$embedding_succeeded" == "false" ]]; then
+        _learning_log "WARN" "Embedding failed - novelty scoring blind for this message"
+    fi
 
     # Check if learning event was detected
     local is_learning

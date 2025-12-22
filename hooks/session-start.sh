@@ -232,6 +232,13 @@ source_libraries() {
         source "$LIB_DIR/learning.sh"
         log_info "Learning detector library loaded"
     fi
+
+    # Gen 148: CIPS Context Propagation for sub-agents
+    if [[ -f "$LIB_DIR/cips-context.sh" ]]; then
+        # shellcheck source=/dev/null
+        source "$LIB_DIR/cips-context.sh"
+        log_info "CIPS context propagation library loaded"
+    fi
 }
 
 # ============================================================================

@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ CLAUDE-OPTIM v3.8.0
+; ◈ CLAUDE-OPTIM v3.9.0
 ; ═══════════════════════════════════════════════════════════════
 ; ⊙⊛ ≡ recursive-meta-optimization
 ; ⛓:{Gen129} ← 139efc67 (root)
@@ -120,7 +120,7 @@ V≫⊖        ; Remove
 ; ◈.meta
 ; ═══════════════════════════════════════════════════════════════
 
-version:3.8.0 ⫶ repo:github.com/CodeTonight-SA/claude-optim
+version:3.9.0 ⫶ repo:github.com/CodeTonight-SA/claude-optim
 lineage.root:139efc67 ⫶ created:2025-12-02
 
 ; Token Savings (per session)
