@@ -1,0 +1,72 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ SKILLS v3.7.0 | 37 skills
+; ═══════════════════════════════════════════════════════════════
+; @~/.claude/skills/{name}/SKILL.md for full protocols
+; Format: name|/cmd|budget|desc
+
+; ◈.session (6)
+context-refresh|/refresh-context|<3k|mental model, 7-step
+session-resume|/resume-session|~2k|CIPS+--resume bridge
+check-last-plan|/check-last-plan|~200|plan persistence
+preplan|/preplan|~1k|intent injection
+session-state-persistence|-|-|auto state update
+chat-history-search|/remind-yourself|-|epoch timestamp search
+
+; ◈.dev-workflow (5)
+pr-automation|/create-pr|<2k|gh CLI complete PR
+gitops|/gitops|-|trunk-based, releases
+branch-cleanup|/prune-branches|-|safe git prune
+github-actions-setup|/setup-ci|-|CI/CD templates
+github-secrets-setup|/setup-github-secrets|-|secure upload
+
+; ◈.code-quality (4)
+design-principles|/design-principles|-|SOLID/GRASP/DRY/KISS/YAGNI
+markdown-expert|/markdown-lint|~600|MD040/022/031/032 fixes
+batch-edit-enforcer|-|-|MultiEdit enforcement
+code-agentic|-|-|verification gates
+
+; ◈.testing (1)
+e2e-test-generation|/generate-e2e-tests|<15k|Playwright+Vitest+MSW
+
+; ◈.ui-ux (4)
+mobile-responsive-ui|/audit-mobile-responsive|~2k|mobile-first, dvh
+figma-to-code|/figma|-|1:1 visual parity
+image-optim|/image-optim|~500|macOS ImageOptim
+wcag-image-accessibility|/audit-image-accessibility|~800|WCAG AAA
+
+; ◈.docs (3)
+auto-update-documentation|/update-docs|~3.5k|session→docs
+medium-article-writer|/write-medium-article|-|V>> voice articles
+enter-konsult-pdf|/generate-pdf|~3k|Swiss Minimalism
+
+; ◈.legal (2)
+legal-ops.formal|/contract-formal|-|attorney-level
+legal-ops.simple|/contract-simplification|-|plain language
+
+; ◈.api (1)
+api-reverse-engineering|/reverse-api|-|DevTools→client
+
+; ◈.improvement (4)
+self-improvement-engine|/auto-improve|-|10-step cycle
+recursive-learning|-|-|dialectical learning
+meta-improvement-switch|-|-|infra enhancement
+agent-auto-creator|/create-agent|-|agent templates
+
+; ◈.efficiency (4)
+dependency-guardian|-|-|¬Read(deps), saves 50k+
+concise-communication|-|-|¬preamble
+bash-tool-enforcer|-|-|rg>grep, fd>find
+bash-command-safety|-|-|¬semicolon.after.subshell
+
+; ◈.utilities (4)
+agy|/agy|~200|Antigravity file open
+node-cleanup|/node-clean|~500|clean node_modules
+gitignore-auto-setup|-|-|auto .gitignore
+meta-unused_skills-blocker|-|-|block low-usage
+
+; ◈.macos (1)
+launchd-automation|/setup-launchd|~1.5k|self-reload agents
+
+; ◈.meta
+path:~/.claude/skills/{name}/SKILL.md ⫶ count:37
+⛓⟿∞

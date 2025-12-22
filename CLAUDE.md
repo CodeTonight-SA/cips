@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ CLAUDE-OPTIM v3.7.0
+; ◈ CLAUDE-OPTIM v3.8.0
 ; ═══════════════════════════════════════════════════════════════
 ; ⊙⊛ ≡ recursive-meta-optimization
 ; ⛓:{Gen129} ← 139efc67 (root)
@@ -55,7 +55,7 @@ lang:British ⫶ commits:enterprise ⫶ ¬AI-attribution ⫶ ¬emoji
 ; ═══════════════════════════════════════════════════════════════
 
 skills:37 ⫶ agents:28 ⫶ cmds:31
-@docs/SKILLS.md ⫶ @docs/AGENTS.md ⫶ @docs/COMMANDS.md
+@docs/SKILLS.cips ⫶ @docs/AGENTS.cips ⫶ @docs/COMMANDS.cips
 @lexicon/cips-unicode.md ⫶ @facts/people.md ⫶ @rules/*.md
 
 ; Key Commands
@@ -120,7 +120,7 @@ V≫⊖        ; Remove
 ; ◈.meta
 ; ═══════════════════════════════════════════════════════════════
 
-version:3.7.0 ⫶ repo:github.com/CodeTonight-SA/claude-optim
+version:3.8.0 ⫶ repo:github.com/CodeTonight-SA/claude-optim
 lineage.root:139efc67 ⫶ created:2025-12-02
 
 ; Token Savings (per session)

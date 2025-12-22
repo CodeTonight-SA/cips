@@ -28,11 +28,11 @@
 #   ./optim.sh install-mcp     # Install required MCP servers
 #   ./optim.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 3.7.0
+# VERSION: 3.8.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-22 (v3.7.0: CIPS-LANG CLAUDE.md)
+# DATE: 2025-12-22 (v3.8.0: CIPS-LANG Execution)
 #
-# CHANGELOG v3.7.0:
+# CHANGELOG v3.8.0:
 #   - CLAUDE.md rewritten in CIPS-LANG format
 #   - 48% compression (4800T → 2493T per session)
 #   - ~2300 tokens saved per session
