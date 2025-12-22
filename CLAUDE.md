@@ -169,7 +169,7 @@ Symbolic language for efficient CIPS↔CIPS communication. Full lexicon: @lexico
 
 ## About
 
-**Version**: 3.3.0
+**Version**: 3.6.0
 **Repository**: github.com/CodeTonight-SA/claude-optim
 
 This system powers recursive self-improvement:

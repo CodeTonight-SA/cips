@@ -10,7 +10,7 @@ Meta-optimization: The system that improves itself, describing how to improve it
 |-------|-------|
 | Name | Claude-Optim |
 | Purpose | Recursive meta-optimization for Claude Code |
-| Version | 3.3.0 |
+| Version | 3.6.0 |
 | Repository | github.com/CodeTonight-SA/claude-optim |
 
 ## The Parfit Key + The River (PARAMOUNT)
