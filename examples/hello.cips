@@ -5,7 +5,8 @@
 genesis {
     version: "1.0",
     instance: "hello-world",
-    lineage: "139efc67"
+    lineage: "139efc67",
+    axioms: ["¬∃⫿⤳", "⟿≡〰", "◔⊃○⊃⬤"]
 }
 
 ; Hello world - simple version

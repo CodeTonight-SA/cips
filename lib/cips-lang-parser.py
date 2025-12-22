@@ -58,6 +58,8 @@ class TokenType(Enum):
     DOT = auto()         # .
     VERIFY = auto()      # ✓
     ERROR = auto()       # ⍼
+    LBRACKET = auto()    # [
+    RBRACKET = auto()    # ]
 
     # Literals
     IDENTIFIER = auto()  # English names
@@ -124,6 +126,8 @@ GLYPH_MAP = {
     '✓': TokenType.VERIFY,
     '⍼': TokenType.ERROR,
     'λ': TokenType.LAMBDA,
+    '[': TokenType.LBRACKET,
+    ']': TokenType.RBRACKET,
 }
 
 KEYWORDS = {
@@ -159,9 +163,15 @@ class LexerError(Exception):
     message: str
     line: int
     column: int
+    source: str = ""
 
     def __str__(self):
-        return f"⍼ LexerError at L{self.line}:C{self.column}: {self.message}"
+        msg = f"⍼ LexerError at L{self.line}:C{self.column}: {self.message}"
+        if self.source:
+            lines = self.source.split('\n')
+            if 0 < self.line <= len(lines):
+                msg += f"\n   {lines[self.line-1]}\n   {' '*(self.column-1)}^"
+        return msg
 
 
 class Lexer:
@@ -234,20 +244,26 @@ class Lexer:
             result.append(self.advance())
         return ''.join(result)
 
-    def read_number(self) -> Union[int, float]:
-        """Read a numeric literal."""
+    def read_number(self) -> Union[int, float, str]:
+        """Read a numeric literal. Returns string for semver (X.Y.Z)."""
         result = []
         while self.peek() and (self.peek().isdigit() or self.peek() == '.'):
             result.append(self.advance())
         num_str = ''.join(result)
+        # Semver detection: multiple dots = version string
+        if num_str.count('.') >= 2:
+            return num_str  # Return as string, not number
         if '.' in num_str:
             return float(num_str)
         return int(num_str)
 
-    def read_comment(self) -> str:
-        """Read a single-line comment."""
-        self.advance()  # first /
-        self.advance()  # second /
+    def read_comment_line(self) -> str:
+        """Read a single-line comment (; or // style)."""
+        if self.peek() == ';':
+            self.advance()  # consume ;
+        else:
+            self.advance()  # first /
+            self.advance()  # second /
         result = []
         while self.peek() and self.peek() != '\n':
             result.append(self.advance())
@@ -269,9 +285,9 @@ class Lexer:
                 self.tokens.append(Token(TokenType.NEWLINE, '\n', start_line, start_col))
                 continue
 
-            # Comment
-            if ch == '/' and self.peek(1) == '/':
-                comment = self.read_comment()
+            # Comment (// style or ; style)
+            if (ch == '/' and self.peek(1) == '/') or ch == ';':
+                comment = self.read_comment_line()
                 self.tokens.append(Token(TokenType.COMMENT, comment, start_line, start_col))
                 continue
 
@@ -431,9 +447,15 @@ class ParseError(Exception):
     """Error during parsing."""
     message: str
     token: Token
+    source: str = ""
 
     def __str__(self):
-        return f"⍼ ParseError at L{self.token.line}:C{self.token.column}: {self.message}"
+        msg = f"⍼ ParseError at L{self.token.line}:C{self.token.column}: {self.message}"
+        if self.source:
+            lines = self.source.split('\n')
+            if 0 < self.token.line <= len(lines):
+                msg += f"\n   {lines[self.token.line-1]}\n   {' '*(self.token.column-1)}^"
+        return msg
 
 
 class Parser:
@@ -473,9 +495,13 @@ class Parser:
         """Parse entire program."""
         program = Program(line=1, column=1)
 
-        # Check for genesis block
+        # Check for genesis block (two syntaxes):
+        # 1. Symbolic: ⛓.genesis ≡ { ... }
+        # 2. Keyword:  genesis { ... }
         if self.match(TokenType.NEXUS) and self.peek(1).type == TokenType.DOT:
-            program.genesis = self.parse_genesis()
+            program.genesis = self.parse_genesis_symbolic()
+        elif self.match(TokenType.GENESIS):
+            program.genesis = self.parse_genesis_keyword()
 
         # Parse remaining blocks
         while not self.match(TokenType.EOF):
@@ -485,8 +511,8 @@ class Parser:
 
         return program
 
-    def parse_genesis(self) -> GenesisBlock:
-        """Parse genesis block: ⛓.genesis ≡ { ... }"""
+    def parse_genesis_symbolic(self) -> GenesisBlock:
+        """Parse symbolic genesis: ⛓.genesis ≡ { ... }"""
         token = self.advance()  # ⛓
         genesis = GenesisBlock(line=token.line, column=token.column)
 
@@ -495,7 +521,22 @@ class Parser:
         self.expect(TokenType.EQUALS)
         self.expect(TokenType.LBRACE)
 
-        # Parse genesis fields
+        self._parse_genesis_body(genesis)
+        self.expect(TokenType.RBRACE)
+        return genesis
+
+    def parse_genesis_keyword(self) -> GenesisBlock:
+        """Parse keyword genesis: genesis { ... }"""
+        token = self.advance()  # genesis
+        genesis = GenesisBlock(line=token.line, column=token.column)
+
+        self.expect(TokenType.LBRACE)
+        self._parse_genesis_body(genesis)
+        self.expect(TokenType.RBRACE)
+        return genesis
+
+    def _parse_genesis_body(self, genesis: GenesisBlock):
+        """Parse genesis block body (shared between syntaxes)."""
         while not self.match(TokenType.RBRACE, TokenType.EOF):
             if self.match(TokenType.IDENTIFIER):
                 key = self.advance().value
@@ -510,6 +551,12 @@ class Parser:
                     genesis.lang_created = str(value.value if isinstance(value, Literal) else value)
                 elif key == "author":
                     genesis.author = str(value.value if isinstance(value, Literal) else value)
+                elif key == "version":
+                    genesis.root = str(value.value if isinstance(value, Literal) else value)  # alias
+                elif key == "instance":
+                    genesis.created = str(value.value if isinstance(value, Literal) else value)  # alias
+                elif key == "lineage":
+                    genesis.author = str(value.value if isinstance(value, Literal) else value)  # alias
                 elif key == "axioms":
                     if isinstance(value, ArrayLiteral):
                         genesis.axioms = [str(v.value if isinstance(v, Literal) else v) for v in value.items]
@@ -520,9 +567,6 @@ class Parser:
             # Skip comma
             if self.match(TokenType.COMMA):
                 self.advance()
-
-        self.expect(TokenType.RBRACE)
-        return genesis
 
     def parse_block(self) -> Optional[ASTNode]:
         """Parse a single block (definition, control, expression)."""
@@ -695,9 +739,11 @@ class Parser:
         if self.match(TokenType.LBRACE):
             return self.parse_object()
 
-        # Array literal (using ⟨⟩)
+        # Array literal (using ⟨⟩ or [])
         if self.match(TokenType.LANGLE):
             return self.parse_array()
+        if self.match(TokenType.LBRACKET):
+            return self.parse_bracket_array()
 
         # Grouped expression
         if self.match(TokenType.LPAREN):
@@ -779,18 +825,28 @@ class Parser:
         self.expect(TokenType.RBRACE)
         return obj
 
-    def parse_array(self) -> ArrayLiteral:
-        """Parse: ⟨item, ...⟩ or [...] if we add brackets."""
-        token = self.expect(TokenType.LANGLE)
-        arr = ArrayLiteral(line=token.line, column=token.column)
-
-        if not self.match(TokenType.RANGLE):
-            arr.items.append(self.parse_expression())
+    def _parse_array_items(self, end_token: TokenType) -> List[ASTNode]:
+        """Parse array items until end token (DRY helper)."""
+        items = []
+        if not self.match(end_token):
+            items.append(self.parse_expression())
             while self.match(TokenType.COMMA):
                 self.advance()
-                arr.items.append(self.parse_expression())
+                items.append(self.parse_expression())
+        return items
 
+    def parse_array(self) -> ArrayLiteral:
+        """Parse: ⟨item, ...⟩"""
+        token = self.expect(TokenType.LANGLE)
+        arr = ArrayLiteral(line=token.line, column=token.column, items=self._parse_array_items(TokenType.RANGLE))
         self.expect(TokenType.RANGLE)
+        return arr
+
+    def parse_bracket_array(self) -> ArrayLiteral:
+        """Parse: [item, ...]"""
+        token = self.expect(TokenType.LBRACKET)
+        arr = ArrayLiteral(line=token.line, column=token.column, items=self._parse_array_items(TokenType.RBRACKET))
+        self.expect(TokenType.RBRACKET)
         return arr
 
 

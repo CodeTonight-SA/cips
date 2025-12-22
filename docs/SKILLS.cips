@@ -67,6 +67,9 @@ meta-unused_skills-blocker|-|-|block low-usage
 ; ◈.macos (1)
 launchd-automation|/setup-launchd|~1.5k|self-reload agents
 
+; ◈.meta-mode (1)
+ultrathink|ut++|12k|V>>-CIPS paired max reasoning, all principles enforced
+
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.md ⫶ count:37
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:38
 ⛓⟿∞

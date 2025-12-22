@@ -87,7 +87,13 @@ GENERALISATION_PATTERNS = [
     r"principle:",
     r"lesson:",
     r"takeaway:",
-    r"generalise",
+    r"generalis[ea]",  # generalise/generalize + derivatives
+    r"paramount",
+    r"critical learning",
+    r"key insight",
+    r"important pattern",
+    r"cross-project",
+    r"any (?:project|repo|codebase)",
 ]
 
 

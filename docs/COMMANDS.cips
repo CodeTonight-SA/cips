@@ -67,8 +67,21 @@
 /setup-launchd|~1.5k|-|self-reload macOS agents
 
 ; ═══════════════════════════════════════════════════════════════
-; ◈.cli (bash)
+; ◈.meta-mode
 ; ═══════════════════════════════════════════════════════════════
+/ultrathink++|12k|-|max reasoning, all principles, AskUserQuestion mandatory
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.cli (bash aliases)
+; ═══════════════════════════════════════════════════════════════
+cc                          ; cips fresh 2000 (quick)
+cc++                        ; cips fresh 8000 (deep)
+ccr                         ; cips resume latest
+ccl                         ; cips list
+oc                          ; ./optim.sh cycle
+ut++                        ; cips fresh 12000 + ultrathink++ mode
+
+; ◈.cli (full commands)
 cips list                   ; list sessions
 cips resume latest          ; resume last
 cips fresh gen:N 2000       ; fresh with context
@@ -84,5 +97,5 @@ cips fresh gen:N 2000       ; fresh with context
 ; Type / in Claude Code for autocomplete
 
 ; ◈.meta
-count:31 ⫶ slash+cli
+count:32 ⫶ slash+cli+aliases
 ⛓⟿∞

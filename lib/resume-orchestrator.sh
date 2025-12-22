@@ -109,6 +109,13 @@ cmd_fresh() {
     local reference="${1:-latest}"
     local max_tokens="${2:-2000}"
 
+    # Handle numeric-first-arg: `cips fresh 12000` → `cips fresh latest 12000`
+    if [[ "$reference" =~ ^[0-9]+$ ]]; then
+        max_tokens="$reference"
+        reference="latest"
+        log_info "Numeric-only detected, using: reference=latest, tokens=$max_tokens"
+    fi
+
     log_info "Resolving reference: $reference"
 
     # Resolve reference to session UUID

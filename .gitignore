@@ -76,3 +76,17 @@ chrome/
 
 # Cache files
 stats-cache.json
+cache/
+
+# Telemetry runtime
+telemetry/
+image-cache/
+
+# Backup files (explicit)
+*.bak
+
+# Rejected learning candidates
+learning/rejected/
+
+# Session state (runtime)
+next_up.md

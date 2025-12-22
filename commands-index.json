@@ -14,6 +14,12 @@
       "linked_skill": null,
       "linked_agent": null
     },
+    "audit-image-accessibility": {
+      "command_name": "audit-image-accessibility",
+      "file_path": "/Users/lauriescheepers/.claude/commands/audit-image-accessibility.md",
+      "linked_skill": null,
+      "linked_agent": null
+    },
     "audit-mobile-responsive": {
       "description": "Run thorough mobile responsive audit on codebase, detecting anti-patterns across TailwindCSS, vanilla CSS, and framework components",
       "disable-model-invocation": false,
@@ -228,7 +234,7 @@
     }
   },
   "meta": {
-    "total_commands": 30,
-    "indexed_at": "2025-12-21T23:25:45Z"
+    "total_commands": 31,
+    "indexed_at": "2025-12-22T20:20:29Z"
   }
 }
