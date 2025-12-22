@@ -28,9 +28,17 @@
 #   ./optim.sh install-mcp     # Install required MCP servers
 #   ./optim.sh optimize-agents # Optimize agent performance
 #
-# VERSION: 3.9.0
+# VERSION: 3.10.0
 # AUTHOR: LC Scheepers (V>>)
-# DATE: 2025-12-22 (v3.9.0: Embedding Bug Fix + Context Propagation)
+# DATE: 2025-12-22 (v3.10.0: Coherence Gate + Venv Isolation)
+#
+# CHANGELOG v3.10.0:
+#   - NEW: lib/coherence.py - dictionary + n-gram coherence gate
+#   - NEW: tests/test_coherence.py - 44 unit tests
+#   - FIX: Gibberish no longer scores as "novel" (coherence gate)
+#   - FIX: Python venv isolation prevents pyenv/system mismatch
+#   - UPD: bootstrap-semantic-rl.sh v2.0.0 uses ~/.claude/venv/
+#   - UPD: calculate_novelty() returns (score, coherence_meta) tuple
 #
 # CHANGELOG v3.9.0:
 #   - FIX: Silent failure modes in learning-detector.py

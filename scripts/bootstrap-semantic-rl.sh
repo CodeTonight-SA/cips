@@ -13,8 +13,9 @@
 #   - curl
 #   - ~500MB disk space for model
 #
-# VERSION: 1.0.0
-# DATE: 2025-12-02
+# VERSION: 2.0.0
+# DATE: 2025-12-22
+# GEN: 153 - Venv isolation for reliable embeddings
 #
 
 set -euo pipefail
@@ -24,6 +25,7 @@ LIB_DIR="$CLAUDE_DIR/lib"
 MODELS_DIR="$CLAUDE_DIR/models"
 SCRIPTS_DIR="$CLAUDE_DIR/scripts"
 CONFIG_DIR="$CLAUDE_DIR/config"
+VENV_DIR="$CLAUDE_DIR/venv"  # Gen 153: Dedicated venv for reliability
 
 MODEL_NAME="all-MiniLM-L6-v2-Q8_0.gguf"
 MODEL_URL="https://huggingface.co/Mozilla/all-MiniLM-L6-v2-gguf/resolve/main/${MODEL_NAME}"
@@ -82,28 +84,89 @@ check_pip() {
     return 0
 }
 
+# Gen 153: Create dedicated venv for embedding system
+# Solves: pyenv vs system Python mismatch causing silent embedding failures
+create_venv() {
+    log "Setting up dedicated Python venv..."
+
+    # Find the best Python to use
+    local python_path=""
+
+    # Priority 1: pyenv Python 3.13+
+    if command -v pyenv &>/dev/null; then
+        local pyenv_python
+        pyenv_python=$(pyenv which python3 2>/dev/null || true)
+        if [[ -n "$pyenv_python" && -x "$pyenv_python" ]]; then
+            local pyenv_version
+            pyenv_version=$("$pyenv_python" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+            local major minor
+            major=$(echo "$pyenv_version" | cut -d. -f1)
+            minor=$(echo "$pyenv_version" | cut -d. -f2)
+            if [[ $major -ge 3 && $minor -ge 9 ]]; then
+                python_path="$pyenv_python"
+                log "  Using pyenv Python: $pyenv_version"
+            fi
+        fi
+    fi
+
+    # Priority 2: System Python
+    if [[ -z "$python_path" ]]; then
+        if command -v python3 &>/dev/null; then
+            python_path=$(command -v python3)
+            log "  Using system Python"
+        else
+            log_error "No suitable Python found"
+            return 1
+        fi
+    fi
+
+    # Create venv if not exists
+    if [[ -d "$VENV_DIR" && -f "$VENV_DIR/bin/python3" ]]; then
+        log_success "Venv already exists at $VENV_DIR"
+        return 0
+    fi
+
+    log "  Creating venv at $VENV_DIR..."
+    "$python_path" -m venv "$VENV_DIR" || {
+        log_error "Failed to create venv"
+        return 1
+    }
+
+    log_success "Venv created"
+    return 0
+}
+
 install_python_deps() {
-    log "Installing Python dependencies..."
+    log "Installing Python dependencies into venv..."
 
     local packages=("apsw" "sqlite-vec" "sqlite-lembed")
     local missing=()
 
+    # Gen 153: Use venv Python for package checks
+    local venv_python="$VENV_DIR/bin/python3"
+    local venv_pip="$VENV_DIR/bin/pip3"
+
+    if [[ ! -x "$venv_python" ]]; then
+        log_error "Venv Python not found - run create_venv first"
+        return 1
+    fi
+
     for pkg in "${packages[@]}"; do
-        if ! python3 -c "import ${pkg//-/_}" 2>/dev/null; then
+        if ! "$venv_python" -c "import ${pkg//-/_}" 2>/dev/null; then
             missing+=("$pkg")
         fi
     done
 
     if [[ ${#missing[@]} -eq 0 ]]; then
-        log_success "All Python packages already installed"
+        log_success "All Python packages already installed in venv"
         return 0
     fi
 
     log "Installing: ${missing[*]}"
 
-    pip3 install --quiet "${missing[@]}" || {
+    "$venv_pip" install --quiet "${missing[@]}" || {
         log_error "Failed to install Python packages"
-        log "Try: pip3 install ${missing[*]}"
+        log "Try: $venv_pip install ${missing[*]}"
         return 1
     }
 
@@ -112,9 +175,11 @@ install_python_deps() {
 }
 
 verify_python_deps() {
-    log "Verifying Python dependencies..."
+    log "Verifying Python dependencies in venv..."
 
-    python3 -c "
+    local venv_python="$VENV_DIR/bin/python3"
+
+    "$venv_python" -c "
 import apsw
 import sqlite_vec
 import sqlite_lembed
@@ -127,7 +192,7 @@ print('  sqlite_lembed: OK')
         return 1
     }
 
-    log_success "All dependencies verified"
+    log_success "All dependencies verified in venv"
     return 0
 }
 
@@ -174,7 +239,9 @@ download_model() {
 init_database() {
     log "Initializing database schema..."
 
-    python3 << 'PYEOF'
+    local venv_python="$VENV_DIR/bin/python3"
+
+    "$venv_python" << 'PYEOF'
 import sys
 sys.path.insert(0, f"{__import__('os').environ.get('CLAUDE_DIR', __import__('pathlib').Path.home() / '.claude')}/lib")
 
@@ -198,7 +265,9 @@ PYEOF
 init_threshold_tables() {
     log "Initializing threshold configuration..."
 
-    python3 << 'PYEOF'
+    local venv_python="$VENV_DIR/bin/python3"
+
+    "$venv_python" << 'PYEOF'
 import sys
 import os
 claude_dir = os.environ.get('CLAUDE_DIR', str(__import__('pathlib').Path.home() / '.claude'))
@@ -278,6 +347,8 @@ PYEOF
 embed_concepts() {
     log "Pre-embedding concept library..."
 
+    local venv_python="$VENV_DIR/bin/python3"
+
     if [[ ! -f "$SCRIPTS_DIR/embed-concepts.py" ]]; then
         log_error "embed-concepts.py not found"
         return 1
@@ -288,7 +359,7 @@ embed_concepts() {
         return 1
     fi
 
-    python3 "$SCRIPTS_DIR/embed-concepts.py" 2>&1 | while IFS= read -r line; do
+    "$venv_python" "$SCRIPTS_DIR/embed-concepts.py" 2>&1 | while IFS= read -r line; do
         echo "  $line"
     done
 
@@ -304,7 +375,9 @@ embed_concepts() {
 verify_installation() {
     log "Verifying installation..."
 
-    python3 << 'PYEOF'
+    local venv_python="$VENV_DIR/bin/python3"
+
+    "$venv_python" << 'PYEOF'
 import sys
 import os
 claude_dir = os.environ.get('CLAUDE_DIR', str(__import__('pathlib').Path.home() / '.claude'))
@@ -367,10 +440,15 @@ show_next_steps() {
     echo "     0 3 * * 0 ~/.claude/scripts/weekly-maintenance.sh"
     echo ""
     echo "Files created:"
-    echo "  - ~/.claude/embeddings.db (vector database)"
+    echo "  - ~/.claude/venv/          (isolated Python environment)"
+    echo "  - ~/.claude/embeddings.db  (vector database)"
     echo "  - ~/.claude/models/$MODEL_NAME"
     echo ""
+    echo "Gen 153: Venv isolation ensures embeddings work reliably"
+    echo "        regardless of pyenv/system Python configuration."
+    echo ""
     echo "Dynamic learning is now active:"
+    echo "  - Coherence gate prevents gibberish from scoring as novel"
     echo "  - Thresholds adjust based on your feedback"
     echo "  - Patterns emerge from usage"
     echo "  - Cross-project insights accumulate"
@@ -380,7 +458,8 @@ show_next_steps() {
 main() {
     echo ""
     echo "========================================"
-    echo "  Semantic RL++ Bootstrap v1.0.0"
+    echo "  Semantic RL++ Bootstrap v2.0.0"
+    echo "  (Gen 153: Venv Isolation)"
     echo "========================================"
     echo ""
 
@@ -397,6 +476,7 @@ main() {
 
     check_python || exit 1
     check_pip || exit 1
+    create_venv || exit 1       # Gen 153: Create venv before installing deps
     install_python_deps || exit 1
     verify_python_deps || exit 1
     download_model || exit 1

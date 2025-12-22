@@ -24,6 +24,13 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any, Tuple
 from datetime import datetime, timezone
 
+# Import coherence gate (Gen 153)
+try:
+    from coherence import is_coherent, get_coherence_score
+    HAS_COHERENCE = True
+except ImportError:
+    HAS_COHERENCE = False
+
 CLAUDE_DIR = Path.home() / ".claude"
 DB_PATH = CLAUDE_DIR / "embeddings.db"
 MODEL_PATH = CLAUDE_DIR / "models" / "all-MiniLM-L6-v2.gguf"
@@ -291,7 +298,36 @@ class EmbeddingEngine:
 
         return results
 
-    def calculate_novelty(self, text: str, recent_limit: int = 20) -> float:
+    def calculate_novelty(self, text: str, recent_limit: int = 20) -> Tuple[float, Dict[str, Any]]:
+        """
+        Calculate novelty score for text.
+
+        Gen 153: Added coherence gate - gibberish returns 0.0 novelty.
+
+        Args:
+            text: Text to calculate novelty for
+            recent_limit: Number of recent embeddings to compare against
+
+        Returns:
+            Tuple of (novelty_score, metadata_dict)
+            metadata_dict contains: coherence_passed, coherence_score, coherence_method
+        """
+        metadata = {
+            "coherence_passed": True,
+            "coherence_score": 1.0,
+            "coherence_method": "not_checked"
+        }
+
+        # COHERENCE GATE (Gen 153) - reject gibberish before embedding
+        if HAS_COHERENCE:
+            coherence_score, method = get_coherence_score(text)
+            metadata["coherence_score"] = round(coherence_score, 4)
+            metadata["coherence_method"] = method
+
+            if not is_coherent(text):
+                metadata["coherence_passed"] = False
+                return (0.0, metadata)  # Incoherent = not novel (not worth learning)
+
         vector = self.embed_text(text)
         conn = self.connect()
 
@@ -302,14 +338,14 @@ class EmbeddingEngine:
         ))
 
         if not recent:
-            return 1.0
+            return (1.0, metadata)
 
         max_similarity = 0.0
         for (stored_vec,) in recent:
             sim = self.cosine_similarity(vector, stored_vec)
             max_similarity = max(max_similarity, sim)
 
-        return 1.0 - max_similarity
+        return (1.0 - max_similarity, metadata)
 
     def get_priority(self, novelty_score: float) -> str:
         if novelty_score > 0.5:
@@ -329,7 +365,7 @@ class EmbeddingEngine:
         session_id: Optional[str] = None
     ):
         if priority is None:
-            novelty = self.calculate_novelty(text)
+            novelty, _ = self.calculate_novelty(text)
             priority = self.get_priority(novelty)
 
         conn = self.connect()
@@ -368,7 +404,7 @@ class EmbeddingEngine:
         processed = 0
         for q_id, text, embed_type, priority, metadata_json, project_path, session_id in queue:
             metadata = json.loads(metadata_json) if metadata_json else None
-            novelty = self.calculate_novelty(text)
+            novelty, _ = self.calculate_novelty(text)
 
             self.store_embedding(
                 text=text,
@@ -526,7 +562,7 @@ class EmbeddingEngine:
         agent = self.match_agent(text)
         skill = self.match_skill(text)
         command = self.match_command(text)
-        novelty = self.calculate_novelty(text)
+        novelty, coherence_meta = self.calculate_novelty(text)
         priority = self.get_priority(novelty)
 
         return {
@@ -539,7 +575,8 @@ class EmbeddingEngine:
             "suggested_command": command[0] if command else None,
             "novelty_score": round(novelty, 4),
             "priority": priority,
-            "should_process_queue": checkpoint is not None
+            "should_process_queue": checkpoint is not None,
+            "coherence": coherence_meta  # Gen 153
         }
 
     def close(self):
@@ -654,12 +691,13 @@ def main():
 
         elif args.command == "novelty":
             engine.init_schema()
-            score = engine.calculate_novelty(args.text)
+            score, coherence_meta = engine.calculate_novelty(args.text)
             priority = engine.get_priority(score)
             print(json.dumps({
                 "status": "ok",
                 "novelty_score": round(score, 4),
-                "priority": priority
+                "priority": priority,
+                "coherence": coherence_meta
             }))
 
         elif args.command == "queue":

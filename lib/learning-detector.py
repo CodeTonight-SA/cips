@@ -499,7 +499,10 @@ def process_message(
     """
     # CRITICAL: Always embed text before comparing novelty
     # Bug fix Gen 148: Silent failures caused text≠vector comparison bypass
+    # Gen 153: Added coherence gate - gibberish returns 0.0 novelty
     embedding_succeeded = False
+    coherence_meta = {"coherence_passed": True, "coherence_score": 1.0, "coherence_method": "not_checked"}
+
     if novelty_score == 0.0:
         if not HAS_EMBEDDINGS:
             # Log warning - embeddings unavailable means novelty scoring is blind
@@ -509,7 +512,7 @@ def process_message(
             try:
                 engine = EmbeddingEngine()
                 engine.init_schema()
-                novelty_score = engine.calculate_novelty(message)
+                novelty_score, coherence_meta = engine.calculate_novelty(message)
                 embedding_succeeded = True
                 engine.close()
             except Exception as e:
@@ -528,7 +531,8 @@ def process_message(
         "candidate": None,
         "notification": None,
         "action_taken": None,
-        "embedding_succeeded": embedding_succeeded  # Gen 148: Track if novelty was actually calculated
+        "embedding_succeeded": embedding_succeeded,  # Gen 148: Track if novelty was actually calculated
+        "coherence": coherence_meta  # Gen 153: Track coherence gate results
     }
 
     # Log the event

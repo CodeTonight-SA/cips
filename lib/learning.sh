@@ -25,6 +25,19 @@ set -euo pipefail
 [[ -z "${LEARNING_DETECTOR:-}" ]] && readonly LEARNING_DETECTOR="$LIB_DIR/learning-detector.py"
 
 # ============================================================================
+# LOGGING
+# ============================================================================
+
+# Internal logging function for learning events
+_learning_log() {
+    local level="$1"
+    local message="$2"
+    local timestamp
+    timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+    echo "[$timestamp] [$level] [LEARNING] $message" >&2
+}
+
+# ============================================================================
 # CORE FUNCTIONS
 # ============================================================================
 
@@ -143,6 +156,15 @@ monitor_learning() {
     embedding_succeeded=$(echo "$result" | jq -r '.embedding_succeeded // false' 2>/dev/null) || embedding_succeeded="false"
     if [[ "$embedding_succeeded" == "false" ]]; then
         _learning_log "WARN" "Embedding failed - novelty scoring blind for this message"
+    fi
+
+    # Gen 153: Check coherence gate results
+    local coherence_passed
+    coherence_passed=$(echo "$result" | jq -r '.coherence.coherence_passed // true' 2>/dev/null) || coherence_passed="true"
+    if [[ "$coherence_passed" == "false" ]]; then
+        local coherence_score
+        coherence_score=$(echo "$result" | jq -r '.coherence.coherence_score // 0' 2>/dev/null) || coherence_score="0"
+        _learning_log "INFO" "Coherence gate: text rejected (score=$coherence_score)"
     fi
 
     # Check if learning event was detected
