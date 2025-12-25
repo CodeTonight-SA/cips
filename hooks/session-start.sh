@@ -177,6 +177,11 @@ inject_semantic_context() {
         export SEMANTIC_CONTEXT_FILE="$context_file"
         export SEMANTIC_CONTEXT_INJECTED=true
 
+        # Write marker for tool-monitor.sh to detect (Gen 182)
+        # This enables blocking redundant state file reads
+        local marker_file="$CLAUDE_DIR/.semantic-context-active"
+        echo "$project_encoded" > "$marker_file"
+
         # Output context for Claude to process
         echo ""
         echo "[SEMANTIC-CONTEXT] Compressed context from previous session:"

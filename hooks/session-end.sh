@@ -294,6 +294,9 @@ main() {
     # Cache any active plan
     cache_plan
 
+    # Gen 182: Clean up semantic context marker
+    rm -f "$CLAUDE_DIR/.semantic-context-active"
+
     log_success "Session end cleanup complete"
 }
 

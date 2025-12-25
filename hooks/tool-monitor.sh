@@ -190,6 +190,23 @@ track_read() {
 # TOOL-SPECIFIC MONITORS
 # ============================================================================
 
+# State files that semantic context typically covers
+STATE_FILES_PATTERN="next_up.md|SESSION.md|PROGRESS.md"
+
+# Check if semantic context is active for current project
+is_semantic_context_active() {
+    local marker_file="$CLAUDE_DIR/.semantic-context-active"
+    [[ -f "$marker_file" ]]
+}
+
+# Check if file is a state file
+is_state_file() {
+    local file_path="$1"
+    local basename
+    basename=$(basename "$file_path")
+    [[ "$basename" =~ ^($STATE_FILES_PATTERN)$ ]]
+}
+
 # Monitor Read tool
 monitor_read() {
     local args="$1"
@@ -203,32 +220,37 @@ monitor_read() {
     fi
 
     if [[ -z "$file_path" ]]; then
+        echo '{"continue": true}'
         return 0
     fi
 
     log_info "Read: $file_path"
 
-    # Check for blocked path
+    # Check for blocked path (dependency folders)
     if is_blocked_path "$file_path"; then
         log_block "BLOCKED: Read from dependency folder: $file_path"
-        echo "BLOCKED: Cannot read from dependency/build folders."
-        echo "Path: $file_path"
-        echo "This would waste 50,000+ tokens."
-        echo ""
-        echo "Use: rg 'pattern' --glob '!node_modules/*' instead"
-        return 1
+        echo '{"continue": false, "reason": "BLOCKED: Cannot read from dependency/build folders. Path: '"$file_path"'. This would waste 50,000+ tokens. Use: rg pattern --glob !node_modules/* instead"}'
+        return 0
     fi
 
-    # Check for duplicate read
+    # Gen 182: Block state file reads when semantic context is active (YAGNI gate)
+    if is_semantic_context_active && is_state_file "$file_path"; then
+        log_block "BLOCKED: State file read redundant - semantic context active: $file_path"
+        echo '{"continue": false, "reason": "BLOCKED: Semantic context already injected. State file '"$(basename "$file_path")"' content is in your context. Trust the river - no redundant reads."}'
+        return 0
+    fi
+
+    # Check for duplicate read (warning only, not blocking)
     if is_duplicate_read "$file_path"; then
         log_warn "Duplicate read detected: $file_path"
-        echo "WARNING: This file was recently read."
-        echo "Consider using cached information from conversation buffer."
+        # Warning included in output but still allows read
+        echo "WARNING: This file was recently read. Consider using cached information."
     fi
 
     # Track the read
     track_read "$file_path"
 
+    echo '{"continue": true}'
     return 0
 }
 
@@ -350,7 +372,8 @@ monitor_write() {
 
 main() {
     local tool_name="${1:-}"
-    local tool_args="${2:-{}}"
+    local tool_args="${2:-}"
+    [[ -z "$tool_args" ]] && tool_args="{}"
 
     if [[ -z "$tool_name" ]]; then
         log_error "No tool name provided"
