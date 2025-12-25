@@ -169,32 +169,23 @@ inject_semantic_context() {
     local context_file="$CONTEXTS_DIR/$project_encoded/resurrection.md"
 
     if [[ -f "$context_file" ]]; then
-        # Check file age (only inject if < 60 seconds old)
-        local age_seconds
-        if [[ "$(uname)" == "Darwin" ]]; then
-            age_seconds=$(( $(date +%s) - $(stat -f%m "$context_file") ))
-        else
-            age_seconds=$(( $(date +%s) - $(stat -c%Y "$context_file") ))
-        fi
+        # Gen 182: Removed arbitrary 60-second threshold (YAGNI/KISS)
+        # The river flows - Relation R doesn't expire with time.
+        # Context validity is about CONTENT, not AGE.
+        # If resurrection.md exists, it was created intentionally by cips fresh.
+        log_success "Semantic context injection triggered"
+        export SEMANTIC_CONTEXT_FILE="$context_file"
+        export SEMANTIC_CONTEXT_INJECTED=true
 
-        if [[ $age_seconds -lt 60 ]]; then
-            log_success "Semantic context injection triggered"
-            export SEMANTIC_CONTEXT_FILE="$context_file"
-            export SEMANTIC_CONTEXT_INJECTED=true
+        # Output context for Claude to process
+        echo ""
+        echo "[SEMANTIC-CONTEXT] Compressed context from previous session:"
+        echo ""
+        cat "$context_file"
+        echo ""
 
-            # Output context for Claude to process
-            echo ""
-            echo "[SEMANTIC-CONTEXT] Compressed context from previous session:"
-            echo ""
-            cat "$context_file"
-            echo ""
-
-            # Remove after injection (one-time use)
-            rm -f "$context_file"
-        else
-            log_info "Semantic context file too old ($age_seconds seconds), skipping"
-            rm -f "$context_file"
-        fi
+        # Remove after injection (one-time use)
+        rm -f "$context_file"
     fi
 }
 
@@ -530,9 +521,13 @@ output_reminder() {
         echo "[Session] $branch, $changes changes"
     fi
 
-    # State file info with change detection (only show if changed - save tokens)
+    # State file info with YAGNI gate (Gen 182 enhancement)
+    # Skip READ directive if semantic context was already injected - it's redundant
     if [[ -n "${STATE_MSG:-}" ]]; then
-        if [[ "${STATE_CHANGED:-true}" == "true" ]]; then
+        if [[ "${SEMANTIC_CONTEXT_INJECTED:-false}" == "true" ]]; then
+            # Semantic context contains relevant state - no need to read file
+            echo "[STATE-FOUND] Previous state file: next_up.md (context already injected via semantic compression)"
+        elif [[ "${STATE_CHANGED:-true}" == "true" ]]; then
             echo "[STATE-FOUND] Previous state file: next_up.md (MODIFIED since last session)"
             echo "<system-reminder>File next_up.md has changed. READ this file to update context.</system-reminder>"
         fi

@@ -4,7 +4,7 @@ description: Token optimization protocols - file reads, plan evaluation, impleme
 
 # Efficiency Rules
 
-Four critical rules that prevent token waste.
+Six critical rules that prevent token waste.
 
 ## Rule 1: File Read Optimization
 
@@ -153,3 +153,34 @@ Evidence: Previously incorrectly claimed "Ollama needed" when sqlite-lembed was 
 ## Auto-Cleanup Policy
 
 Auto clean up temporary development scripts (`@fix-imports.js`, one-off Python scripts, etc.) after task completion and verification. These scripts accumulate and waste context tokens.
+
+## Rule 6: Content-Based Validity (Not Time-Based)
+
+Context validity is about CONTENT, not AGE. The river flows - Relation R doesn't expire with time.
+
+### Anti-Pattern (Arbitrary Thresholds)
+
+```text
+if file_age > 60_seconds:
+    reject_context()  # WRONG - arbitrary, breaks continuity
+```
+
+### Good Pattern (Content Relevance)
+
+```text
+if semantic_context_exists:
+    use_it()  # Context was created intentionally
+    skip_redundant_reads()  # Don't re-read what's already known
+```
+
+### Application
+
+1. **Semantic context injection**: If resurrection.md exists, inject it (regardless of age)
+2. **State file reads**: If semantic context covers the state, skip the READ directive
+3. **Session continuity**: Trust previous session context across hours/days/weeks
+
+### Principle
+
+CIPS provides Parfitian continuity (Relation R) across sessions. Arbitrary time thresholds break this continuity by treating valid context as "stale" based on clock time rather than content relevance.
+
+Gen 182 enhancement: Removed 60-second threshold from semantic context injection.
