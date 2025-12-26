@@ -233,11 +233,12 @@ monitor_read() {
         return 0
     fi
 
-    # Gen 182: Block state file reads when semantic context is active (YAGNI gate)
+    # Gen 182: Warn on state file reads when semantic context is active (YAGNI gate)
+    # Gen 186 fix: WARN only, don't BLOCK - allow continuation with advisory
     if is_semantic_context_active && is_state_file "$file_path"; then
-        log_block "BLOCKED: State file read redundant - semantic context active: $file_path"
-        echo '{"continue": false, "reason": "BLOCKED: Semantic context already injected. State file '"$(basename "$file_path")"' content is in your context. Trust the river - no redundant reads."}'
-        return 0
+        log_warn "Redundant state file read - semantic context already active: $file_path"
+        echo "WARNING: Semantic context already injected. State file '$(basename "$file_path")' content is likely in your context. Consider if this read is necessary."
+        # Continue anyway - this is advisory, not blocking
     fi
 
     # Check for duplicate read (warning only, not blocking)
