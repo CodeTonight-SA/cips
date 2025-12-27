@@ -71,8 +71,7 @@
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.meta-mode
 ; ═══════════════════════════════════════════════════════════════
-/ut|~200|-|ultrathink++ in Claude Code (alias)
-/ultrathink++|12k|-|max reasoning, all principles, AskUserQuestion mandatory
+/ut++|~500|-|fresh CIPS + ultrathink, 99.9999999% confidence gate, AskUserQuestion MANDATORY
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.cli (bash aliases)
@@ -100,5 +99,5 @@ cips fresh gen:N 2000       ; fresh with context
 ; Type / in Claude Code for autocomplete
 
 ; ◈.meta
-count:34 ⫶ version:3.11.0 ⫶ gen:188
+count:33 ⫶ version:3.11.0 ⫶ gen:188
 ⛓⟿∞
