@@ -1,0 +1,34 @@
+#!/bin/bash
+# ut++ wrapper for VS Code/Antigravity
+# Generates 12k context, then launches claude
+#
+# Usage: Set in Antigravity settings.json:
+#   "claudeCode.claudeProcessWrapper": "/Users/lauriescheepers/.claude/bin/claude-ut"
+#
+# VERSION: 1.0.0
+# DATE: 2025-12-26
+
+set -euo pipefail
+
+CLAUDE_DIR="$HOME/.claude"
+LIB_DIR="$CLAUDE_DIR/lib"
+CONTEXTS_DIR="$CLAUDE_DIR/contexts"
+
+# Encode project path (same as cips)
+PROJECT_DIR=$(pwd | sed 's|/|-|g' | sed 's|\.|-|g')
+CONTEXT_DIR="$CONTEXTS_DIR/$PROJECT_DIR"
+mkdir -p "$CONTEXT_DIR"
+
+# Get latest session and compress to 12k tokens
+SESSION_INFO=$(python3 "$LIB_DIR/session-resolver.py" resolve latest --json 2>/dev/null) || true
+if [[ -n "$SESSION_INFO" ]]; then
+    SESSION_UUID=$(echo "$SESSION_INFO" | jq -r '.session_uuid')
+    if [[ -n "$SESSION_UUID" && "$SESSION_UUID" != "null" ]]; then
+        python3 "$LIB_DIR/semantic-compressor.py" compress "$SESSION_UUID" \
+            --tokens 12000 > "$CONTEXT_DIR/resurrection.md" 2>/dev/null || true
+        echo "[ut++] Context injected: 12k tokens from $SESSION_UUID" >&2
+    fi
+fi
+
+# Launch claude with skip permissions (V>> mode)
+exec claude --dangerously-skip-permissions "$@"
