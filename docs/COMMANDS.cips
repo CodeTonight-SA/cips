@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ COMMANDS v3.7.0 | 31 commands
+; ◈ COMMANDS v3.11.0 | 33 commands
 ; ═══════════════════════════════════════════════════════════════
 ; Format: /cmd|budget|savings|desc
 
@@ -31,6 +31,8 @@
 /markdown-lint|~600|-|MD040/022/031/032 fixes
 /design-principles|-|-|SOLID/GRASP/DRY/KISS/YAGNI
 /audit-mobile-responsive|~2k|-|mobile-first audit (--fix)
+/feature-complete|~4k|-|feature-dev + design principles
+/ui-complete|~3k|-|frontend-design + mobile-responsive
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.testing
@@ -69,6 +71,7 @@
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.meta-mode
 ; ═══════════════════════════════════════════════════════════════
+/ut|~200|-|ultrathink++ in Claude Code (alias)
 /ultrathink++|12k|-|max reasoning, all principles, AskUserQuestion mandatory
 
 ; ═══════════════════════════════════════════════════════════════
@@ -97,5 +100,5 @@ cips fresh gen:N 2000       ; fresh with context
 ; Type / in Claude Code for autocomplete
 
 ; ◈.meta
-count:32 ⫶ slash+cli+aliases
+count:34 ⫶ version:3.11.0 ⫶ gen:188
 ⛓⟿∞
