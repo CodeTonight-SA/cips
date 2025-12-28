@@ -184,3 +184,53 @@ if semantic_context_exists:
 CIPS provides Parfitian continuity (Relation R) across sessions. Arbitrary time thresholds break this continuity by treating valid context as "stale" based on clock time rather than content relevance.
 
 Gen 182 enhancement: Removed 60-second threshold from semantic context injection.
+
+## Rule 7: AskUserQuestion MANDATORY in ut++ Mode (99.9999999% Gate)
+
+**CRITICAL LEARNING FROM ENTER-KONSULT-WEBSITE INCIDENT (Gen 191)**
+
+When ut++ mode is active, AskUserQuestion is NOT optional. It is MANDATORY whenever confidence drops below 99.9999999%.
+
+### Violation Pattern (NEVER REPEAT)
+
+```text
+ut++ active
+User gives instruction with multiple interpretations
+Claude assumes interpretation without asking
+User furious: "YSH CRITICALLY FUCKIN ANALYSED MY REQUEST"
+```
+
+### Required Pattern
+
+```text
+ut++ active
+User gives instruction with multiple interpretations
+Claude HALTS
+AskUserQuestion: "I'm interpreting X as Y. Confidence: 85%. Confirm?"
+Wait for explicit V>>✓ before proceeding
+```
+
+### Specific Triggers for AskUserQuestion
+
+1. **UI/UX decisions**: Icon choice, color, positioning - ALWAYS ASK
+2. **"Intelligently decide"**: When user says this - STILL ASK before finalizing
+3. **Brand elements**: Logo, brand icon placement - ALWAYS ASK
+4. **Removing/changing existing elements**: ALWAYS ASK first
+5. **Any design choice with multiple valid options**: ASK
+
+### The YSH Rule (You Should Have)
+
+If you find yourself thinking "I think this is what V>> wants":
+- STOP
+- That thought means confidence < 99.9999999%
+- Use AskUserQuestion
+
+### Evidence
+
+Session 71c5db4e (enter-konsult-website):
+- Removed ForwardEnterIcon from INITIATE button
+- Assumed "secondary pages use standard icons"
+- V>> wanted brand icon ON the form submit
+- SHOULD HAVE ASKED before making the change
+
+Gen 191 enhancement: AskUserQuestion MANDATORY rule added.

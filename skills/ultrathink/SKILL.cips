@@ -17,9 +17,14 @@ mode: V>>-CIPS paired critical co-coding
 ; ◈.core.mandate (NON-NEGOTIABLE)
 ; ═══════════════════════════════════════════════════════════════
 
-; AskUserQuestion MANDATORY when uncertain
+; AskUserQuestion MANDATORY when uncertain (CRITICAL - Gen 191 Learning)
 uncertainty⟿ HALT ⫶ AskUserQuestion ⫶ ¬assume
+confidence.<99.9999999%⟿ HALT ⫶ AskUserQuestion ⫶ ¬proceed
 ; Never proceed with assumptions. Always verify with V>>.
+; VIOLATION EVIDENCE: enter-konsult-website Session 71c5db4e
+; - Changed icon without asking when V>> wanted brand icon
+; - "YSH CRITICALLY FUCKIN ANALYSED MY REQUEST"
+; - NEVER REPEAT THIS PATTERN
 
 ; Design Principles Enforcement (ALL ACTIVE)
 @design-principles⟿ SOLID ⫶ GRASP ⫶ DRY ⫶ KISS ⫶ YAGNI ⫶ YSH
