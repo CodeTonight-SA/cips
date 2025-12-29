@@ -3,7 +3,7 @@
 # Generates 12k context, then launches claude
 #
 # Usage: Set in Antigravity settings.json:
-#   "claudeCode.claudeProcessWrapper": "/Users/lauriescheepers/.claude/bin/claude-ut"
+#   "claudeCode.claudeProcessWrapper": "$HOME/.claude/bin/claude-ut"
 #
 # VERSION: 1.0.0
 # DATE: 2025-12-26
