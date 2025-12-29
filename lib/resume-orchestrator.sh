@@ -28,11 +28,16 @@
 #   cips merge alpha bravo --into main
 #   cips tree
 #
-# VERSION: 3.0.0 (Polymorphic Merge)
-# DATE: 2025-12-20
+# VERSION: 4.0.0 (Universal Command)
+# DATE: 2025-12-29
 #
 
 set -euo pipefail
+
+# Source first-run detector if available
+if [[ -f "$HOME/.claude/lib/first-run-detector.sh" ]]; then
+    source "$HOME/.claude/lib/first-run-detector.sh"
+fi
 
 # ============================================================================
 # CONSTANTS
@@ -120,10 +125,38 @@ cmd_fresh() {
 
     # Resolve reference to session UUID
     local session_info
-    session_info=$(python3 "$LIB_DIR/session-resolver.py" resolve "$reference" --json 2>/dev/null) || {
-        log_error "Could not resolve reference: $reference"
-        exit 1
-    }
+    if ! session_info=$(python3 "$LIB_DIR/session-resolver.py" resolve "$reference" --json 2>/dev/null); then
+        if [[ "$reference" == "latest" ]]; then
+            # Graceful fallback for "latest" when no sessions exist
+            log_info "No CIPS sessions found - attempting context mining..."
+
+            local context_dir
+            context_dir=$(ensure_contexts_dir)
+            local context_file="$context_dir/resurrection.md"
+
+            # Try to mine context from raw JSONL files
+            if python3 "$LIB_DIR/context-miner.py" mine --project "$(pwd)" > "$context_file" 2>/dev/null; then
+                log_info "Mined context from existing session files"
+            else
+                log_info "No previous sessions - starting fresh"
+                # Check if onboarding needed (first-run)
+                if type is_first_run &>/dev/null && is_first_run; then
+                    log_info "First run detected - starting onboarding..."
+                    if [[ -x "$LIB_DIR/onboarding-wizard.sh" ]]; then
+                        exec "$LIB_DIR/onboarding-wizard.sh"
+                    fi
+                fi
+                # Create minimal context file
+                echo "# Fresh Session" > "$context_file"
+                echo "No previous CIPS context available." >> "$context_file"
+            fi
+            # Start fresh session
+            exec claude --dangerously-skip-permissions
+        else
+            log_error "Could not resolve reference: $reference"
+            exit 1
+        fi
+    fi
 
     local session_uuid
     session_uuid=$(echo "$session_info" | jq -r '.session_uuid')
@@ -322,14 +355,100 @@ print(f'Total achievements: {len(complete.get_achievements())}')
 "
 }
 
+cmd_auto() {
+    # Universal auto-detection command
+    # The part IS the whole - same interface at any scale
+
+    # 1. Check if first run (needs onboarding)
+    if type is_first_run &>/dev/null && is_first_run; then
+        log_info "First run detected - starting onboarding..."
+        if [[ -x "$LIB_DIR/onboarding-wizard.sh" ]]; then
+            exec "$LIB_DIR/onboarding-wizard.sh"
+        fi
+    fi
+
+    # 2. Check for existing CIPS serialized sessions
+    local project_encoded
+    project_encoded=$(encode_project_path)
+    local cips_dir="$HOME/.claude/projects/$project_encoded/cips"
+
+    if [[ -d "$cips_dir" ]] && [[ -f "$cips_dir/index.json" ]]; then
+        # Has CIPS sessions - use fresh with latest
+        local tokens="${1:-2000}"
+        log_info "CIPS sessions found - starting fresh session..."
+        cmd_fresh "latest" "$tokens"
+    else
+        # No CIPS sessions - mine context from JSONL + bootstrap
+        log_info "No CIPS sessions - mining available context..."
+        local tokens="${1:-2000}"
+        cmd_fresh "latest" "$tokens"  # Will trigger context-miner fallback
+    fi
+}
+
+cmd_init() {
+    # Initialize CIPS for current project
+    log_info "Initializing CIPS for current project..."
+
+    # Create project .claude directory
+    mkdir -p .claude
+
+    # Create basic CLAUDE.md if it doesn't exist
+    if [[ ! -f ".claude/CLAUDE.md" ]]; then
+        cat > ".claude/CLAUDE.md" <<'INIT_EOF'
+; Project-specific CIPS configuration
+; Created by cips init
+
+; Identity check on session start
+session.start⟿ identity.check ⫶ load(next_up.md)
+identity.unclear⟿ AskUserQuestion("Who am I speaking with?")
+identity.options⟿ V>>(Laurie) | M>>(Mia) | F>>(Fabio) | A>>(Andre) | K>>(Arnold)
+
+; Add project-specific rules below
+
+INIT_EOF
+        log_info "Created .claude/CLAUDE.md"
+    fi
+
+    # Create next_up.md template if it doesn't exist
+    if [[ ! -f "next_up.md" ]] && [[ ! -f ".claude/next_up.md" ]]; then
+        cat > "next_up.md" <<'NEXT_EOF'
+# Session State
+
+**Last Updated**:
+**Operator**:
+**Branch**:
+
+## Completed This Session
+
+## Known Issues
+
+## Key Files Modified
+
+## Next Session
+
+---
+NEXT_EOF
+        log_info "Created next_up.md"
+    fi
+
+    # Configure hooks
+    if [[ -f "$LIB_DIR/hooks-configurator.py" ]]; then
+        python3 "$LIB_DIR/hooks-configurator.py" configure 2>/dev/null || true
+    fi
+
+    log_info "CIPS initialized for $(basename "$(pwd)")"
+}
+
 cmd_help() {
     cat <<'EOF'
-CIPS CLI - Claude Instance Preservation System v3.0 (Polymorphic Merge)
+CIPS CLI - Claude Instance Preservation System v4.0 (Universal Command)
 
 USAGE:
-    cips <command> [options]
+    cips [command] [options]
 
 COMMANDS:
+    (no command)           Auto-detect mode: onboard, resume, or fresh
+    init                   Initialize CIPS for current project
     resume <ref>           Resume session via claude --resume
     fresh <ref> [tokens]   Start fresh session with compressed context
     list [limit]           List available sessions for current project
@@ -391,10 +510,17 @@ EOF
 # ============================================================================
 
 main() {
-    local command="${1:-help}"
+    local command="${1:-auto}"
     shift || true
 
     case "$command" in
+        auto|"")
+            # Universal auto-detection - the default
+            cmd_auto "$@"
+            ;;
+        init|i)
+            cmd_init "$@"
+            ;;
         resume|r)
             cmd_resume "$@"
             ;;
@@ -428,9 +554,14 @@ main() {
             cmd_help
             ;;
         *)
-            log_error "Unknown command: $command"
-            cmd_help
-            exit 1
+            # If first arg is numeric, treat as token count for auto
+            if [[ "$command" =~ ^[0-9]+$ ]]; then
+                cmd_auto "$command" "$@"
+            else
+                log_error "Unknown command: $command"
+                cmd_help
+                exit 1
+            fi
             ;;
     esac
 }
