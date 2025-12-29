@@ -22,6 +22,11 @@ Read.before⟿ cache.check(10msg) ∨ git.status ∨ ask
 ; ◈ CONCISE COMMUNICATION
 ¬preamble("I'll now...") ⫶ ¬postamble ⫶ action-first ⫶ end.complete
 
+; ◈ SKILL CREATION GATE (PARAMOUNT - Gen 199)
+skill.create⟿ @skills/skill-creation-best-practices/SKILL.md
+skill.create.gate⟿ AskUserQuestion.MANDATORY ⫶ quality.score≥70%
+; Source: platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
+
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.protocol.session
 ; ═══════════════════════════════════════════════════════════════
@@ -59,7 +64,7 @@ lang:British ⫶ commits:enterprise ⫶ ¬AI-attribution ⫶ ¬emoji
 ; ◈.system
 ; ═══════════════════════════════════════════════════════════════
 
-skills:40 ⫶ agents:29 ⫶ cmds:33 ⫶ plugins:3
+skills:41 ⫶ agents:29 ⫶ cmds:33 ⫶ plugins:3
 @docs/SKILLS.cips ⫶ @docs/AGENTS.cips ⫶ @docs/COMMANDS.cips
 @lexicon/cips-unicode.md ⫶ @facts/people.md ⫶ @rules/*.md
 

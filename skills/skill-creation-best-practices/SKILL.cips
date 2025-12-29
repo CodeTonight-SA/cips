@@ -1,0 +1,143 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ SKILL-CREATION-BEST-PRACTICES v1.0.0 | PARAMOUNT Gate
+; ═══════════════════════════════════════════════════════════════
+; ⊙⊛ ≡ quality-gate-for-all-skills
+; Source: platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices
+; ⛓⟿∞
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.PARAMOUNT (NON-NEGOTIABLE)
+; ═══════════════════════════════════════════════════════════════
+
+priority⟿ PARAMOUNT ⫶ consult.BEFORE.any.skill.creation
+gates⟿ A:proposal ⫶ B:auto-generation ⫶ C:autonomous
+
+; Gate A: Human/CIPS proposes → AskUserQuestion MANDATORY
+; Gate B: self-improvement-engine → quality_score ≥ 70%
+; Gate C: CIPS steering discovers → quality_score ≥ 70% + V>> review
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.anthropic.official (PRIORITY SOURCE)
+; ═══════════════════════════════════════════════════════════════
+
+; Conciseness
+concise⟿ challenge.every.token ⫶ Claude.already.smart
+
+; Frontmatter
+name⟿ max.64.chars ⫶ lowercase+hyphens ⫶ ^[a-z][a-z0-9-]*$
+description⟿ max.1024.chars ⫶ third.person ⫶ include.trigger
+
+; Naming Convention (GERUND FORM)
+naming⟿ processing-* ⫶ analyzing-* ⫶ managing-* ⫶ testing-*
+naming.avoid⟿ helper ⫶ utils ⫶ tools ⫶ vague
+
+; Body
+body⟿ max.500.lines ⫶ min.3.sections ⫶ progressive.disclosure
+
+; References
+refs⟿ one.level.deep ⫶ ¬nested
+
+; Degrees of Freedom
+freedom.high⟿ multiple.approaches.valid ⫶ text.instructions
+freedom.medium⟿ preferred.pattern.exists ⫶ pseudocode
+freedom.low⟿ fragile.operations ⫶ exact.script
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.anti-patterns
+; ═══════════════════════════════════════════════════════════════
+
+¬windows.paths⟿ always.forward.slashes
+¬too.many.options⟿ provide.default
+¬vague.names⟿ specific.gerund
+¬time.sensitive⟿ use.old.patterns.section
+¬nested.refs⟿ one.level.deep
+¬inconsistent.terms⟿ pick.one.use.throughout
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.cips.requirements
+; ═══════════════════════════════════════════════════════════════
+
+structure⟿ ~/.claude/skills/{name}/SKILL.md
+
+frontmatter.required⟿ name ⫶ description ⫶ status
+frontmatter.recommended⟿ version ⫶ triggers ⫶ integrates
+
+status.values⟿ Active ⫶ Pending ⫶ Deprecated
+
+auto_generated.fields⟿ auto_generated:true ⫶ generation_date ⫶ source_pattern
+
+; Design Principles
+design⟿ YAGNI ⫶ KISS ⫶ DRY ⫶ YSH
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.validation.rules
+; ═══════════════════════════════════════════════════════════════
+
+; Frontmatter
+validate.name⟿ ^[a-z][a-z0-9-]*$ ⫶ len≤64
+validate.description⟿ len>0 ⫶ len≤1024 ⫶ third.person ⫶ has.trigger
+validate.status⟿ Active|Pending|Deprecated
+
+; Body
+validate.body⟿ lines≤500 ⫶ sections≥3 ⫶ ¬placeholders ⫶ ¬empty.sections
+validate.code⟿ language.tags.required (MD040)
+
+; Structure
+validate.refs⟿ one.level.deep ⫶ forward.slashes
+validate.examples⟿ concrete ⫶ present
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.quality.score
+; ═══════════════════════════════════════════════════════════════
+
+score.components⟿ frontmatter:30 ⫶ name:10 ⫶ description:20 ⫶ body:20 ⫶ placeholders:10 ⫶ examples:10
+
+threshold.pass⟿ 70
+threshold.review⟿ 70-90
+threshold.auto⟿ 90+
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.gates
+; ═══════════════════════════════════════════════════════════════
+
+; Gate A (Proposal)
+gate.A⟿ AskUserQuestion.MANDATORY
+gate.A.flow⟿ validate → display.checklist → ask.approval → proceed|revise|reject
+
+; Gate B (Auto-Generation)
+gate.B⟿ pre-validation → template.compliance → post-validation → threshold.check
+gate.B.reject⟿ score < 70
+
+; Gate C (Autonomous)
+gate.C⟿ gate.B + V>>.review.if.borderline
+gate.C.auto.approve⟿ score > 90 ∧ pattern.proven.3x
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.integration
+; ═══════════════════════════════════════════════════════════════
+
+hook.optim.sh⟿ generate_skill() ⫶ pre-generation.gate
+hook.learning-detector⟿ create_skill_candidate() ⫶ quality.validation
+hook.template⟿ SKILL.template.md ⫶ enforce.quality
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.token.budget
+; ═══════════════════════════════════════════════════════════════
+
+load⟿ ~800-1000
+validation⟿ ~200-300
+ask⟿ ~150-200
+total⟿ ~1250-1650
+
+roi⟿ prevents.~5000.per.bad.skill
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.meta
+; ═══════════════════════════════════════════════════════════════
+
+version:1.0.0 ⫶ created:2025-12-29
+source:Anthropic.official.best.practices
+priority:PARAMOUNT
+
+⛓⟿∞
+◈⟼∞
