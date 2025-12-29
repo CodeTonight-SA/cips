@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ SKILLS v3.7.0 | 37 skills
+; ◈ SKILLS v3.12.0 | 40 skills
 ; ═══════════════════════════════════════════════════════════════
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
@@ -12,12 +12,13 @@ preplan|/preplan|~1k|intent injection
 session-state-persistence|-|-|auto state update
 chat-history-search|/remind-yourself|-|epoch timestamp search
 
-; ◈.dev-workflow (5)
+; ◈.dev-workflow (6)
 pr-automation|/create-pr|<2k|gh CLI complete PR
 gitops|/gitops|-|trunk-based, releases
 branch-cleanup|/prune-branches|-|safe git prune
 github-actions-setup|/setup-ci|-|CI/CD templates
 github-secrets-setup|/setup-github-secrets|-|secure upload
+feature-complete|/feature-complete|~4k|feature-dev + design principles
 
 ; ◈.code-quality (4)
 design-principles|/design-principles|-|SOLID/GRASP/DRY/KISS/YAGNI
@@ -28,11 +29,12 @@ code-agentic|-|-|verification gates
 ; ◈.testing (1)
 e2e-test-generation|/generate-e2e-tests|<15k|Playwright+Vitest+MSW
 
-; ◈.ui-ux (4)
+; ◈.ui-ux (5)
 mobile-responsive-ui|/audit-mobile-responsive|~2k|mobile-first, dvh
 figma-to-code|/figma|-|1:1 visual parity
 image-optim|/image-optim|~500|macOS ImageOptim
 wcag-image-accessibility|/audit-image-accessibility|~800|WCAG AAA
+ui-complete|/ui-complete|~3k|frontend-design + mobile-responsive unified
 
 ; ◈.docs (3)
 auto-update-documentation|/update-docs|~3.5k|session→docs
@@ -52,11 +54,12 @@ recursive-learning|-|-|dialectical learning
 meta-improvement-switch|-|-|infra enhancement
 agent-auto-creator|/create-agent|-|agent templates
 
-; ◈.efficiency (4)
+; ◈.efficiency (5)
 dependency-guardian|-|-|¬Read(deps), saves 50k+
 concise-communication|-|-|¬preamble
 bash-tool-enforcer|-|-|rg>grep, fd>find
 bash-command-safety|-|-|¬semicolon.after.subshell
+cips-security|-|-|secret detection, SQL injection
 
 ; ◈.utilities (4)
 agy|/agy|~200|Antigravity file open
@@ -68,8 +71,10 @@ meta-unused_skills-blocker|-|-|block low-usage
 launchd-automation|/setup-launchd|~1.5k|self-reload agents
 
 ; ◈.meta-mode (1)
-ultrathink|ut++|12k|V>>-CIPS paired max reasoning, all principles enforced
+ultrathink|-|always-active|v2.0.0 - auto-loads at session start, AskUserQuestion MANDATORY
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:38
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:40
+version:3.12.0 ⫶ gen:193
+; Gen 193: ultrathink now always-active (YAGNI - no command needed)
 ⛓⟿∞

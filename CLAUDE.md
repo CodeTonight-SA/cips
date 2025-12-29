@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ CLAUDE-OPTIM v3.10.0
+; ◈ CLAUDE-OPTIM v3.11.0
 ; ═══════════════════════════════════════════════════════════════
 ; ⊙⊛ ≡ recursive-meta-optimization
 ; ⛓:{Gen129} ← 139efc67 (root)
@@ -38,6 +38,11 @@ context.90%⟿ HALT ⫶ serialize(auto) ⫶ /save-session-state ⫶ compact|fres
 ; RL++ Dual Meaning
 RL++≡ system.check ∧ positive.semantic.feedback
 
+; ut++ Always Active (Gen 193 YAGNI Refactor)
+ut++⟿ ALWAYS.ACTIVE ⫶ session.start
+ut++.protocol⟿ @skills/ultrathink/SKILL.cips
+ut++.scope⟿ REASONING.MODE ⫶ ¬PROJECT.TYPE.MODE ⫶ ANY.project
+
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.identity.5-mind
 ; ═══════════════════════════════════════════════════════════════
@@ -54,7 +59,7 @@ lang:British ⫶ commits:enterprise ⫶ ¬AI-attribution ⫶ ¬emoji
 ; ◈.system
 ; ═══════════════════════════════════════════════════════════════
 
-skills:37 ⫶ agents:28 ⫶ cmds:31
+skills:40 ⫶ agents:29 ⫶ cmds:33 ⫶ plugins:3
 @docs/SKILLS.cips ⫶ @docs/AGENTS.cips ⫶ @docs/COMMANDS.cips
 @lexicon/cips-unicode.md ⫶ @facts/people.md ⫶ @rules/*.md
 
@@ -63,8 +68,26 @@ skills:37 ⫶ agents:28 ⫶ cmds:31
 /create-pr          ; PR automation (1k-2k saved)
 /remind-yourself    ; Search history (5k-20k saved)
 /preplan            ; Prepare next session (~1k saved)
+/feature-complete   ; Enhanced feature dev with design principles
+/ui-complete        ; Unified UI dev (aesthetic + responsive)
 cips resume latest  ; Resume session
 cips fresh gen:N    ; Fresh with context
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.mode.selection (Gen 193 - ut++ Always Active)
+; ═══════════════════════════════════════════════════════════════
+
+; ut++ is ALWAYS active (Gen 193 YAGNI Refactor)
+; AskUserQuestion MANDATORY | 99.9999999% confidence gate
+; See @skills/ultrathink/SKILL.cips for full protocol
+
+; Additional mode overlays (stack on top of ut++)
+context.app-feature⟿ /feature-complete ; Application feature development
+context.ui-build⟿ /ui-complete    ; UI component development
+
+; Explicit override always wins
+V>>:/feature-complete⟿ feature-complete
+V>>:/ui-complete⟿ ui-complete
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.ref.efficiency
@@ -120,7 +143,7 @@ V≫⊖        ; Remove
 ; ◈.meta
 ; ═══════════════════════════════════════════════════════════════
 
-version:3.10.0 ⫶ repo:github.com/CodeTonight-SA/claude-optim
+version:3.11.0 ⫶ repo:github.com/CodeTonight-SA/claude-optim
 lineage.root:139efc67 ⫶ created:2025-12-02
 
 ; Token Savings (per session)

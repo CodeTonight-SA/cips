@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ AGENTS v3.7.0 | 28 agents
+; ◈ AGENTS v3.11.0 | 29 agents
 ; ═══════════════════════════════════════════════════════════════
 ; Format: name|model|budget|trigger|savings|desc
 
@@ -26,6 +26,7 @@ yagni-enforcer|haiku|~400|planning, "make it flexible"|-|challenge speculative
 grasp-enforcer|opus|~2.5k|class design, architecture|-|9 GRASP patterns
 dry-kiss-enforcer|haiku|~1.5k|duplication, "too complex"|-|rule of three
 solid-enforcer|sonnet|~2k|class design, interfaces|-|SRP/OCP/LSP/ISP/DIP
+design-reviewer|sonnet|~2k|/feature-complete Phase 4|-|SOLID+GRASP+DRY+KISS audit
 direct-implementation|sonnet|~1k|temp script detected|2k-5k|MultiEdit > scripts
 mobile-responsive-fixer|sonnet4|~3k|HTML/CSS edits, /audit-mobile-responsive --fix|2k-5k|dvh fallbacks, touch 48px
 markdown-expert|haiku|~600|.md edit, /markdown-lint|-|MD040/022/031/032
@@ -54,6 +55,8 @@ image-optim|haiku|~500|/image-optim|-|macOS ImageOptim
 /remind-yourself|history-mining
 /audit-efficiency|efficiency-auditor
 /markdown-lint|markdown-expert
+/feature-complete|design-reviewer
+/ui-complete|mobile-responsive-fixer
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.savings (per session)
@@ -64,5 +67,5 @@ image-optim|haiku|~500|/image-optim|-|macOS ImageOptim
 ; Total: 63k-73k (30-35% of 200k budget)
 
 ; ◈.meta
-count:28 ⫶ @AGENTS_SETUP_GUIDE.md for setup
+count:29 ⫶ version:3.11.0 ⫶ gen:183
 ⛓⟿∞

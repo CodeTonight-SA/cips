@@ -72,6 +72,14 @@
       "linked_skill": "design-principles",
       "linked_agent": null
     },
+    "feature-complete": {
+      "description": "Enhanced feature development combining feature-dev (7-phase workflow) with CIPS design principles (SOLID, GRASP, DRY, KISS, YAGNI)",
+      "argument-hint": "Feature description",
+      "command_name": "feature-complete",
+      "file_path": "/Users/lauriescheepers/.claude/commands/feature-complete.md",
+      "linked_skill": "feature-complete",
+      "linked_agent": null
+    },
     "figma": {
       "command_name": "figma",
       "file_path": "/Users/lauriescheepers/.claude/commands/figma.md",
@@ -224,6 +232,14 @@
       "linked_skill": null,
       "linked_agent": null
     },
+    "ui-complete": {
+      "description": "Unified UI development combining frontend-design (anti-AI-slop aesthetics) with mobile-responsive-ui (dvh, touch targets, testing)",
+      "argument-hint": "Optional component description",
+      "command_name": "ui-complete",
+      "file_path": "/Users/lauriescheepers/.claude/commands/ui-complete.md",
+      "linked_skill": "ui-complete",
+      "linked_agent": null
+    },
     "update-docs": {
       "description": "Automatically update project documentation by analysing session history and git commits",
       "disable-model-invocation": false,
@@ -234,7 +250,7 @@
     }
   },
   "meta": {
-    "total_commands": 31,
-    "indexed_at": "2025-12-22T20:20:29Z"
+    "total_commands": 33,
+    "indexed_at": "2025-12-29T14:25:44Z"
   }
 }

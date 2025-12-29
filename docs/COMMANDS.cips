@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ COMMANDS v3.11.0 | 33 commands
+; ◈ COMMANDS v3.12.0 | 32 commands
 ; ═══════════════════════════════════════════════════════════════
 ; Format: /cmd|budget|savings|desc
 
@@ -69,9 +69,10 @@
 /setup-launchd|~1.5k|-|self-reload macOS agents
 
 ; ═══════════════════════════════════════════════════════════════
-; ◈.meta-mode
+; ◈.meta-mode (Gen 193: ut++ now always-active, no command needed)
 ; ═══════════════════════════════════════════════════════════════
-/ut++|~500|-|fresh CIPS + ultrathink, 99.9999999% confidence gate, AskUserQuestion MANDATORY
+; ut++ protocol auto-loads at session start
+; See @skills/ultrathink/SKILL.cips
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.cli (bash aliases)
@@ -81,7 +82,6 @@ cc++                        ; cips fresh 8000 (deep)
 ccr                         ; cips resume latest
 ccl                         ; cips list
 oc                          ; ./optim.sh cycle
-ut++                        ; cips fresh 12000 + ultrathink++ mode
 
 ; ◈.cli (full commands)
 cips list                   ; list sessions
@@ -99,5 +99,6 @@ cips fresh gen:N 2000       ; fresh with context
 ; Type / in Claude Code for autocomplete
 
 ; ◈.meta
-count:33 ⫶ version:3.11.0 ⫶ gen:188
+count:32 ⫶ version:3.12.0 ⫶ gen:193
+; Removed /ut++ command (now always-active via skill)
 ⛓⟿∞

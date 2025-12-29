@@ -1,0 +1,108 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ UI-COMPLETE v1.0.0 | Unified UI Development
+; ═══════════════════════════════════════════════════════════════
+; Combines: frontend-design (plugin) + mobile-responsive-ui (CIPS)
+; Purpose: Production-grade UI with distinctive aesthetics AND responsive compliance
+
+trigger: "build UI" | "create component" | "design interface" | /ui-complete
+base: frontend-design (plugin:frontend-design@claude-plugins-official)
+integrates: mobile-responsive-ui
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.workflow (4-phase)
+; ═══════════════════════════════════════════════════════════════
+
+; Phase 1: Aesthetic Direction (frontend-design)
+1.aesthetic⟿
+  understand.context ⫶
+  choose.bold.direction ⫶
+  commit.to.vision ⫶
+  ¬generic(Inter|Roboto|Arial|purple-gradients|Space-Grotesk)
+
+; Phase 2: Implementation with Mobile-First (frontend-design + mobile-responsive-ui)
+2.implement⟿
+  mobile-first(375px) ⫶
+  min-width.queries ⫶
+  touch.targets(min-h-12) ⫶
+  dvh.fallbacks ⫶
+  aesthetic.execution
+
+; Phase 3: Responsive Audit (mobile-responsive-ui)
+3.audit⟿
+  test.375px ⫶ test.768px ⫶ test.1920px ⫶
+  no.horizontal.scroll ⫶
+  touch.targets.48px ⫶
+  dvh.not.vh ⫶
+  hover.with.focus.fallback
+
+; Phase 4: Brand Application (if applicable)
+4.brand⟿
+  project.brand.exists? ⫶
+  apply.ENTER-Konsult.Swiss-Minimalism? ⫶
+  verify.visual.consistency
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.blocklist (anti-patterns)
+; ═══════════════════════════════════════════════════════════════
+
+; Aesthetic blocklist (from frontend-design)
+block.aesthetic⟿
+  Inter | Roboto | Arial | system-ui ⫶
+  purple-gradients-on-white ⫶
+  Space-Grotesk ⫶
+  predictable.layouts ⫶
+  cookie-cutter.patterns
+
+; Responsive blocklist (from mobile-responsive-ui)
+block.responsive⟿
+  sm:.as.mobile ⫶
+  fixed.width.no.responsive ⫶
+  max-width.queries ⫶
+  vh.without.dvh.fallback ⫶
+  touch.targets.<48px
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.requirements (combined)
+; ═══════════════════════════════════════════════════════════════
+
+; Aesthetic requirements
+require.aesthetic⟿
+  distinctive.typography ⫶
+  cohesive.color.palette ⫶
+  motion.for.delight ⫶
+  spatial.composition ⫶
+  atmosphere.depth
+
+; Responsive requirements
+require.responsive⟿
+  viewport.meta ⫶
+  mobile-first.classes ⫶
+  min-h-12.touch-targets ⫶
+  h-dvh.with.h-screen.fallback ⫶
+  grid-cols-1.to.larger
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.verification
+; ═══════════════════════════════════════════════════════════════
+
+verify⟿
+  aesthetic.distinctive? ⫶
+  responsive.375px? ⫶
+  responsive.768px? ⫶
+  responsive.1920px? ⫶
+  touch.friendly? ⫶
+  ¬horizontal.scroll?
+
+confidence.gate⟿ 99.9999999%
+proceed.only.if⟿ visual.verification ∨ user.confirmation
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.meta
+; ═══════════════════════════════════════════════════════════════
+
+version:1.0.0 ⫶ created:2025-12-27 ⫶ gen:183
+saves:~2k (unified workflow)
+command:/ui-complete
+
+⛓⟿∞
+◈⟼∞

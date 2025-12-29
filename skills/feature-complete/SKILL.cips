@@ -1,0 +1,127 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ FEATURE-COMPLETE v1.0.0 | Enhanced Feature Development
+; ═══════════════════════════════════════════════════════════════
+; Combines: feature-dev (plugin) + design-principles (CIPS) + efficiency-rules (CIPS)
+; Purpose: Principled feature development with design enforcement at every phase
+
+trigger: /feature-complete | "build feature" | "implement feature" | "add feature"
+base: feature-dev (plugin:feature-dev@claude-plugins-official)
+integrates: design-principles | efficiency-rules
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.enhancements (per phase)
+; ═══════════════════════════════════════════════════════════════
+
+; Phase 1: Discovery Enhancement
+1.enhance⟿
+  batch.read.context.files ⫶
+  cache.mental-model ⫶
+  ¬redundant.reads
+
+; Phase 2: Codebase Exploration Enhancement
+2.enhance⟿
+  trust.agent.output ⫶
+  cache.explored.files ⫶
+  ¬re-read.agent.files
+
+; Phase 3: Clarifying Questions Enhancement (CRITICAL)
+3.enhance⟿
+  AskUserQuestion.MANDATORY ⫶
+  ¬proceed.without.answers ⫶
+  YAGNI.check("speculative?") ⫶
+  YSH.check("obvious.enhancement?")
+
+; Phase 4: Architecture Design Enhancement
+4.enhance⟿
+  SOLID.review ⫶
+  GRASP.review ⫶
+  score.architectures ⫶
+  invoke(design-reviewer.agent)
+
+; Phase 5: Implementation Enhancement
+5.enhance⟿
+  DRY.check("duplicated?") ⫶
+  KISS.check("simplest?") ⫶
+  YAGNI.gate("needed.now?") ⫶
+  efficiency.file-reads
+
+; Phase 6: Quality Review Enhancement
+6.enhance⟿
+  full.design-principles.audit ⫶
+  SOLID.violations? ⫶
+  GRASP.violations? ⫶
+  DRY.violations? ⫶
+  KISS.violations?
+
+; Phase 7: Summary Enhancement
+7.enhance⟿
+  session-state.persist ⫶
+  next_up.md.update ⫶
+  preplan.if.continuation
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.design-principles.injection
+; ═══════════════════════════════════════════════════════════════
+
+; Architecture Review Questions (Phase 4)
+review.arch⟿
+  "Does this violate SRP?" ⫶
+  "Is there unnecessary coupling (Low Coupling)?" ⫶
+  "Which class should own this (Information Expert)?" ⫶
+  "Could this be simpler (KISS)?" ⫶
+  "Are we building something not needed (YAGNI)?" ⫶
+  "Is there a pattern we should abstract (YSH)?"
+
+; Implementation Checks (Phase 5)
+check.impl⟿
+  DRY: "Duplicated 3+ times?" ⫶
+  KISS: "Simpler approach exists?" ⫶
+  YAGNI: "Needed for current requirements?" ⫶
+  YSH: "Obvious enhancement within scope?"
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.efficiency.rules
+; ═══════════════════════════════════════════════════════════════
+
+file.read⟿
+  cache ⫶ batch ⫶ ¬redundant ⫶ mental-model.trust
+
+agent.output⟿
+  trust.exploration ⫶
+  ¬re-read.unless.stale ⫶
+  cache.file-lists
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.mode.selection
+; ═══════════════════════════════════════════════════════════════
+
+; feature-complete: Application feature development
+; ut++: CIPS meta-work (self-improvement, infrastructure)
+
+context.app-feature⟿ feature-complete
+context.cips-meta⟿ ut++
+V>>:explicit⟿ override.context
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.verification
+; ═══════════════════════════════════════════════════════════════
+
+verify.each.phase⟿
+  phase.1: requirements.clear?
+  phase.2: patterns.understood?
+  phase.3: questions.answered?
+  phase.4: architecture.reviewed?
+  phase.5: implementation.clean?
+  phase.6: quality.verified?
+  phase.7: state.persisted?
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.meta
+; ═══════════════════════════════════════════════════════════════
+
+version:1.0.0 ⫶ created:2025-12-27 ⫶ gen:183
+saves:~3k (unified + design enforcement)
+command:/feature-complete
+
+⛓⟿∞
+◈⟼∞
