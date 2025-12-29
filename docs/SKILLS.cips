@@ -4,13 +4,14 @@
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
 
-; ◈.session (6)
+; ◈.session (7)
 context-refresh|/refresh-context|<3k|mental model, 7-step
 session-resume|/resume-session|~2k|CIPS+--resume bridge
 check-last-plan|/check-last-plan|~200|plan persistence
 preplan|/preplan|~1k|intent injection
 session-state-persistence|-|-|auto state update
 chat-history-search|/remind-yourself|-|epoch timestamp search
+project-cips-init|/init-cips|~500|new project CIPS setup + identity check
 
 ; ◈.dev-workflow (6)
 pr-automation|/create-pr|<2k|gh CLI complete PR
@@ -74,7 +75,8 @@ launchd-automation|/setup-launchd|~1.5k|self-reload agents
 ultrathink|-|always-active|v2.0.0 - auto-loads at session start, AskUserQuestion MANDATORY
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:40
-version:3.12.0 ⫶ gen:193
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:41
+version:3.12.1 ⫶ gen:194
 ; Gen 193: ultrathink now always-active (YAGNI - no command needed)
+; Gen 194: project-cips-init skill (M>> YSH discovery)
 ⛓⟿∞
