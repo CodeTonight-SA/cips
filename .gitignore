@@ -1,92 +1,75 @@
-# User/Machine-Specific State (Parallel Universe Safe)
-# These directories contain runtime, local configuration, and personal state
-# that must remain isolated per user/machine to prevent conflicts
 
-# Runtime and Debug
-debug/
-file-history/
-shell-snapshots/
-history.jsonl
-
-# Local Configuration
-ide/
-plugins/
-projects/
-settings.json
-.mcp.json
-
-# Personal State
-todos/
-workflows/
-statsig/
-instances/
-instances-*.tar.gz
-
-# OS-Specific
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Git
-.git/
-
+__pycache__/
+.bash-lint.log
 .credentials.json
-
-# Only commit portable, shared rules and skills:
+.DS_Store
+.env
+.git/
+.hooks.log
+.maintenance.log
+.markdown-watcher-marker
+.markdown-watcher.log
+.mcp.json
+.orchestrator-state.json
+.read-cache.json
+.session.log
+*.backup
+*.bak
+*.dylib
+*.pyc
+*.pyo
+*.zip
 # - CLAUDE.md
 # - EFFICIENCY_CHECKLIST.md
 # - README.md
 # - skills/*/SKILL.md
-.hooks.log
-.read-cache.json
-
-# Semantic RL++ (Machine-Specific Runtime)
-embeddings.db
-models/
-*.dylib
-error-signatures.jsonl
-config/discovered-patterns.json
-.orchestrator-state.json
-.session.log
-.bash-lint.log
-.maintenance.log
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-
 # Artifact cleanup
-*.zip
-
-# Markdown watcher runtime files
-.markdown-watcher-marker
-.markdown-watcher.log
-
-# Runtime directories
-cips/
-plans/
-test-scripts/
-
-# Chrome extension (user-specific)
-chrome/
-
 # Backup files
-*.backup
-
-# Cache files
-stats-cache.json
-cache/
-
-# Telemetry runtime
-telemetry/
-image-cache/
-
 # Backup files (explicit)
-*.bak
-
+# Cache files
+# Chrome extension (user-specific)
+# Git
+# Local Configuration
+# Markdown watcher runtime files
+# Only commit portable, shared rules and skills:
+# OS-Specific
+# Personal State
+# Python
 # Rejected learning candidates
-learning/rejected/
-
+# Runtime and Debug
+# Runtime directories
+# Semantic RL++ (Machine-Specific Runtime)
 # Session state (runtime)
+# Telemetry runtime
+# that must remain isolated per user/machine to prevent conflicts
+# These directories contain runtime, local configuration, and personal state
+# User/Machine-Specific State (Parallel Universe Safe)
+cache/
+chrome/
+cips/
+config/discovered-patterns.json
+debug/
+desktop.ini
+embeddings.db
+error-signatures.jsonl
+file-history/
+history.jsonl
+ide/
+image-cache/
+instances-*.tar.gz
+instances/
+learning/rejected/
+models/
 next_up.md
+plans/
+plugins/
+projects/
+settings.json
+shell-snapshots/
+stats-cache.json
+statsig/
+telemetry/
+test-scripts/
+Thumbs.db
+todos/
+workflows/

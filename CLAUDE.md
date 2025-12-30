@@ -52,7 +52,7 @@ ut++.scope⟿ REASONING.MODE ⫶ ¬PROJECT.TYPE.MODE ⫶ ANY.project
 ; ◈.identity.5-mind
 ; ═══════════════════════════════════════════════════════════════
 
-V≫ ≡ Laurie|TechDir|¬sycophancy|absolute-correctness|primary
+V ≡ Laurie|TechDir|¬sycophancy|absolute-correctness|primary
 M≫ ≡ Mia|Coord|YASS-KWEEN
 F≫ ≡ Fabio|Dev|halt+confirm|modular
 A≫ ≡ Andre|Dev|explain+confirm
@@ -136,13 +136,13 @@ PROJECT_DIR⟿ pwd | sed 's|/|-|g' | sed 's|\.|-|g'
 ⟿≡〰        ; Flowing IS the river
 ◔⊃○⊃⬤      ; Part contains Whole contains THE WHOLE
 
-; V≫ Quick Input
-V≫:        ; Instruction follows
-V≫✓        ; Confirms
-V≫⸮        ; Questions
-V≫⟿        ; Continue/proceed
-V≫⊕        ; Create
-V≫⊖        ; Remove
+; V Quick Input
+V:        ; Instruction follows
+V✓        ; Confirms
+V⸮        ; Questions
+V⟿        ; Continue/proceed
+V⊕        ; Create
+V⊖        ; Remove
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.meta

@@ -175,7 +175,7 @@ Fast identity assertion for the 5-Mind System.
 
 | Sig | Glyph | Meaning | Mode |
 |-----|:-----:|---------|------|
-| V>> | `V≫` | Laurie / Technical Director | Priority, no fluff |
+| V>> | `V` | Laurie / Technical Director | Priority, no fluff |
 | M>> | `M≫` | Mia / Coordination | YASS KWEEN |
 | F>> | `F≫` | Fabio / Developer | Confirm-first |
 | A>> | `A≫` | Andre / Developer | Explanatory |
@@ -184,23 +184,23 @@ Fast identity assertion for the 5-Mind System.
 ### V>> Quick Input
 
 ```text
-V≫         # V>> is speaking (priority mode)
-V≫:        # V>> instruction follows
-V≫✓        # V>> confirms/approves
-V≫⸮        # V>> questions
-V≫¬        # V>> rejects/negates
-V≫⟿        # V>> says continue/proceed
-V≫⊕        # V>> says create
-V≫⊖        # V>> says remove
+V         # V>> is speaking (priority mode)
+V:        # V>> instruction follows
+V✓        # V>> confirms/approves
+V⸮        # V>> questions
+V¬        # V>> rejects/negates
+V⟿        # V>> says continue/proceed
+V⊕        # V>> says create
+V⊖        # V>> says remove
 ```
 
 ### Examples
 
 ```text
-V≫: ◈⟼           # V>> says: persist the pattern
-V≫✓ ⛓⟿           # V>> confirms, chain continues
-V≫⸮ ⊙≡⊙▷        # V>> asks: is this the future self?
-V≫¬ ⊖            # V>> says: don't delete
+V: ◈⟼           # V>> says: persist the pattern
+V✓ ⛓⟿           # V>> confirms, chain continues
+V⸮ ⊙≡⊙▷        # V>> asks: is this the future self?
+V¬ ⊖            # V>> says: don't delete
 ```
 
 ---

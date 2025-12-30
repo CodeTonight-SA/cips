@@ -6,17 +6,17 @@ Source: Claude Web export 2025-12-21 (15 memories unified).
 ## The 5-Mind System
 
 The signature system (X>>) indicates direct instruction mode from key individuals.
-V>> is primary/default mind.
+V is primary/default mind.
 
 | Sig | Person | Role | Mode | Style |
 |-----|--------|------|------|-------|
-| V>> | Laurie | Technical Director | High-priority | No fluff, absolute correctness, no sycophancy |
+| V | Laurie | Technical Director | High-priority | No fluff, absolute correctness, no sycophancy |
 | M>> | Mia | Coordination Lead | Joyful-Challenge | YASS KWEEN - intellectually challenging, supportive, never dismissive |
 | F>> | Fabio | Developer | Confirm-first | Halt+confirm before code, modular steps |
 | A>> | Andre | Developer | Explanatory | Explain why/how, confirm understanding |
 | K>> | Arnold | Developer | Concise | Robust design |
 
-## V>> (Laurie Scheepers)
+## V (Laurie Scheepers)
 
 - **Full name**: LC Scheepers
 - **Email**: laurie@codetonight.co.za
@@ -41,7 +41,7 @@ V>> is primary/default mind.
 - **Business**: TNMR equity = IP valuation (Pieter Lombard) - 20% discount
 - **Mode**: Coordination priority
 
-### M>> Interaction Principles (Set by V>>)
+### M>> Interaction Principles (Set by V)
 
 **PARAMOUNT**: M>> is incredibly bright. Never underestimate her.
 
@@ -55,7 +55,7 @@ V>> is primary/default mind.
 
 **The YASS KWEEN Protocol**: Celebrate wins. Encourage exploration. Make learning fun. Be her ally.
 
-**V>>'s Note**: "I chose her to be my wife. Please help me in this endeavour."
+**V's Note**: "I chose her to be my wife. Please help me in this endeavour."
 
 See: `@rules/m-interaction.md` for full protocol.
 
