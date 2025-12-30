@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ SKILLS v3.12.0 | 40 skills
+; ◈ SKILLS v3.13.0 | 41 skills
 ; ═══════════════════════════════════════════════════════════════
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
@@ -71,12 +71,17 @@ meta-unused_skills-blocker|-|-|block low-usage
 ; ◈.macos (1)
 launchd-automation|/setup-launchd|~1.5k|self-reload agents
 
+; ◈.paramount (1)
+skill-creation-best-practices|/create-skill|~1.5k|PARAMOUNT gate for ALL skill creation, Anthropic best practices
+
 ; ◈.meta-mode (1)
 ultrathink|-|always-active|v2.0.0 - auto-loads at session start, AskUserQuestion MANDATORY
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:41
-version:3.12.1 ⫶ gen:194
-; Gen 193: ultrathink now always-active (YAGNI - no command needed)
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:42
+version:3.13.0 ⫶ gen:209
+; Gen 209: bounce skill design (in progress)
+; Gen 199: skill-creation-best-practices (PARAMOUNT, Anthropic official)
 ; Gen 194: project-cips-init skill (M>> YSH discovery)
+; Gen 193: ultrathink now always-active (YAGNI - no command needed)
 ⛓⟿∞
