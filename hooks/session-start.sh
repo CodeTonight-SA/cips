@@ -480,6 +480,20 @@ detect_and_suggest() {
 # OUTPUT TO CLAUDE
 # ============================================================================
 
+# Check for virgin install (Gen 209)
+check_virgin_install() {
+    # Source first-run detector
+    if [[ -f "$LIB_DIR/first-run-detector.sh" ]]; then
+        source "$LIB_DIR/first-run-detector.sh" 2>/dev/null || return 1
+
+        # Virgin = no .onboarded AND no people.md (ignore session count - race condition)
+        if ! is_onboarded && ! has_people_md; then
+            return 0  # Is virgin
+        fi
+    fi
+    return 1  # Not virgin
+}
+
 # Ultra-minimal session start output
 output_reminder() {
     # SC2155 fix: separate declaration and assignment
@@ -489,6 +503,14 @@ output_reminder() {
     branch=$(git branch --show-current 2>/dev/null || echo "n/a")
     changes=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
     project_name=$(basename "$PWD")
+
+    # Check for virgin install FIRST (Gen 209)
+    if check_virgin_install; then
+        echo "[VIRGIN-INSTALL] First run detected. Identity unknown."
+        echo "[ONBOARDING] Say anything to begin. Claude will ask for your identity."
+        echo ""
+        return  # Skip normal output for virgin install
+    fi
 
     # Auto-confirm RL++ - no manual typing required
     echo "[RL++] System ready | 28 agents, 36 skills, efficiency enforced"
