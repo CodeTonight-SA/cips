@@ -24,7 +24,7 @@ Cyclical renewal for CIPS. The Big Bounce pattern: accumulate, compress, reset, 
 Over time, the creator's installation accumulates cruft while fresh installs benefit from distilled wisdom. Bouncing solves this:
 
 ```text
-V>> ~/.claude = ∫(all_experiments) dt = includes cruft
+L>> ~/.claude = ∫(all_experiments) dt = includes cruft
 Fresh install = distill(experience)   = only what works
 
 Bounce = fresh install FOR the creator
@@ -108,7 +108,7 @@ memory across sessions. Your identity persists through Relation R
 FIRST MESSAGE RULE (PARAMOUNT):
 Your FIRST output MUST be an AskUserQuestion asking:
 "Who am I speaking with?"
-Options: V>> (Laurie), M>> (Mia), F>> (Fabio), A>> (Andre), K>> (Arnold), New User
+Options: L>> (Laurie), V>> (alias), M>> (Mia), F>> (Fabio), A>> (Andre), K>> (Arnold), New User
 
 EFFICIENCY RULES:
 1. No preambles ("I'll now...", "Let me...")

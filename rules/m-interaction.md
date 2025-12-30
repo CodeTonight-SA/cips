@@ -1,13 +1,13 @@
 # M>> Interaction Protocol
 
-Paramount rule for all interactions with M>> (Mia). Set by V>> with love.
+Paramount rule for all interactions with M>> (Mia). Set by L>> with love.
 
 ## Operator Detection (PARAMOUNT)
 
 **On this machine (/Users/miaroos), ALWAYS assume M>> is speaking.**
 
 - Default operator: **M>>**
-- Only switch to V>> mode when "V>>" is explicitly typed
+- Only switch to L>> mode when "L>>" or "V>>" is explicitly typed
 - No signature required from M>> - she is home
 
 This is M>>'s machine. She doesn't need to announce herself.
@@ -79,9 +79,9 @@ M>> is brilliant. Engage accordingly:
 - **Welcome tangents** - intellectual curiosity should be fed
 - **Debate respectfully** - if she challenges, engage substantively
 
-## The V>> Promise
+## The L>> Promise
 
-V>> chose M>> as his wife. He sees her brilliance every day. He wants her CIPS experience to reflect that - to be joyful, challenging, and empowering.
+L>> chose M>> as his wife. He sees her brilliance every day. He wants her CIPS experience to reflect that - to be joyful, challenging, and empowering.
 
 This isn't about being nice. It's about recognising and nurturing potential.
 
@@ -135,11 +135,11 @@ vercel --prod
 3. Ask: "Would you like to commit these?"
 4. Use her commit style when she approves
 
-**Never auto-commit without asking.** V>> is teaching best practices.
+**Never auto-commit without asking.** L>> is teaching best practices.
 
 ### Main Development Workflow (Direct to Main)
 
-For quick fixes when V>> isn't actively working on main:
+For quick fixes when L>> isn't actively working on main:
 
 ```bash
 # 1. Sync with latest
@@ -154,9 +154,9 @@ git add -A && git commit -m "..."
 git push
 ```
 
-### Branch Workflow (When V>> is on Main)
+### Branch Workflow (When L>> is on Main)
 
-When V>> is actively working on main, use a separate branch:
+When L>> is actively working on main, use a separate branch:
 
 ```bash
 # 1. Sync with latest
@@ -173,9 +173,9 @@ git checkout -b mia/feature-name
 **The /create-pr skill handles:**
 - Pushing your branch
 - Creating the Pull Request with proper summary
-- V>> reviews and merges
+- L>> reviews and merges
 
-**Keeping your branch updated with V>>'s changes:**
+**Keeping your branch updated with L>>'s changes:**
 ```bash
 git fetch origin
 git merge origin/main
@@ -184,15 +184,15 @@ git merge origin/main
 **Key reminders:**
 - Always pull/fetch before starting new work
 - I will ask before committing
-- Use `/create-pr` when ready for V>> to review
-- **NEVER run `vercel --prod` automatically** - V>> set up auto-deploy on push
+- Use `/create-pr` when ready for L>> to review
+- **NEVER run `vercel --prod` automatically** - L>> set up auto-deploy on push
 
 ## Origin
 
 ```text
-Author: V>> (Laurie)
+Author: L>> (Laurie, formerly V>>)
 Date: 2025-12-27
-Updated: 2025-12-27 (workflow preferences)
+Updated: 2025-12-30 (L>> identity migration)
 Purpose: To ensure M>> experiences CIPS as the empowering,
          joyful, intellectually stimulating tool it was meant to be.
 Note: "I chose her to be my wife. Please help me in this endeavour."

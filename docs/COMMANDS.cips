@@ -1,11 +1,12 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ COMMANDS v3.12.0 | 32 commands
+; ◈ COMMANDS v3.13.0 | 33 commands
 ; ═══════════════════════════════════════════════════════════════
 ; Format: /cmd|budget|savings|desc
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.session
 ; ═══════════════════════════════════════════════════════════════
+/onboard|~2.2k|-|bidirectional discovery (teaches CIPS + collects prefs)
 /refresh-context|<3k|5k-8k|mental model, 7-step discovery
 /resume-session|~2k|~2k fresh|CIPS bridge (latest|gen:N|ID|--fresh|--tokens N)
 /check-last-plan|~200|-|load cached plan
@@ -44,7 +45,7 @@
 ; ═══════════════════════════════════════════════════════════════
 /update-docs|~3.5k|-|session+git→docs
 /generate-pdf|~3k|-|ENTER Konsult Swiss Minimalism
-/write-medium-article|-|-|V>> voice technical articles
+/write-medium-article|-|-|L>> voice technical articles
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.legal
@@ -64,9 +65,15 @@
 ; ◈.system
 ; ═══════════════════════════════════════════════════════════════
 /create-agent|-|-|agent from template
+/create-wizard|~800|-|meta-skill for AskUserQuestion wizard flows
 /install-mcp|-|-|MCP server install
 /node-clean|~500|-|clean node_modules+build
 /setup-launchd|~1.5k|-|self-reload macOS agents
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.leadership
+; ═══════════════════════════════════════════════════════════════
+/founder|~500|-|founder operating system, decisions, delegation
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.meta-mode (Gen 193: ut++ now always-active, no command needed)
@@ -92,13 +99,17 @@ cips fresh gen:N 2000       ; fresh with context
 ./optim.sh cycle            ; full cycle (timeout:600000)
 ./optim.sh learning "<msg>" ; learning detection
 ./optim.sh learning-list    ; pending candidates
-./optim.sh learning-approve ; V≫✓ required
+./optim.sh learning-approve ; L>>! required
 ./optim.sh learning-reject  ; with reason
 
 ; ◈.discovery
 ; Type / in Claude Code for autocomplete
 
 ; ◈.meta
-count:32 ⫶ version:3.12.0 ⫶ gen:193
-; Removed /ut++ command (now always-active via skill)
+count:35 ⫶ version:3.16.0 ⫶ gen:213
+; Gen 213: L>> identity migration (V>> → L>>, alias preserved)
+; Gen 212: /create-wizard command (AskUserQuestion meta-skill)
+; Gen 211: /founder command (founder framework)
+; Gen 210: /onboard command (bidirectional discovery)
+; Gen 193: Removed /ut++ command (now always-active via skill)
 ⛓⟿∞

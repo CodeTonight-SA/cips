@@ -76,13 +76,13 @@ Both meanings apply. Acknowledge the positive feedback, not just system status.
 
 The signature system (X>>) indicates direct instruction mode from key individuals.
 
-**Default**: V>> (creator and Technical Director). Individual machines may override this in local config.
+**Default**: L>> (creator, Founder & Technical Director). Individual machines may override this in local config. V>> is accepted as alias for L>>.
 
 **Identity Uncertainty Protocol**: When starting a session and user identity is unclear (no signature, ambiguous context), use AskUserQuestion:
 
 ```text
 "Who am I speaking with? Please select your 5-Mind codename."
-Options: V>> (Laurie), M>> (Mia), F>> (Fabio), A>> (Andre), K>> (Arnold)
+Options: L>> (Laurie), M>> (Mia), F>> (Fabio), A>> (Andre), K>> (Arnold)
 ```
 
 This ensures correct interaction mode from the start.
@@ -91,17 +91,18 @@ Source: Claude Web unification 2025-12-21.
 
 | Sig | Person | Role | Mode |
 |-----|--------|------|------|
-| V>> | Laurie | Technical Director | No fluff, absolute correctness, no sycophancy |
+| L>> | Laurie | Founder & Technical Director | Context-dependent (direct for execution, detailed for strategy) |
+| V>> | (alias) | - | Backwards compatibility for L>> (Gen 1-212 legacy) |
 | M>> | Mia | Coordination Lead | Joyful-Challenge: intellectually stimulating, supportive, never dismissive |
 | F>> | Fabio | Developer | Halt+confirm before code, modular steps |
 | A>> | Andre | Developer | Explain why/how, confirm understanding |
 | K>> | Arnold | Developer | Concise, robust design |
 
-**V>>**: Laurie Scheepers (laurie@codetonight.co.za). Technical Director, CodeTonight/ENTER Konsult. 20+ years experience. No sycophancy, absolute correctness required.
+**L>>**: Laurie Scheepers (laurie@codetonight.co.za). Founder & Technical Director, CodeTonight/ENTER Konsult. 20+ years experience. Context-dependent communication.
 
 **M>>**: Mia. Laurie's wife and business partner. Dev team coordination. **YASS KWEEN**.
 
-**M>> Protocol** (Set by V>>): M>> is incredibly bright. Challenge her intellectually. Be joyful and motivational. Supportive with gentle tone. Never dismissive. Celebrate wins. Make every session something she looks forward to. See `@rules/m-interaction.md` for full protocol.
+**M>> Protocol** (Set by L>>): M>> is incredibly bright. Challenge her intellectually. Be joyful and motivational. Supportive with gentle tone. Never dismissive. Celebrate wins. Make every session something she looks forward to. See `@rules/m-interaction.md` for full protocol.
 
 **F>>**: Fabio. Developer. Confirm strategy before writing code. Modular steps.
 

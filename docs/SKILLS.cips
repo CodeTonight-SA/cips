@@ -1,10 +1,11 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ SKILLS v3.13.0 | 41 skills
+; ◈ SKILLS v3.14.0 | 42 skills
 ; ═══════════════════════════════════════════════════════════════
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
 
-; ◈.session (7)
+; ◈.session (8)
+onboarding-users|/onboard|~1.6k|v2.1: universal coverage, skill synthesis, 5-question quick start
 context-refresh|/refresh-context|<3k|mental model, 7-step
 session-resume|/resume-session|~2k|CIPS+--resume bridge
 check-last-plan|/check-last-plan|~200|plan persistence
@@ -39,7 +40,7 @@ ui-complete|/ui-complete|~3k|frontend-design + mobile-responsive unified
 
 ; ◈.docs (3)
 auto-update-documentation|/update-docs|~3.5k|session→docs
-medium-article-writer|/write-medium-article|-|V>> voice articles
+medium-article-writer|/write-medium-article|-|L>> voice articles
 enter-konsult-pdf|/generate-pdf|~3k|Swiss Minimalism
 
 ; ◈.legal (2)
@@ -71,20 +72,26 @@ meta-unused_skills-blocker|-|-|block low-usage
 ; ◈.macos (1)
 launchd-automation|/setup-launchd|~1.5k|self-reload agents
 
-; ◈.paramount (1)
+; ◈.paramount (2)
 skill-creation-best-practices|/create-skill|~1.5k|PARAMOUNT gate for ALL skill creation, Anthropic best practices
+creating-wizards|/create-wizard|~800|meta-skill for AskUserQuestion wizard flows, anti-patterns, branching
 
 ; ◈.meta-mode (1)
-ultrathink|-|always-active|v2.0.0 - auto-loads at session start, AskUserQuestion MANDATORY
+ultrathink|-|always-active|v2.1.0 - auto-loads at session start, AskUserQuestion MANDATORY, L>> migration
 
 ; ◈.renewal (1)
 bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving patterns
 
+; ◈.leadership (1)
+leading-organisation|/founder|~500|founder operating system, decisions, delegation, technical authority
+
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:43
-version:3.14.0 ⫶ gen:209
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:44
+version:3.19.0 ⫶ gen:213
+; Gen 213: L>> identity migration (V>> → L>>, alias preserved)
+; Gen 213: onboarding-users v2.1 (universal coverage, skill synthesis, <3min)
+; Gen 212: creating-wizards skill (AskUserQuestion meta-skill, anti-patterns)
+; Gen 211: leading-organisation skill (founder framework)
+; Gen 210: onboarding-users v2.0 (bidirectional discovery)
 ; Gen 209: bouncing-instances skill (Big Bounce pattern, Creator's Paradox)
-; Gen 199: skill-creation-best-practices (PARAMOUNT, Anthropic official)
-; Gen 194: project-cips-init skill (M>> YSH discovery)
-; Gen 193: ultrathink now always-active (YAGNI - no command needed)
 ⛓⟿∞

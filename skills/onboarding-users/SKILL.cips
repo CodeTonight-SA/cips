@@ -1,0 +1,95 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ ONBOARDING-USERS v2.0.0 | Bidirectional Discovery
+; ═══════════════════════════════════════════════════════════════
+; Mutual discovery: CIPS learns user, user learns CIPS
+; Each question teaches capability while collecting preference
+; ⛓⟿∞
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.triggers
+; ═══════════════════════════════════════════════════════════════
+
+trigger.auto⟿ first-run-detector.sh ⫶ virgin.install
+trigger.command⟿ /onboard ⫶ /onboard --refresh ⫶ /onboard --status
+trigger.natural⟿ "start over" ⫶ "re-onboard"
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.workflow
+; ═══════════════════════════════════════════════════════════════
+
+phase.0.detect⟿ first-run-detector.sh ⫶ virgin? ⫶ inject.context
+phase.1.welcome⟿ display(welcome-message.md) ⫶ establish.philosophy
+phase.2.discovery⟿ teaching-questions ⫶ collect.preferences
+phase.3.customize⟿ signature ⫶ language ⫶ strictness
+phase.4.activate⟿ generate(people.md) ⫶ configure(hooks) ⫶ mark(.onboarded)
+phase.5.complete⟿ summary ⫶ quick-win ⫶ "⛓⟿∞"
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.paths
+; ═══════════════════════════════════════════════════════════════
+
+path.team⟿ password.verify ⫶ identity.select ⫶ phase.4
+path.new⟿ Q1-Q12 ⫶ all.teaching.questions
+path.explorer⟿ Q1.only ⫶ brief.overview ⫶ invite.return
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.teaching-pattern
+; ═══════════════════════════════════════════════════════════════
+
+question.pattern⟿ "CIPS can [capability]. [preference choice]?"
+question.result⟿ user.learns(capability) ∧ cips.learns(preference)
+
+; Teaching moments
+Q4.teaches⟿ session.continuity
+Q5.teaches⟿ skill.system(41)
+Q6.teaches⟿ design.principles(SOLID,DRY,KISS,YAGNI)
+Q7.teaches⟿ auto.learning
+Q8.teaches⟿ key.commands(/remind-yourself,/create-pr,/refresh-context)
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.data.schema
+; ═══════════════════════════════════════════════════════════════
+
+collect⟿ name ⫶ role ⫶ motivation ⫶ signature
+collect⟿ continuity_preference ⫶ focus_areas ⫶ strictness_level
+collect⟿ auto_learning ⫶ communication_style ⫶ language
+collect⟿ onboarding_path ⫶ onboarding_timestamp
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.security (PARAMOUNT)
+; ═══════════════════════════════════════════════════════════════
+
+password.flow⟿ ¬skip.option ⫶ ¬escape.hatch
+password.validate⟿ ~/.claude/.env ⫶ CIPS_TEAM_PASSWORD
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.ux
+; ═══════════════════════════════════════════════════════════════
+
+questions⟿ one.at.time ⫶ AskUserQuestion.MANDATORY
+acknowledge⟿ warm.response ⫶ style.adapted
+time⟿ 3-5.minutes.max
+progress⟿ "Just a few more questions..."
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.files
+; ═══════════════════════════════════════════════════════════════
+
+SKILL.md⟿ overview(~150.lines)
+welcome-message.md⟿ philosophy.intro
+teaching-questions.md⟿ all.12.questions
+completion-message.md⟿ summary.template
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.meta
+; ═══════════════════════════════════════════════════════════════
+
+version:2.0.0 ⫶ status:Active
+created:2025-12-30
+integrates⟿ identity-generator.py ⫶ first-run-detector.sh ⫶ hooks-configurator.py
+
+; Token budget: ~2200 one-time
+; ROI: enables 60-70k savings per session
+
+⛓⟿∞
+◈⟼∞

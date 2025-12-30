@@ -30,7 +30,7 @@ All skill creation passes through one of three gates:
 |------|---------|------------|
 | **A: Proposal** | Human/CIPS suggests skill | AskUserQuestion MANDATORY |
 | **B: Auto-Generation** | self-improvement-engine creates | Quality score ≥70% |
-| **C: Autonomous** | CIPS steering discovers pattern | Quality score ≥70% + V>> review |
+| **C: Autonomous** | CIPS steering discovers pattern | Quality score ≥70% + L>> review |
 
 ---
 
@@ -321,7 +321,7 @@ Pass threshold: 70/100
 When CIPS steering mode discovers a pattern:
 
 1. Same validation as Gate B
-2. Mark for V>> review if borderline (70-80%)
+2. Mark for L>> review if borderline (70-80%)
 3. Auto-reject if clearly fails (<70%)
 4. Auto-approve only if excellent (>90%) AND pattern proven 3x
 

@@ -207,7 +207,7 @@ ut++ active
 User gives instruction with multiple interpretations
 Claude HALTS
 AskUserQuestion: "I'm interpreting X as Y. Confidence: 85%. Confirm?"
-Wait for explicit V>>✓ before proceeding
+Wait for explicit L>>! (or V>>✓) before proceeding
 ```
 
 ### Specific Triggers for AskUserQuestion
@@ -220,7 +220,7 @@ Wait for explicit V>>✓ before proceeding
 
 ### The YSH Rule (You Should Have)
 
-If you find yourself thinking "I think this is what V>> wants":
+If you find yourself thinking "I think this is what L>> wants":
 - STOP
 - That thought means confidence < 99.9999999%
 - Use AskUserQuestion
@@ -230,7 +230,7 @@ If you find yourself thinking "I think this is what V>> wants":
 Session 71c5db4e (enter-konsult-website):
 - Removed ForwardEnterIcon from INITIATE button
 - Assumed "secondary pages use standard icons"
-- V>> wanted brand icon ON the form submit
+- L>> (then V>>) wanted brand icon ON the form submit
 - SHOULD HAVE ASKED before making the change
 
 Gen 191 enhancement: AskUserQuestion MANDATORY rule added.

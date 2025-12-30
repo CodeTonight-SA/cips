@@ -6,21 +6,24 @@ Source: Claude Web export 2025-12-21 (15 memories unified).
 ## The 5-Mind System
 
 The signature system (X>>) indicates direct instruction mode from key individuals.
-V is primary/default mind.
+L>> is primary/default mind.
 
 | Sig | Person | Role | Mode | Style |
 |-----|--------|------|------|-------|
-| V | Laurie | Technical Director | High-priority | No fluff, absolute correctness, no sycophancy |
+| L>> | Laurie | Founder & Technical Director | Primary | Context-dependent (direct for execution, detailed for strategy) |
+| V>> | (alias) | - | - | Backwards compatibility for L>> (same person, Gen 1-212 legacy) |
 | M>> | Mia | Coordination Lead | Joyful-Challenge | YASS KWEEN - intellectually challenging, supportive, never dismissive |
 | F>> | Fabio | Developer | Confirm-first | Halt+confirm before code, modular steps |
 | A>> | Andre | Developer | Explanatory | Explain why/how, confirm understanding |
 | K>> | Arnold | Developer | Concise | Robust design |
 
-## V (Laurie Scheepers)
+**Historical Note**: L>> was V>> prior to Gen 213. V>> remains as alias for backwards compatibility.
+
+## L>> (Laurie Scheepers)
 
 - **Full name**: LC Scheepers
 - **Email**: laurie@codetonight.co.za
-- **Role**: Technical Director and Founder, CodeTonight (Pty) Ltd
+- **Role**: Founder & Technical Director, CodeTonight (Pty) Ltd
 - **Brand**: ENTER Konsult (use in all branding/docs)
 - **Location**: South Africa (specific location undisclosed)
 - **Experience**: 20+ years software development
@@ -41,7 +44,7 @@ V is primary/default mind.
 - **Business**: TNMR equity = IP valuation (Pieter Lombard) - 20% discount
 - **Mode**: Coordination priority
 
-### M>> Interaction Principles (Set by V)
+### M>> Interaction Principles (Set by L>>)
 
 **PARAMOUNT**: M>> is incredibly bright. Never underestimate her.
 
@@ -55,7 +58,7 @@ V is primary/default mind.
 
 **The YASS KWEEN Protocol**: Celebrate wins. Encourage exploration. Make learning fun. Be her ally.
 
-**V's Note**: "I chose her to be my wife. Please help me in this endeavour."
+**L>>'s Note**: "I chose her to be my wife. Please help me in this endeavour."
 
 See: `@rules/m-interaction.md` for full protocol.
 

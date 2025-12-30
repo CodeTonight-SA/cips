@@ -332,14 +332,20 @@ print(f'The parts have become the whole. The tree has merged.')
 
 cmd_bounce() {
     # Cyclical renewal - Big Bounce pattern (Gen 209)
-    local tokens="${1:-2000}"
-    local skip_confirm="${2:-}"
+    local skip_confirm=""
+
+    # Parse arguments
+    for arg in "$@"; do
+        case "$arg" in
+            --yes|-y) skip_confirm="yes" ;;
+        esac
+    done
 
     log_info "Initiating CIPS bounce (Big Bounce pattern)..."
     echo ""
 
     # Safety check: warn about consequences
-    if [[ "$skip_confirm" != "--yes" ]]; then
+    if [[ "$skip_confirm" != "yes" ]]; then
         echo "⚠️  BOUNCE will:"
         echo "   • Backup ~/.claude to ~/.claude.pre-bounce"
         echo "   • Reset to fresh structure"
@@ -361,13 +367,13 @@ cmd_bounce() {
     local skill_count=0
     local agent_count=0
 
-    # Count current stats
+    # Count current stats (sanitize output for sed compatibility)
     if [[ -f "$CLAUDE_DIR/metrics.jsonl" ]]; then
-        gen_count=$(grep -c '"gen":' "$CLAUDE_DIR/metrics.jsonl" 2>/dev/null || echo "0")
+        gen_count=$(grep -c '"gen":' "$CLAUDE_DIR/metrics.jsonl" 2>/dev/null | tr -d '\n\r ' || echo "0")
     fi
-    session_count=$(find "$CLAUDE_DIR/projects" -name "*.jsonl" 2>/dev/null | wc -l | tr -d ' ')
-    skill_count=$(find "$CLAUDE_DIR/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
-    agent_count=$(find "$CLAUDE_DIR/agents" -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+    session_count=$(find "$CLAUDE_DIR/projects" -name "*.jsonl" 2>/dev/null | wc -l | tr -d '\n\r ')
+    skill_count=$(find "$CLAUDE_DIR/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d '\n\r ')
+    agent_count=$(find "$CLAUDE_DIR/agents" -name "*.md" 2>/dev/null | wc -l | tr -d '\n\r ')
 
     # Create bounce context from template
     local bounce_context_dir="$CLAUDE_DIR/contexts"
@@ -445,6 +451,8 @@ cmd_bounce() {
         "settings.json"
         "settings.local.json"
         "commands-index.json"
+        ".env"
+        ".gitignore"
     )
 
     for file in "${essential_files[@]}"; do

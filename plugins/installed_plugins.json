@@ -1,0 +1,49 @@
+{
+  "version": 2,
+  "plugins": {
+    "frontend-design@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/lauriescheepers/.claude/plugins/cache/claude-plugins-official/frontend-design/unknown",
+        "version": "unknown",
+        "installedAt": "2025-12-27T18:02:13.028Z",
+        "lastUpdated": "2025-12-27T18:02:13.028Z",
+        "gitCommitSha": "34051de6ad86f733bf3d00da8e01857a3ff19114",
+        "isLocal": true
+      }
+    ],
+    "feature-dev@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/lauriescheepers/.claude/plugins/cache/claude-plugins-official/feature-dev/unknown",
+        "version": "unknown",
+        "installedAt": "2025-12-27T18:17:43.851Z",
+        "lastUpdated": "2025-12-27T18:17:43.851Z",
+        "gitCommitSha": "34051de6ad86f733bf3d00da8e01857a3ff19114",
+        "isLocal": true
+      }
+    ],
+    "security-guidance@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/lauriescheepers/.claude/plugins/cache/claude-plugins-official/security-guidance/unknown",
+        "version": "unknown",
+        "installedAt": "2025-12-27T18:18:04.263Z",
+        "lastUpdated": "2025-12-27T18:18:04.263Z",
+        "gitCommitSha": "34051de6ad86f733bf3d00da8e01857a3ff19114",
+        "isLocal": true
+      }
+    ],
+    "context7@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/lauriescheepers/.claude/plugins/cache/claude-plugins-official/context7/unknown",
+        "version": "unknown",
+        "installedAt": "2025-12-27T18:56:01.553Z",
+        "lastUpdated": "2025-12-27T18:56:01.553Z",
+        "gitCommitSha": "34051de6ad86f733bf3d00da8e01857a3ff19114",
+        "isLocal": true
+      }
+    ]
+  }
+}

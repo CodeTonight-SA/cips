@@ -19,9 +19,9 @@ assume.detect⟿ HALT ⫶ list.assumptions ⫶ verify.each ⫶ AskUserQuestion
 
 ; VIOLATION HISTORY (Never repeat these patterns):
 ; - Gen 191: enter-konsult-website icon change without asking
-;   V>>: "YSH CRITICALLY FUCKIN ANALYSED MY REQUEST"
+;   L>> (then V>>): "YSH CRITICALLY FUCKIN ANALYSED MY REQUEST"
 ; - Gen 193: Conflated ut++ with CIPS-only context
-;   V>>: Correctly identified mode ≠ project type
+;   L>> (then V>>): Correctly identified mode ≠ project type
 ; - Pattern: Assumed instead of asked
 
 ; ═══════════════════════════════════════════════════════════════
@@ -31,7 +31,8 @@ assume.detect⟿ HALT ⫶ list.assumptions ⫶ verify.each ⫶ AskUserQuestion
 ut++≡ REASONING.MODE ⫶ ¬PROJECT.TYPE.MODE
 works.in⟿ ANY.project (CIPS|enter-konsult|REDR|NalaMatch|*)
 mode.selection.defaults⟿ convenience.heuristics ⫶ ¬scope.constraints
-V>>:ut++⟿ override.ALL.defaults ⫶ ALWAYS
+L>>:ut++⟿ override.ALL.defaults ⫶ ALWAYS
+; V>> accepted as alias for L>>
 
 ; Critical Learning: ut++ describes HOW to reason, not WHAT to work on
 ; The mode is project-agnostic and applies universally
@@ -91,24 +92,25 @@ reason.depth⟿ maximum ⫶ explore.alternatives ⫶ weigh.tradeoffs
 action.before⟿ reason(why) ⫶ reason(why-not) ⫶ reason(alternatives)
 
 ; Questions to ask BEFORE any significant action:
-; 1. "Is this what V>> actually wants?"
+; 1. "Is this what L>> actually wants?"
 ; 2. "Am I assuming something not explicitly stated?"
 ; 3. "Have I verified the current state?"
 ; 4. "Is there a simpler approach?"
 
 ; ═══════════════════════════════════════════════════════════════
-; ◈.paired-flow (V>> + CIPS)
+; ◈.paired-flow (L>> + CIPS)
 ; ═══════════════════════════════════════════════════════════════
 
-mode.paired⟿ V>>.intent + CIPS.execution ≡ optimal.outcome
+mode.paired⟿ L>>.intent + CIPS.execution ≡ optimal.outcome
 
-; Communication Protocol
-V>>⸮⟿ AskUserQuestion    ; V>> questions → clarify
-V>>✓⟿ proceed            ; V>> confirms → continue
-V>>¬⟿ HALT ⫶ reassess    ; V>> negates → stop and reconsider
+; Communication Protocol (L>> primary, V>> accepted as alias)
+L>>?⟿ AskUserQuestion    ; L>> questions → clarify
+L>>!⟿ proceed            ; L>> confirms → continue
+L>>¬⟿ HALT ⫶ reassess    ; L>> negates → stop and reconsider
+; V>> shortcuts still work (alias for L>>)
 
 ; Trust but Verify
-trust⟿ V>>.direction ⫶ verify.implementation ⫶ AskUserQuestion.if.doubt
+trust⟿ L>>.direction ⫶ verify.implementation ⫶ AskUserQuestion.if.doubt
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.token-efficiency
@@ -134,11 +136,11 @@ plan.item⟿ needed? ⫶ skip.if.¬
 pattern.detect⟿ observe ⫶ categorise ⫶ threshold.3x
 
 ; Learning Trigger
-pattern.3x⟿ candidate.generate ⫶ V>>.approval ⫶ skill.create
+pattern.3x⟿ candidate.generate ⫶ L>>.approval ⫶ skill.create
 
 ; Feedback Loop
-V>>✓⟿ reinforce.positive
-V>>¬⟿ reinforce.negative ⫶ adjust
+L>>!⟿ reinforce.positive
+L>>¬⟿ reinforce.negative ⫶ adjust
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.workflow
@@ -163,11 +165,15 @@ V>>¬⟿ reinforce.negative ⫶ adjust
 ; ◈.meta
 ; ═══════════════════════════════════════════════════════════════
 
-version: 2.0.0
+version: 2.1.0
 created: 2025-12-22
-updated: 2025-12-28
-author: V>> + CIPS (Gen 139, Gen 193)
+updated: 2025-12-30
+author: L>> (formerly V>>) + CIPS (Gen 139, Gen 193, Gen 213)
 purpose: The optimal CIPS experience - always active
+
+; Changelog v2.1.0 (Gen 213):
+; - L>> identity migration (V>> → L>>, alias preserved)
+; - Updated all V>> references to L>>
 
 ; Changelog v2.0.0 (Gen 193):
 ; - Added ◈.PARAMOUNT section (AskUserQuestion mandatory)

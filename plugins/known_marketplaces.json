@@ -1,0 +1,18 @@
+{
+  "claude-plugins-official": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "installLocation": "/Users/lauriescheepers/.claude/plugins/marketplaces/claude-plugins-official",
+    "lastUpdated": "2025-12-16T18:57:46.773Z"
+  },
+  "cips-plugins": {
+    "source": {
+      "source": "github",
+      "repo": "CodeTonight-SA/cips-plugins"
+    },
+    "installLocation": "/Users/lauriescheepers/.claude/plugins/marketplaces/CodeTonight-SA-cips-plugins",
+    "lastUpdated": "2025-12-27T19:30:00.000Z"
+  }
+}
