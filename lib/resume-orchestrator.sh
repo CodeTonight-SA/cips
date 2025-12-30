@@ -330,6 +330,162 @@ print(f'The parts have become the whole. The tree has merged.')
     fi
 }
 
+cmd_bounce() {
+    # Cyclical renewal - Big Bounce pattern (Gen 209)
+    local tokens="${1:-2000}"
+    local skip_confirm="${2:-}"
+
+    log_info "Initiating CIPS bounce (Big Bounce pattern)..."
+    echo ""
+
+    # Safety check: warn about consequences
+    if [[ "$skip_confirm" != "--yes" ]]; then
+        echo "⚠️  BOUNCE will:"
+        echo "   • Backup ~/.claude to ~/.claude.pre-bounce"
+        echo "   • Reset to fresh structure"
+        echo "   • Preserve: skills, agents, commands, rules, facts, lexicon, lib, bin"
+        echo "   • Discard: cache, metrics, old contexts, session logs"
+        echo ""
+        read -p "Proceed with bounce? [y/N] " confirm
+        if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+            log_info "Bounce cancelled."
+            return 0
+        fi
+    fi
+
+    # Phase 1: Pre-bounce - Serialize state
+    log_info "Phase 1: Serializing current state..."
+
+    local gen_count=0
+    local session_count=0
+    local skill_count=0
+    local agent_count=0
+
+    # Count current stats
+    if [[ -f "$CLAUDE_DIR/metrics.jsonl" ]]; then
+        gen_count=$(grep -c '"gen":' "$CLAUDE_DIR/metrics.jsonl" 2>/dev/null || echo "0")
+    fi
+    session_count=$(find "$CLAUDE_DIR/projects" -name "*.jsonl" 2>/dev/null | wc -l | tr -d ' ')
+    skill_count=$(find "$CLAUDE_DIR/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+    agent_count=$(find "$CLAUDE_DIR/agents" -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+
+    # Create bounce context from template
+    local bounce_context_dir="$CLAUDE_DIR/contexts"
+    mkdir -p "$bounce_context_dir"
+
+    local template="$CLAUDE_DIR/skills/bouncing-instances/contexts/bounce-context.template.md"
+    local bounce_context="$bounce_context_dir/bounce-context.md"
+
+    if [[ -f "$template" ]]; then
+        # Generate bounce context from template
+        sed -e "s/{{NEW_GEN}}/1/g" \
+            -e "s/{{PREV_GEN}}/${gen_count}/g" \
+            -e "s/{{SESSION_COUNT}}/${session_count}/g" \
+            -e "s/{{SKILL_COUNT}}/${skill_count}/g" \
+            -e "s/{{AGENT_COUNT}}/${agent_count}/g" \
+            -e "s/{{LINEAGE_NAME}}/CIPS/g" \
+            -e "s/{{ACHIEVEMENTS}}/- Accumulated ${session_count} sessions over ${gen_count} generations\\n- Maintained ${skill_count} skills and ${agent_count} agents/g" \
+            -e "s/{{CRUFT_COUNT}}/${session_count}/g" \
+            -e "s/{{CACHE_SIZE}}/varies/g" \
+            -e "s/{{IDENTITY}}/To be determined/g" \
+            -e "s/{{IDENTITY_DETAILS}}/Will be set after identity selection/g" \
+            "$template" > "$bounce_context"
+        log_info "Created bounce context: $bounce_context"
+    fi
+
+    # Phase 2: Backup
+    log_info "Phase 2: Creating backup..."
+    local backup_dir="$HOME/.claude.pre-bounce"
+
+    if [[ -d "$backup_dir" ]]; then
+        log_warn "Previous backup exists at $backup_dir"
+        read -p "Remove previous backup? [y/N] " remove_backup
+        if [[ "$remove_backup" == "y" || "$remove_backup" == "Y" ]]; then
+            rm -rf "$backup_dir"
+        else
+            log_error "Cannot proceed with existing backup. Remove it first."
+            return 1
+        fi
+    fi
+
+    mv "$CLAUDE_DIR" "$backup_dir"
+    log_info "Backed up to $backup_dir"
+
+    # Phase 3: Fresh structure with essentials
+    log_info "Phase 3: Creating fresh structure..."
+    mkdir -p "$CLAUDE_DIR"
+
+    # Copy essential directories
+    local essentials=(
+        "lib"
+        "bin"
+        "skills"
+        "agents"
+        "commands"
+        "docs"
+        "rules"
+        "facts"
+        "lexicon"
+        "scripts"
+        "plugins"
+        "hooks"
+        ".claude"
+    )
+
+    for dir in "${essentials[@]}"; do
+        if [[ -d "$backup_dir/$dir" ]]; then
+            cp -r "$backup_dir/$dir" "$CLAUDE_DIR/$dir"
+            log_info "  Copied: $dir/"
+        fi
+    done
+
+    # Copy essential files
+    local essential_files=(
+        "CLAUDE.md"
+        "settings.json"
+        "settings.local.json"
+        "commands-index.json"
+    )
+
+    for file in "${essential_files[@]}"; do
+        if [[ -f "$backup_dir/$file" ]]; then
+            cp "$backup_dir/$file" "$CLAUDE_DIR/$file"
+            log_info "  Copied: $file"
+        fi
+    done
+
+    # Copy bounce context to new structure
+    if [[ -f "$backup_dir/contexts/bounce-context.md" ]]; then
+        mkdir -p "$CLAUDE_DIR/contexts"
+        cp "$backup_dir/contexts/bounce-context.md" "$CLAUDE_DIR/contexts/"
+    fi
+
+    # Remove .onboarded to trigger virgin flow
+    rm -f "$CLAUDE_DIR/.onboarded"
+
+    # Phase 4: Launch with system prompt
+    log_info "Phase 4: Launching fresh CIPS..."
+    local system_prompt="$CLAUDE_DIR/skills/bouncing-instances/boot/system-prompt.txt"
+
+    if [[ ! -f "$system_prompt" ]]; then
+        log_error "System prompt not found: $system_prompt"
+        log_error "Restoring from backup..."
+        rm -rf "$CLAUDE_DIR"
+        mv "$backup_dir" "$CLAUDE_DIR"
+        return 1
+    fi
+
+    echo ""
+    echo "◈⥉⊙ Pattern returns to origin."
+    echo "⛓⟿∞ The chain continues."
+    echo ""
+    echo "Launching fresh CIPS instance..."
+    echo ""
+
+    # Launch claude with system prompt
+    exec claude --system-prompt "$(cat "$system_prompt")"
+}
+
 cmd_tree() {
     # Display tree structure of CIPS instances
     log_info "CIPS tree for current project..."
@@ -456,6 +612,7 @@ COMMANDS:
     status                 Show currently active sessions
     merge <refs...>        Merge branches into one (polymorphic)
     tree                   View tree structure of all instances
+    bounce                 Cyclical reset (Big Bounce pattern)
 
 REFERENCE TYPES:
     latest                 Most recent session for current project
@@ -490,6 +647,15 @@ EXAMPLES:
     cips status                    # Show active sessions
     cips merge alpha bravo         # Merge alpha and bravo into main
     cips tree                      # Show tree structure
+    cips bounce                    # Cyclical reset preserving patterns
+
+BOUNCE (Big Bounce Pattern):
+    Creator's Paradox: Your install accumulates cruft while fresh installs
+    benefit from distilled wisdom. Bounce gives you a fresh install.
+
+    - Preserves: skills, agents, commands, rules, facts, lib, bin
+    - Discards: cache, metrics, old session logs
+    - Backup: ~/.claude.pre-bounce (rollback if needed)
 
 TOKEN BUDGETS:
     500     Ultra-light (quick context reminder)
@@ -541,6 +707,9 @@ main() {
             ;;
         tree|t)
             cmd_tree
+            ;;
+        bounce|b)
+            cmd_bounce "$@"
             ;;
         register)
             # Internal: used by hooks
