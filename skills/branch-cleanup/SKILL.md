@@ -1,6 +1,12 @@
 ---
-name: branch-cleanup
-description: Git branch pruning and cleanup automation. Use when user asks to "clean up branches", "prune git", "delete old branches", or similar.
+name: cleaning-git-branches
+description: Git branch pruning and cleanup automation. Use when user asks to clean up branches, prune git, or delete old branches.
+status: Active
+version: 1.0.0
+triggers:
+  - /prune-branches
+  - "clean branches"
+  - "prune git"
 ---
 
 # Branch Cleanup Skill

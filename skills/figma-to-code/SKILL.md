@@ -1,6 +1,12 @@
 ---
-name: figma-to-code
+name: translating-figma-designs
 description: Translate Figma designs into production code with 1:1 visual parity. Use when user mentions Figma files, design handoff, or UI implementation from designs.
+status: Active
+version: 1.0.0
+triggers:
+  - /figma
+  - "Figma design"
+  - "design handoff"
 ---
 
 # Figma to Code Translation

@@ -1,3 +1,15 @@
+---
+name: automating-launchd-agents
+description: Create self-reloading macOS launchd agents with automatic plist validation. Use when user needs scheduled tasks, cron jobs, or nightly automation on macOS.
+status: Active
+version: 1.0.0
+triggers:
+  - /setup-launchd
+  - "launchd"
+  - "scheduled task"
+  - "cron"
+---
+
 # Launchd Automation Skill
 
 Create self-reloading macOS launchd agents with automatic plist validation.

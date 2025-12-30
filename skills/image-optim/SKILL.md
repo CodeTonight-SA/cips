@@ -1,3 +1,14 @@
+---
+name: optimizing-images
+description: Lossless image optimization using ImageOptim on macOS. Use when user mentions ImageOptim, asks to optimize images, or invokes /image-optim.
+status: Active
+version: 1.0.0
+triggers:
+  - /image-optim
+  - "optimize images"
+  - "ImageOptim"
+---
+
 # Image Optimization Skill
 
 Mac-only skill for lossless image optimization using ImageOptim + optional ImageMagick pre-processing.

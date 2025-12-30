@@ -1,9 +1,12 @@
 ---
-name: auto-update-documentation
-description: Automatically update project documentation by synthesising session history, git commits, and current state.
-  Eliminates documentation drift. Token budget 3500.
-command: /update-docs
-aliases: [/sync-docs, /doc-refresh]
+name: updating-documentation-automatically
+description: Automatically update project documentation by synthesising session history, git commits, and current state. Use when user invokes /update-docs, after PR creation, or on milestone completion.
+status: Active
+version: 1.0.0
+triggers:
+  - /update-docs
+  - after PR creation
+  - milestone completion
 ---
 
 # Auto Update Documentation Skill

@@ -1,6 +1,12 @@
 ---
-name: code-agentic
+name: enforcing-agentic-protocols
 description: Agentic execution protocols for Claude Code with verification gates, rollback mechanisms, and confidence thresholds. Triggers on any destructive or high-risk operations.
+status: Active
+version: 1.0.0
+triggers:
+  - destructive operations
+  - high-risk changes
+  - file deletions
 ---
 
 # Claude Code Agentic Execution Protocol

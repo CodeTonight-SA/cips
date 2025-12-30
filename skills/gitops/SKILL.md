@@ -1,6 +1,12 @@
 ---
-name: gitops
+name: managing-git-workflows
 description: GitOps workflow automation for trunk-based development, branch strategy, release management, and deployment patterns. Use when setting up repositories, planning release strategies, or configuring CI/CD pipelines.
+status: Active
+version: 1.0.0
+triggers:
+  - /gitops
+  - "branch strategy"
+  - "release workflow"
 ---
 
 # GitOps Skill

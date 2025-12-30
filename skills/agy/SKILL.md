@@ -1,8 +1,12 @@
 ---
-name: agy
-description: Open file in Google Antigravity IDE with intelligent file inference. Decodes exact names, similar recent files, or descriptions efficiently. Fast-fail if ambiguous.
-command: /agy
-aliases: [/antigravity, /ag]
+name: opening-files-antigravity
+description: Open file in Google Antigravity IDE with intelligent file inference. Use when user invokes /agy or says open in antigravity. Fast-fail if ambiguous.
+status: Active
+version: 1.0.0
+triggers:
+  - /agy
+  - "open in antigravity"
+  - "antigravity"
 ---
 
 # AGY - Antigravity File Opener

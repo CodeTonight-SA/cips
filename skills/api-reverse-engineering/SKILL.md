@@ -1,6 +1,12 @@
 ---
-name: api-reverse-engineering
-description: Systematically reverse engineer authenticated web APIs from browser DevTools captures. Builds authenticated client, parameter mapper, validation system, and monitoring alerts. Legal when using own credentials.
+name: reverse-engineering-apis
+description: Systematically reverse engineer authenticated web APIs from browser DevTools captures. Use when user provides network request details or invokes /reverse-api. Legal when using own credentials.
+status: Active
+version: 1.0.0
+triggers:
+  - /reverse-api
+  - "reverse engineer API"
+  - network request details
 ---
 
 # API Reverse Engineering Skill

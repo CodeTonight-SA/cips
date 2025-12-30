@@ -1,3 +1,15 @@
+---
+name: cleaning-node-processes
+description: Safely identify and terminate lingering Node.js processes consuming excessive memory. Use when system is slow, ports are blocked, or user invokes /node-clean.
+status: Active
+version: 1.0.0
+triggers:
+  - /node-clean
+  - "clean node processes"
+  - "kill node"
+  - port conflicts
+---
+
 # Node Process Cleanup Skill
 
 **Category**: System Maintenance | Memory Optimization

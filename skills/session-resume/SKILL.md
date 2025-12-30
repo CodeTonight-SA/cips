@@ -1,3 +1,14 @@
+---
+name: resuming-sessions
+description: Intelligent session resumption bridging CIPS with Claude Code --resume. Use when user wants to resume previous session by ID, generation, slug, or latest.
+status: Active
+version: 1.0.0
+triggers:
+  - /resume-session
+  - "resume session"
+  - "cips resume"
+---
+
 # Session Resume Skill
 
 Intelligent session resumption bridging CIPS (Claude Instance Persistence System) with Claude Code's built-in `--resume` functionality.

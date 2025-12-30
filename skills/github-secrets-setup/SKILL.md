@@ -1,6 +1,12 @@
 ---
-name: github-secrets-setup
-description: Securely upload GitHub Actions secrets via gh CLI. Stdin pipe (preferred) or temp script fallback. NEVER commits secrets.
+name: configuring-github-secrets
+description: Securely upload GitHub Actions secrets via gh CLI. Use when GitHub Actions workflow requires secrets or user invokes /setup-github-secrets. NEVER commits secrets.
+status: Active
+version: 1.0.0
+triggers:
+  - /setup-github-secrets
+  - "add secrets"
+  - "configure secrets"
 ---
 
 # GitHub Secrets Setup Skill

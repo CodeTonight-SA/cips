@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ SKILLS v3.14.0 | 42 skills
+; ◈ SKILLS v3.20.0 | 46 skills
 ; ═══════════════════════════════════════════════════════════════
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
@@ -63,11 +63,10 @@ bash-tool-enforcer|-|-|rg>grep, fd>find
 bash-command-safety|-|-|¬semicolon.after.subshell
 cips-security|-|-|secret detection, SQL injection
 
-; ◈.utilities (4)
+; ◈.utilities (3)
 agy|/agy|~200|Antigravity file open
 node-cleanup|/node-clean|~500|clean node_modules
 gitignore-auto-setup|-|-|auto .gitignore
-meta-unused_skills-blocker|-|-|block low-usage
 
 ; ◈.macos (1)
 launchd-automation|/setup-launchd|~1.5k|self-reload agents
@@ -86,12 +85,12 @@ bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving pa
 leading-organisation|/founder|~500|founder operating system, decisions, delegation, technical authority
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:44
-version:3.19.0 ⫶ gen:213
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:46
+version:3.20.0 ⫶ gen:213
+; Gen 213: Skill refactor Phase 1-2 (frontmatter standardisation, gerund names)
 ; Gen 213: L>> identity migration (V>> → L>>, alias preserved)
 ; Gen 213: onboarding-users v2.1 (universal coverage, skill synthesis, <3min)
 ; Gen 212: creating-wizards skill (AskUserQuestion meta-skill, anti-patterns)
 ; Gen 211: leading-organisation skill (founder framework)
 ; Gen 210: onboarding-users v2.0 (bidirectional discovery)
-; Gen 209: bouncing-instances skill (Big Bounce pattern, Creator's Paradox)
 ⛓⟿∞

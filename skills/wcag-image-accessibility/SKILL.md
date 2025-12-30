@@ -1,3 +1,15 @@
+---
+name: auditing-image-accessibility
+description: Audit and fix WCAG image accessibility compliance (alt text, contrast). Use when user mentions WCAG, image accessibility, or invokes /audit-image-accessibility.
+status: Active
+version: 1.0.0
+triggers:
+  - /audit-image-accessibility
+  - "WCAG"
+  - "image accessibility"
+  - "alt text audit"
+---
+
 # WCAG Image Accessibility Skill
 
 ```cips

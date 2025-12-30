@@ -1,3 +1,14 @@
+---
+name: preparing-session-plans
+description: Prepare executable plans for future CIPS sessions while current session has context. Use when current session has tokens remaining but task suits fresh context.
+status: Active
+version: 1.0.0
+triggers:
+  - /preplan
+  - "prepare next session"
+  - "inject plan"
+---
+
 # Pre-Plan Skill (Intent Injection)
 
 Prepare executable plans for future CIPS sessions while current session has context.

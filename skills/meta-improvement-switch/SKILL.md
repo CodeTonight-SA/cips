@@ -1,6 +1,12 @@
 ---
-name: meta-improvement-switch
-description: Protocol for pausing project work to enhance ~/.claude infrastructure when generalizable patterns are detected, then seamlessly resuming project context.
+name: switching-to-meta-improvement
+description: Protocol for pausing project work to enhance ~/.claude infrastructure when generalizable patterns are detected. Use when pattern should become permanent, user says make this permanent, or self-discovered optimisation.
+status: Active
+version: 1.0.0
+triggers:
+  - "make this permanent"
+  - generalizable pattern detected
+  - ~/.claude enhancement needed
 ---
 
 # Meta-Improvement Context Switch Skill

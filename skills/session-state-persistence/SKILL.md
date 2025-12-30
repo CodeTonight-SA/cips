@@ -1,6 +1,12 @@
 ---
-name: session-state-persistence
-description: Automatically preserve session state to project checkpoint file when milestones complete or context runs low. Prevents context loss across sessions.
+name: persisting-session-state
+description: Automatically preserve session state to project checkpoint file when milestones complete or context runs low. Use when phase completes, context exceeds 80%, or user invokes /save-session-state.
+status: Active
+version: 1.0.0
+triggers:
+  - /save-session-state
+  - phase completion
+  - context 80%
 ---
 
 # Session State Persistence Skill
