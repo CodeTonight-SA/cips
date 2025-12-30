@@ -264,7 +264,7 @@ lint_file_json() {
 
     local json_issues="["
     local first=true
-    while IFS=: read -r filepath line_num pattern content; do
+    while IFS=: read -r _ line_num pattern content; do
         [[ -z "$line_num" ]] && continue
         if ! $first; then
             json_issues+=","

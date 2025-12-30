@@ -194,7 +194,8 @@ index_all_skills() {
 
         if [[ -f "$skill_file" ]]; then
             # Extract metadata
-            local metadata=$(parse_skill_frontmatter "$skill_file")
+            local metadata
+            metadata=$(parse_skill_frontmatter "$skill_file")
 
             # Add file path and name
             metadata=$(echo "$metadata" | jq \
@@ -260,7 +261,8 @@ list_skills() {
 # Load skill content (full SKILL.md)
 load_skill() {
     local skill_name="$1"
-    local skill_file=$(get_skill_path "$skill_name")
+    local skill_file
+    skill_file=$(get_skill_path "$skill_name")
 
     if [[ ! -f "$skill_file" ]]; then
         _skill_log_error "Skill not found: $skill_name"
@@ -276,7 +278,8 @@ load_skill() {
 # Load skill summary (frontmatter + first section only)
 load_skill_summary() {
     local skill_name="$1"
-    local skill_file=$(get_skill_path "$skill_name")
+    local skill_file
+    skill_file=$(get_skill_path "$skill_name")
 
     if [[ ! -f "$skill_file" ]]; then
         _skill_log_error "Skill not found: $skill_name"
@@ -312,17 +315,16 @@ should_activate_skill() {
     local skill_name="$1"
     local user_input="$2"
 
-    local metadata=$(get_skill_metadata "$skill_name")
+    local metadata
+    metadata=$(get_skill_metadata "$skill_name")
 
     if [[ -z "$metadata" ]]; then
         return 1
     fi
 
-    # Get description (contains trigger conditions)
-    local description=$(echo "$metadata" | jq -r '.description // empty')
-
     # Get command trigger
-    local command=$(echo "$metadata" | jq -r '.command // empty')
+    local command
+    command=$(echo "$metadata" | jq -r '.command // empty')
 
     # Check if user input contains command
     if [[ -n "$command" && "$user_input" =~ $command ]]; then
@@ -376,7 +378,8 @@ find_matching_skills() {
 # Get command for skill
 get_skill_command() {
     local skill_name="$1"
-    local metadata=$(get_skill_metadata "$skill_name")
+    local metadata
+    metadata=$(get_skill_metadata "$skill_name")
 
     echo "$metadata" | jq -r '.command // empty'
 }
@@ -424,8 +427,8 @@ get_cached_skill() {
 
 # Clear skill cache
 clear_skill_cache() {
-    if [[ -d "$SKILLS_CACHE_DIR" ]]; then
-        rm -rf "$SKILLS_CACHE_DIR"/*
+    if [[ -d "$SKILLS_CACHE_DIR" ]] && [[ -n "$SKILLS_CACHE_DIR" ]]; then
+        rm -rf "${SKILLS_CACHE_DIR:?}"/*
         _skill_log_info "Cleared skill cache"
     fi
 }
@@ -447,7 +450,8 @@ diagnose_skill() {
         return 1
     fi
 
-    local skill_file=$(get_skill_path "$skill_name")
+    local skill_file
+    skill_file=$(get_skill_path "$skill_name")
     echo "Path: $skill_file"
     echo "Size: $(wc -c < "$skill_file" | tr -d ' ') bytes"
     echo "Lines: $(wc -l < "$skill_file" | tr -d ' ')"
@@ -482,7 +486,8 @@ diagnose_all_skills() {
 
     echo "Skill list:"
     while IFS= read -r skill; do
-        local command=$(get_skill_command "$skill")
+        local command
+        command=$(get_skill_command "$skill")
         if [[ -n "$command" ]]; then
             printf "  %-30s %s\n" "$skill" "$command"
         else

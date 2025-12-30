@@ -13,7 +13,7 @@
 - Implemented `cips bounce` command in `lib/resume-orchestrator.sh`
 
 ### 2. Password-Protected Onboarding
-- Created `~/.claude/.env` with `CIPS_TEAM_PASSWORD="REDACTED"`
+- Created `~/.claude/.env` with `CIPS_TEAM_PASSWORD="Enter-Flow-38@"`
 - Redesigned flow: Team member (password) vs New user (custom name)
 - Updated system-prompt.txt with 2-step authentication
 
@@ -39,7 +39,7 @@
 - `b90a5bf` - Password-protected onboarding + V signature
 
 ## Credentials & Secrets
-- **Team Password**: `REDACTED` (in ~/.claude/.env)
+- **Team Password**: `Enter-Flow-38@` (in ~/.claude/.env)
 - **Backup Location**: `~/.claude-backup-20251230-032353.tar.gz`
 - **Pre-bounce Backup**: `~/.claude.pre-bounce/`
 
@@ -57,7 +57,7 @@ rm -rf ~/.claude && mv ~/.claude.pre-bounce ~/.claude
 claude --system-prompt "$(cat ~/.claude/skills/bouncing-instances/boot/system-prompt.txt)"
 ```
 - Say anything → CIPS asks if team member
-- Enter password: `REDACTED`
+- Enter password: `Enter-Flow-38@`
 - Select `V (Laurie)`
 
 ## Gap Analysis Notes (For Future)

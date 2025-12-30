@@ -47,8 +47,8 @@ encode_path() {
 }
 
 # Decode a Claude project directory name back to filesystem path
-# Input: -Users-lauriescheepers--claude
-# Output: /Users/lauriescheepers/.claude
+# Input: -Users-username--claude
+# Output: /Users/username/.claude
 # Note: Decoding is lossy - cannot distinguish . from / in original
 decode_path() {
     local encoded="$1"
@@ -71,7 +71,8 @@ get_current_project_encoded() {
 # Returns: Full path to project directory, or empty if not found
 find_project_dir() {
     local cwd="${1:-$(pwd)}"
-    local encoded=$(encode_path "$cwd")
+    local encoded
+    encoded=$(encode_path "$cwd")
     local project_dir="$CLAUDE_PROJECTS_DIR/$encoded"
 
     # Direct match
@@ -81,8 +82,10 @@ find_project_dir() {
     fi
 
     # Fuzzy match: search for directories containing the project name
-    local basename=$(basename "$cwd")
-    local fuzzy_match=$(fd -t d -1 "*$basename*" "$CLAUDE_PROJECTS_DIR" 2>/dev/null | head -1)
+    local dir_basename
+    dir_basename=$(basename "$cwd")
+    local fuzzy_match
+    fuzzy_match=$(fd -t d -1 "*$dir_basename*" "$CLAUDE_PROJECTS_DIR" 2>/dev/null | head -1)
 
     if [[ -n "$fuzzy_match" ]]; then
         echo "$fuzzy_match"
@@ -95,14 +98,16 @@ find_project_dir() {
 
 # Check if current directory has Claude history
 has_project_history() {
-    local project_dir=$(find_project_dir 2>/dev/null)
+    local project_dir
+    project_dir=$(find_project_dir 2>/dev/null)
 
     if [[ -z "$project_dir" ]]; then
         return 1
     fi
 
     # Check for any JSONL files
-    local jsonl_count=$(fd -e jsonl . "$project_dir" 2>/dev/null | wc -l | tr -d ' ')
+    local jsonl_count
+    jsonl_count=$(fd -e jsonl . "$project_dir" 2>/dev/null | wc -l | tr -d ' ')
 
     [[ $jsonl_count -gt 0 ]]
 }
@@ -115,7 +120,8 @@ has_project_history() {
 # Returns: Newline-separated list of file paths (newest first)
 # Cross-platform: macOS (BSD stat), Linux/Windows (GNU stat)
 locate_project_history() {
-    local project_dir=$(find_project_dir 2>/dev/null)
+    local project_dir
+    project_dir=$(find_project_dir 2>/dev/null)
 
     if [[ -z "$project_dir" ]]; then
         # Fallback: check legacy location
@@ -141,7 +147,8 @@ locate_project_history() {
 
     # Find all JSONL files, get mtime, sort by newest first
     fd -e jsonl . "$project_dir" -t f 2>/dev/null | while read -r file; do
-        local mtime=$(stat $stat_fmt "$file" 2>/dev/null)
+        local mtime
+        mtime=$(stat $stat_fmt "$file" 2>/dev/null)
         [[ -n "$mtime" ]] && echo "$mtime $file"
     done | sort -rn | cut -d' ' -f2- | head -20
 }
@@ -157,7 +164,8 @@ count_history_entries() {
 
     while IFS= read -r file; do
         [[ -f "$file" ]] || continue
-        local count=$(wc -l < "$file" | tr -d ' ')
+        local count
+        count=$(wc -l < "$file" | tr -d ' ')
         total=$((total + count))
     done < <(locate_project_history)
 
@@ -193,8 +201,10 @@ timestamp_to_epoch_ms() {
     fi
 
     # ISO 8601 format - extract date/time parts
-    local date_part=$(echo "$timestamp" | cut -dT -f1)
-    local time_part=$(echo "$timestamp" | cut -dT -f2 | sed 's/Z$//' | cut -d. -f1)
+    local date_part
+    date_part=$(echo "$timestamp" | cut -dT -f1)
+    local time_part
+    time_part=$(echo "$timestamp" | cut -dT -f2 | sed 's/Z$//' | cut -d. -f1)
 
     case "$(uname -s)" in
         Darwin*)
@@ -219,10 +229,13 @@ timestamp_to_epoch_ms() {
 # Returns: JSONL entries within time window
 aggregate_project_history() {
     local hours_back="${1:-$DEFAULT_HOURS_BACK}"
-    local start_epoch=$(hours_ago_epoch_ms "$hours_back")
-    local end_epoch=$(current_epoch_ms)
+    local start_epoch
+    start_epoch=$(hours_ago_epoch_ms "$hours_back")
+    local end_epoch
+    end_epoch=$(current_epoch_ms)
 
-    local history_files=$(locate_project_history)
+    local history_files
+    history_files=$(locate_project_history)
 
     if [[ -z "$history_files" ]]; then
         echo "[]"
@@ -230,7 +243,6 @@ aggregate_project_history() {
     fi
 
     # Read all files, filter by timestamp, limit total lines
-    local combined=""
     local line_count=0
 
     while IFS= read -r file; do
@@ -242,10 +254,12 @@ aggregate_project_history() {
             [[ -z "$line" ]] && continue
 
             # Extract timestamp (handle both formats)
-            local ts=$(echo "$line" | jq -r '.timestamp // .ts // empty' 2>/dev/null)
+            local ts
+            ts=$(echo "$line" | jq -r '.timestamp // .ts // empty' 2>/dev/null)
 
             if [[ -n "$ts" ]]; then
-                local ts_epoch=$(timestamp_to_epoch_ms "$ts")
+                local ts_epoch
+                ts_epoch=$(timestamp_to_epoch_ms "$ts")
 
                 # Check if within time window
                 if [[ $ts_epoch -ge $start_epoch && $ts_epoch -le $end_epoch ]]; then
@@ -266,7 +280,8 @@ aggregate_project_history() {
 get_raw_history() {
     local max_lines="${1:-$MAX_HISTORY_LINES}"
 
-    local history_files=$(locate_project_history)
+    local history_files
+    history_files=$(locate_project_history)
 
     if [[ -z "$history_files" ]]; then
         return 1
@@ -316,7 +331,8 @@ count_pattern_in_history() {
 
 # List all sessions for current project
 list_project_sessions() {
-    local project_dir=$(find_project_dir 2>/dev/null)
+    local project_dir
+    project_dir=$(find_project_dir 2>/dev/null)
 
     if [[ -z "$project_dir" ]]; then
         return 1
@@ -345,7 +361,8 @@ diagnose_history() {
     echo "Encoded path: $(get_current_project_encoded)"
     echo ""
 
-    local project_dir=$(find_project_dir 2>/dev/null)
+    local project_dir
+    project_dir=$(find_project_dir 2>/dev/null)
     if [[ -n "$project_dir" ]]; then
         echo "Project directory: $project_dir"
         echo "Directory exists: yes"
@@ -359,10 +376,12 @@ diagnose_history() {
     echo ""
 
     echo "History files:"
-    local files=$(locate_project_history 2>/dev/null)
+    local files
+    files=$(locate_project_history 2>/dev/null)
     if [[ -n "$files" ]]; then
         echo "$files" | while read -r f; do
-            local lines=$(wc -l < "$f" 2>/dev/null | tr -d ' ')
+            local lines
+            lines=$(wc -l < "$f" 2>/dev/null | tr -d ' ')
             echo "  $f ($lines entries)"
         done
     else
@@ -376,7 +395,8 @@ diagnose_history() {
 
     echo "Legacy file check:"
     if [[ -f "$HOME/.claude/history.jsonl" ]]; then
-        local legacy_lines=$(wc -l < "$HOME/.claude/history.jsonl" | tr -d ' ')
+        local legacy_lines
+        legacy_lines=$(wc -l < "$HOME/.claude/history.jsonl" | tr -d ' ')
         echo "  ~/.claude/history.jsonl exists ($legacy_lines entries)"
     else
         echo "  ~/.claude/history.jsonl does not exist"

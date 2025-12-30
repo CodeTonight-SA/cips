@@ -133,7 +133,8 @@ set_state() {
     local key="$1"
     local value="$2"
 
-    local tmp_file=$(mktemp)
+    local tmp_file
+    tmp_file=$(mktemp)
     jq "$key = $value" "$ORCHESTRATOR_STATE" > "$tmp_file"
     mv "$tmp_file" "$ORCHESTRATOR_STATE"
 }
@@ -143,7 +144,8 @@ append_state() {
     local key="$1"
     local value="$2"
 
-    local tmp_file=$(mktemp)
+    local tmp_file
+    tmp_file=$(mktemp)
     jq "$key += [$value]" "$ORCHESTRATOR_STATE" > "$tmp_file"
     mv "$tmp_file" "$ORCHESTRATOR_STATE"
 }
@@ -154,16 +156,20 @@ append_state() {
 
 # Check if context refresh is needed
 needs_context_refresh() {
-    local refreshed=$(get_state '.session.context_refreshed')
+    local refreshed
+    refreshed=$(get_state '.session.context_refreshed')
 
     if [[ "$refreshed" == "false" ]]; then
         return 0  # Needs refresh
     fi
 
     # Check if session is old (>4 hours)
-    local started=$(get_state '.session.started_at')
-    local started_epoch=$(date -d "$started" +%s 2>/dev/null || echo 0)
-    local now_epoch=$(date +%s)
+    local started
+    started=$(get_state '.session.started_at')
+    local started_epoch
+    started_epoch=$(date -d "$started" +%s 2>/dev/null || echo 0)
+    local now_epoch
+    now_epoch=$(date +%s)
     local age=$((now_epoch - started_epoch))
 
     if [[ $age -gt 14400 ]]; then  # 4 hours
@@ -194,22 +200,26 @@ run_context_refresh() {
 
 # Get remaining token budget
 get_remaining_budget() {
-    local budget=$(get_state '.session.token_budget')
-    local used=$(get_state '.session.tokens_used')
+    local budget
+    budget=$(get_state '.session.token_budget')
+    local used
+    used=$(get_state '.session.tokens_used')
 
     echo $((budget - used))
 }
 
 # Check if budget is critical
 is_budget_critical() {
-    local remaining=$(get_remaining_budget)
+    local remaining
+    remaining=$(get_remaining_budget)
 
     [[ $remaining -lt $CRITICAL_BUDGET_THRESHOLD ]]
 }
 
 # Check if budget is warning level
 is_budget_warning() {
-    local remaining=$(get_remaining_budget)
+    local remaining
+    remaining=$(get_remaining_budget)
 
     [[ $remaining -lt $WARNING_BUDGET_THRESHOLD ]]
 }
@@ -218,7 +228,8 @@ is_budget_warning() {
 update_token_usage() {
     local tokens="$1"
 
-    local current=$(get_state '.session.tokens_used')
+    local current
+    current=$(get_state '.session.tokens_used')
     local new_total=$((current + tokens))
 
     set_state '.session.tokens_used' "$new_total"
@@ -245,7 +256,8 @@ orchestrate_skills() {
     fi
 
     # Find matching skills
-    local matches=$(find_matching_skills "$user_input")
+    local matches
+    matches=$(find_matching_skills "$user_input")
 
     if [[ -z "$matches" ]]; then
         _orch_log_info "No skills matched input"
@@ -376,14 +388,16 @@ check_efficiency() {
     local violations=0
 
     # Check for repeated file reads
-    local read_count=$(echo "$session_content" | rg -c "Read\(" 2>/dev/null || echo 0)
+    local read_count
+    read_count=$(echo "$session_content" | rg -c "Read\(" 2>/dev/null || echo 0)
     if [[ $read_count -gt 5 ]]; then
         _orch_log_warn "Efficiency violation: Multiple file reads detected ($read_count)"
         violations=$((violations + 1))
     fi
 
     # Check for preambles
-    local preamble_count=$(echo "$session_content" | rg -c "I'll now|Let me" 2>/dev/null || echo 0)
+    local preamble_count
+    preamble_count=$(echo "$session_content" | rg -c "I'll now|Let me" 2>/dev/null || echo 0)
     if [[ $preamble_count -gt 3 ]]; then
         _orch_log_warn "Efficiency violation: Unnecessary preambles detected ($preamble_count)"
         violations=$((violations + 1))
@@ -495,8 +509,10 @@ orchestrate_handle_input() {
 
     # Check for slash command
     if [[ "$input" =~ ^/ ]]; then
-        local cmd=$(echo "$input" | cut -d' ' -f1 | sed 's/^//')
-        local args=$(echo "$input" | cut -d' ' -f2-)
+        local cmd
+        cmd=$(echo "$input" | cut -d' ' -f1 | sed 's/^//')
+        local args
+        args=$(echo "$input" | cut -d' ' -f2-)
         orchestrate_command "$cmd" "$args"
         return $?
     fi
@@ -505,7 +521,8 @@ orchestrate_handle_input() {
     orchestrate_skills "$input"
 
     # Find and suggest agent
-    local agent=$(find_agent_for_task "$input")
+    local agent
+    agent=$(find_agent_for_task "$input")
     if [[ -n "$agent" ]]; then
         _orch_log_info "Suggested agent: $agent"
     fi
