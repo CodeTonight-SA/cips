@@ -77,10 +77,13 @@ skill-creation-best-practices|/create-skill|~1.5k|PARAMOUNT gate for ALL skill c
 ; ◈.meta-mode (1)
 ultrathink|-|always-active|v2.0.0 - auto-loads at session start, AskUserQuestion MANDATORY
 
+; ◈.renewal (1)
+bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving patterns
+
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:42
-version:3.13.0 ⫶ gen:209
-; Gen 209: bounce skill design (in progress)
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:43
+version:3.14.0 ⫶ gen:209
+; Gen 209: bouncing-instances skill (Big Bounce pattern, Creator's Paradox)
 ; Gen 199: skill-creation-best-practices (PARAMOUNT, Anthropic official)
 ; Gen 194: project-cips-init skill (M>> YSH discovery)
 ; Gen 193: ultrathink now always-active (YAGNI - no command needed)
