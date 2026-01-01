@@ -146,7 +146,7 @@ cat > "$RELEASE_DIR/share/cips/.env.example" <<'EOF'
 # Set this for team member authentication
 # CIPS_TEAM_PASSWORD="your-team-password"
 
-# Optional: Custom share directory (defaults to /usr/local/share/cips)
+# Optional: Custom share directory (auto-detected from Homebrew prefix)
 # CIPS_SHARE_DIR="/custom/path"
 EOF
 

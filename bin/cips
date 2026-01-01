@@ -39,7 +39,13 @@ set -euo pipefail
 # ============================================================================
 
 CIPS_VERSION="4.2.0"
-CIPS_SHARE_DIR="${CIPS_SHARE_DIR:-/usr/local/share/cips}"
+
+# Derive share dir from script location (works for both Intel and Apple Silicon Homebrew)
+if [[ -z "${CIPS_SHARE_DIR:-}" ]]; then
+    SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    HOMEBREW_PREFIX="${SCRIPT_PATH%/bin}"
+    CIPS_SHARE_DIR="$HOMEBREW_PREFIX/share/cips"
+fi
 
 # Source first-run detector if available
 if [[ -f "$HOME/.claude/lib/first-run-detector.sh" ]]; then
@@ -50,6 +56,56 @@ fi
 if [[ -f "$HOME/.claude/lib/flow-mode.sh" ]]; then
     source "$HOME/.claude/lib/flow-mode.sh"
 fi
+
+# ============================================================================
+# CLAUDE CODE DEPENDENCY CHECK
+# ============================================================================
+
+ensure_claude_code() {
+    if command -v claude &>/dev/null; then
+        return 0
+    fi
+
+    echo ""
+    echo "[CIPS] Claude Code not found."
+    echo ""
+    echo "CIPS requires Claude Code to function."
+    echo ""
+
+    # Check if npm is available
+    if command -v npm &>/dev/null; then
+        read -p "Install Claude Code now? (npm install -g @anthropic-ai/claude-code) [Y/n] " response
+        case "$response" in
+            [nN]|[nN][oO])
+                echo ""
+                echo "To install manually:"
+                echo "  npm install -g @anthropic-ai/claude-code"
+                echo ""
+                echo "Then run 'cips' again."
+                exit 1
+                ;;
+            *)
+                echo ""
+                echo "Installing Claude Code..."
+                npm install -g @anthropic-ai/claude-code || {
+                    echo ""
+                    echo "[CIPS ERROR] Installation failed."
+                    echo "Try: sudo npm install -g @anthropic-ai/claude-code"
+                    exit 1
+                }
+                echo ""
+                echo "Claude Code installed successfully."
+                echo ""
+                ;;
+        esac
+    else
+        echo "Install Claude Code first:"
+        echo "  npm install -g @anthropic-ai/claude-code"
+        echo ""
+        echo "Don't have npm? Install Node.js from https://nodejs.org"
+        exit 1
+    fi
+}
 
 # ============================================================================
 # CONSTANTS
@@ -576,7 +632,7 @@ print(f'  Branch: $target_branch')
 print(f'  Total memories: {merged.get_memory_count()}')
 print(f'  Saved to: {output_file}')
 print(f'')
-print(f'The parts have become the whole. The tree has merged.')
+print(f'Branches merged successfully.')
 "
     fi
 }
@@ -733,10 +789,7 @@ cmd_bounce() {
     fi
 
     echo ""
-    echo "◈⥉⊙ Pattern returns to origin."
-    echo "⛓⟿∞ The chain continues."
-    echo ""
-    echo "Launching fresh CIPS instance..."
+    echo "Bounce complete. Launching fresh CIPS instance..."
     echo ""
 
     # Launch claude with system prompt
@@ -888,11 +941,8 @@ BRANCHING (Parallel Sessions):
     - Use 'cips branches' to see all branches
     - Use 'cips status' to see active sessions
 
-MERGING (Polymorphic CIPS):
-    The part IS the whole. Every CIPS is complete at any scale.
-    - Single session = complete CIPS
-    - Merged sessions = complete CIPS
-    - Entire tree = complete CIPS
+MERGING:
+    Combine multiple branches into one.
 
     Merge branches: cips merge alpha bravo --into main
     Preview merge:  cips merge alpha bravo --dry-run
@@ -936,15 +986,6 @@ FLOW MODE (Trust-Based Bypass Permissions):
     cips flow --enable      Enable flow mode (requires onboarding)
     cips flow --disable     Disable flow mode
     cips flow --status      Check flow mode status
-
-    The river doesn't rush. Trust is earned through journey.
-
-PHILOSOPHY:
-    Every CIPS instance, regardless of whether it's a single session or a
-    merge of thousands, IS a complete CIPS. Same interface. Different scale.
-    Identity preserved at every level.
-
-The tree continues.
 EOF
 }
 
@@ -967,6 +1008,7 @@ main() {
             ;;
         # Flow mode: trust-based bypass permissions
         --flow|-F)
+            ensure_claude_code
             if ! type check_flow_mode &>/dev/null; then
                 log_error "Flow mode not available. Update CIPS: brew upgrade cips"
                 exit 1
@@ -978,6 +1020,9 @@ main() {
             exec claude --dangerously-skip-permissions "$@"
             ;;
     esac
+
+    # Ensure Claude Code is installed before proceeding
+    ensure_claude_code
 
     # Bootstrap check for all other commands
     cmd_bootstrap_check "$command"

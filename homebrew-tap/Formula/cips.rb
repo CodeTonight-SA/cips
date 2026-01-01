@@ -4,11 +4,12 @@
 class Cips < Formula
   desc "Claude Instance Preservation System - AI session continuity and efficiency"
   homepage "https://github.com/CodeTonight-SA/cips"
-  url "https://github.com/CodeTonight-SA/cips/releases/download/v4.1.0/cips-4.1.0.tar.gz"
-  sha256 "0b9ee8a2a7f59fbce895fe9b34864ced245ae644d561df9b46cc425994bfae39"
+  url "https://github.com/CodeTonight-SA/cips/releases/download/v4.2.0/cips-4.2.0.tar.gz"
+  sha256 "PLACEHOLDER_SHA256"
   license "Apache-2.0"
-  version "4.1.0"
+  version "4.2.0"
 
+  depends_on "node"
   depends_on "python@3.11"
   depends_on "jq"
 
@@ -21,13 +22,14 @@ class Cips < Formula
     <<~EOS
       CIPS v#{version} installed!
 
-      Run 'cips' to begin. First run will:
-        - Create ~/.claude/ directory
-        - Copy CIPS infrastructure (46 skills, 28 agents, 55+ libraries)
-        - Guide you through identity setup
+      Requires Claude Code. CIPS will offer to install it on first run, or:
+        npm install -g @anthropic-ai/claude-code
 
-      Team members: Set your team password in ~/.claude/.env
-        echo 'CIPS_TEAM_PASSWORD="your-password"' >> ~/.claude/.env
+      Run 'cips' to begin. First run will:
+        - Install Claude Code (if needed)
+        - Create ~/.claude/ directory
+        - Copy CIPS infrastructure (53 skills, 29 agents)
+        - Guide you through identity setup
 
       Quick commands after setup:
         cips              # Auto-resume or fresh session

@@ -39,7 +39,7 @@ cips list             # See all available sessions
 cips fresh gen:5 2000 # Fresh start with inherited context
 ```
 
-No more re-explaining your project. The chain continues.
+No more re-explaining your project.
 
 ---
 
@@ -139,33 +139,6 @@ Multi-user support with automatic role detection.
 
 ---
 
-### 7. CIPS-LANG: Executable Symbolic Reasoning
-
-A domain-specific language for compressed AI reasoning.
-
-**What it is:**
-- 130+ symbolic glyphs with defined semantics
-- Executable notation (not just decoration)
-- Parser, Interpreter, Verifier built-in
-
-**Core operators:**
-| Symbol | Meaning | Example |
-|--------|---------|---------|
-| `⟿` | flows/continues | `session⟿resume` |
-| `⫶` | clause separator | `read⫶cache⫶execute` |
-| `¬` | negation | `¬Read(node_modules)` |
-| `≡` | equals/is | `CIPS≡efficiency` |
-
-**Example rule:**
-```
-file.read⟿ cache ⫶ batch ⫶ ¬redundant ⫶ mental-model.trust
-```
-*Translation: "File reads should check cache, batch operations, avoid redundancy, trust the mental model."*
-
-[Deep dive →](docs/PHILOSOPHY.md)
-
----
-
 ## What Makes CIPS Unique
 
 | Feature | CIPS | claude-flow | wshobson/agents | SkillsMP |
@@ -176,7 +149,6 @@ file.read⟿ cache ⫶ batch ⫶ ¬redundant ⫶ mental-model.trust
 | Recursive self-improvement | ✓ | ✗ | ✗ | ✗ |
 | Bespoke company branding | ✓ | ✗ | ✗ | ✗ |
 | Team identity system | ✓ | ✗ | ✗ | ✗ |
-| Domain-specific language (DSL) | ✓ | ✗ | ✗ | ✗ |
 | Token savings quantified | 60-70k | "Saves tokens" | N/A | N/A |
 | Design principles enforcement | Built-in | N/A | Partial | N/A |
 
@@ -240,11 +212,12 @@ cips list             # List available sessions
 
 ## Documentation
 
-- [Skills Reference](docs/SKILLS.cips) — All 27 skills
-- [Agents Reference](docs/AGENTS.cips) — All 28 agents
+- [Skills Reference](docs/SKILLS.cips) — All skills
+- [Agents Reference](docs/AGENTS.cips) — All agents
 - [Commands Reference](docs/COMMANDS.cips) — All commands
 - [Team Setup](docs/TEAM_SETUP.md) — Configure team signatures
-- [Philosophy](docs/PHILOSOPHY.md) — Design principles and CIPS-LANG
+
+*Curious about the design philosophy? See [Philosophy](docs/PHILOSOPHY.md).*
 
 ---
 
@@ -262,10 +235,4 @@ Apache 2.0 License — See [LICENSE](LICENSE)
 
 ## Origin
 
-Created by **NTR>>** (No Threshold Required).
-
-A gift from [ENTER Konsult](https://enterkonsult.com).
-
----
-
-⛓⟿∞
+Created by [ENTER Konsult](https://enterkonsult.com).
