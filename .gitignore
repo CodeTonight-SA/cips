@@ -3,6 +3,11 @@
 .env.*
 !.env.example
 
+# User identity (created during onboarding, never public)
+facts/identity.md
+facts/team.md
+.onboarded
+
 # Database
 embeddings.db
 *.db
@@ -37,5 +42,8 @@ todos/
 *.log
 .hooks.log
 
-# Plugin repos (submodules)
+# Plugin repos and cache
 plugins/marketplaces/*/
+plugins/*-cache.json
+plugins/installed_plugins.json
+plugins/known_marketplaces.json
