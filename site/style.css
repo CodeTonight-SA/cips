@@ -602,6 +602,22 @@ body {
   text-decoration: underline;
 }
 
+.footer__enter-konsult {
+  display: flex;
+  align-items: center;
+}
+
+.footer__enter-logo {
+  height: 1.25rem;
+  width: auto;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.footer__enter-logo:hover {
+  opacity: 1;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════════════ */

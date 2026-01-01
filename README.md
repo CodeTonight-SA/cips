@@ -264,7 +264,7 @@ Apache 2.0 License — See [LICENSE](LICENSE)
 
 Created by **NTR>>** (No Threshold Required).
 
-A gift from [ENTER Konsult](https://enterkonsult.co.za).
+A gift from [ENTER Konsult](https://enterkonsult.com).
 
 ---
 
