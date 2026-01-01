@@ -38,7 +38,7 @@ set -euo pipefail
 # BOOTSTRAP CONSTANTS
 # ============================================================================
 
-CIPS_VERSION="5.0.1"
+CIPS_VERSION="5.0.2"
 
 # Derive share dir from script location (works for both Intel and Apple Silicon Homebrew)
 if [[ -z "${CIPS_SHARE_DIR:-}" ]]; then
@@ -282,6 +282,14 @@ ENVFILE
 
     # Remove any stale markers
     rm -f "$CLAUDE_DIR/.onboarded"
+
+    # Check for embeddings setup
+    if [[ ! -d "$CLAUDE_DIR/venv" ]]; then
+        echo ""
+        log_info "Semantic RL++ (pattern learning) not yet configured."
+        log_info "Run after onboarding: $CLAUDE_DIR/scripts/bootstrap-semantic-rl.sh"
+        echo ""
+    fi
 
     log_info "Bootstrap complete. Starting onboarding..."
     cmd_onboard

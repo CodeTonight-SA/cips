@@ -116,6 +116,19 @@ jobs:
           # Save for release
           echo "$SHA" > sha256.txt
 
+      - name: Generate Release Notes
+        id: notes
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [[ -n "$PREV_TAG" ]]; then
+            NOTES=$(git log $PREV_TAG..HEAD --pretty=format:"- %s" --no-merges | head -20)
+          else
+            NOTES="- Initial release"
+          fi
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -124,6 +137,10 @@ jobs:
             sha256.txt
           body: |
             ## CIPS v${{ steps.version.outputs.version }}
+
+            ### Changes
+
+            ${{ steps.notes.outputs.notes }}
 
             ### Installation
 
@@ -137,10 +154,6 @@ jobs:
             ```
             ${{ steps.build.outputs.sha256 }}
             ```
-
-            ### Changelog
-
-            See [CHANGELOG.md](CHANGELOG.md) for details.
           draft: false
           prerelease: false
 
