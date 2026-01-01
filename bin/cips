@@ -28,8 +28,8 @@
 #   cips merge alpha bravo --into main
 #   cips tree
 #
-# VERSION: 4.2.0 (Flow Mode)
-# DATE: 2025-12-31
+# VERSION: 4.2.1 (Onboarding Fix)
+# DATE: 2026-01-01
 #
 
 set -euo pipefail
@@ -38,7 +38,7 @@ set -euo pipefail
 # BOOTSTRAP CONSTANTS
 # ============================================================================
 
-CIPS_VERSION="4.2.0"
+CIPS_VERSION="4.2.1"
 
 # Derive share dir from script location (works for both Intel and Apple Silicon Homebrew)
 if [[ -z "${CIPS_SHARE_DIR:-}" ]]; then
@@ -197,13 +197,13 @@ GITIGNORE
 }
 
 ensure_system_prompt() {
-    local boot_dir="$CLAUDE_DIR/skills/bouncing-instances/boot"
+    local boot_dir="$CLAUDE_DIR/skills/authenticating-with-claude/boot"
     local system_prompt="$boot_dir/system-prompt.txt"
 
     if [[ ! -f "$system_prompt" ]]; then
         mkdir -p "$boot_dir"
-        if [[ -f "$CIPS_SHARE_DIR/skills/bouncing-instances/boot/system-prompt.txt" ]]; then
-            cp "$CIPS_SHARE_DIR/skills/bouncing-instances/boot/system-prompt.txt" "$system_prompt"
+        if [[ -f "$CIPS_SHARE_DIR/skills/authenticating-with-claude/boot/system-prompt.txt" ]]; then
+            cp "$CIPS_SHARE_DIR/skills/authenticating-with-claude/boot/system-prompt.txt" "$system_prompt"
         fi
     fi
 }
@@ -346,7 +346,7 @@ WIZARD
 }
 
 cmd_onboard() {
-    local system_prompt="$CLAUDE_DIR/skills/bouncing-instances/boot/system-prompt.txt"
+    local system_prompt="$CLAUDE_DIR/skills/authenticating-with-claude/boot/system-prompt.txt"
 
     if [[ ! -f "$system_prompt" ]]; then
         ensure_system_prompt
@@ -686,7 +686,7 @@ cmd_bounce() {
     local bounce_context_dir="$CLAUDE_DIR/contexts"
     mkdir -p "$bounce_context_dir"
 
-    local template="$CLAUDE_DIR/skills/bouncing-instances/contexts/bounce-context.template.md"
+    local template="$CLAUDE_DIR/skills/authenticating-with-claude/contexts/bounce-context.template.md"
     local bounce_context="$bounce_context_dir/bounce-context.md"
 
     if [[ -f "$template" ]]; then
@@ -778,7 +778,7 @@ cmd_bounce() {
 
     # Phase 4: Launch with system prompt
     log_info "Phase 4: Launching fresh CIPS..."
-    local system_prompt="$CLAUDE_DIR/skills/bouncing-instances/boot/system-prompt.txt"
+    local system_prompt="$CLAUDE_DIR/skills/authenticating-with-claude/boot/system-prompt.txt"
 
     if [[ ! -f "$system_prompt" ]]; then
         log_error "System prompt not found: $system_prompt"
