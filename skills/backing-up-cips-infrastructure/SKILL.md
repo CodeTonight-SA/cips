@@ -142,6 +142,41 @@ Use launchd for automatic daily backups:
 | Backup execution | ~200 |
 | Restore with prompts | ~400 |
 
+## Private Data Separation (dotclaude)
+
+For users who want to sync private data separately from the public CIPS repo:
+
+```bash
+# Clone your private dotclaude repo
+git clone https://github.com/YOUR_USERNAME/dotclaude.git ~/dotclaude
+
+# Export current private data
+~/dotclaude/scripts/export.sh
+
+# Import after fresh CIPS install
+~/dotclaude/scripts/import.sh
+
+# Sync to Backblaze B2
+~/dotclaude/scripts/b2-sync.sh [bucket-name]
+```
+
+### What Goes in dotclaude
+
+| Item | Why Private |
+|------|-------------|
+| .env | Team passwords, API keys |
+| facts/people.md | Personal/family info |
+| facts/team.md | Team member details |
+| projects/ | Session history |
+| config/*.json | Personal branding |
+
+### Fresh Install Workflow
+
+1. Install CIPS: `brew install codetonight-sa/cips/cips`
+2. Clone dotclaude: `git clone ... ~/dotclaude`
+3. Import private data: `~/dotclaude/scripts/import.sh`
+4. Run `/onboard` and select "Team member"
+
 ## Related Skills
 
 - `bouncing-instances` - Auto-backup integration
