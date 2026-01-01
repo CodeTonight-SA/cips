@@ -262,7 +262,9 @@ Apache 2.0 License — See [LICENSE](LICENSE)
 
 ## Origin
 
-Originally developed by [CodeTonight (Pty) Ltd](https://github.com/CodeTonight-SA).
+Created by **NTR>>** (No Threshold Required).
+
+A gift from [ENTER Konsult](https://enterkonsult.co.za).
 
 ---
 

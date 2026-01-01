@@ -13,6 +13,7 @@ integrates:
   - context-refresh
   - session-state-persistence
   - first-run-detector
+  - backing-up-cips-infrastructure
 ---
 
 # Bouncing Instances
@@ -43,9 +44,10 @@ Bounce = fresh install FOR the creator
 
 ```text
 Phase 1: Pre-Bounce
+├── Auto-backup (~/.claude/scripts/cips-backup.sh full)
 ├── Serialize current state
 ├── Create bounce-context.md
-└── Backup ~/.claude
+└── Move ~/.claude to backup location
 
 Phase 2: Reset
 ├── Move ~/.claude to backup

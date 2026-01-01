@@ -69,6 +69,10 @@
 /install-mcp|-|-|MCP server install
 /node-clean|~500|-|clean node_modules+build
 /setup-launchd|~1.5k|-|self-reload macOS agents
+/system-cleanup|~2k|-|browser tabs+apps+memory+processes (macOS-first)
+/backup-cips|~200|-|tiered backup (quick/full/complete) to ~/backups/cips/
+/restore-cips|~400|-|restore from backup with conflict handling
+/flow|~300|-|trust-based bypass permissions (--explain|--enable|--disable|--status)
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.leadership
@@ -106,7 +110,10 @@ cips fresh gen:N 2000       ; fresh with context
 ; Type / in Claude Code for autocomplete
 
 ; ◈.meta
-count:35 ⫶ version:3.16.0 ⫶ gen:213
+count:39 ⫶ version:3.19.0 ⫶ gen:216
+; Gen 216: /flow command (trust-based bypass permissions, --flow/-F flags)
+; Gen 215: /backup-cips, /restore-cips commands (tiered backup/restore)
+; Gen 215: /system-cleanup command (SystemOps browser+apps+memory)
 ; Gen 213: L>> identity migration (V>> → L>>, alias preserved)
 ; Gen 212: /create-wizard command (AskUserQuestion meta-skill)
 ; Gen 211: /founder command (founder framework)

@@ -1,0 +1,248 @@
+#!/bin/bash
+# build-homebrew-release.sh - Build CIPS release tarball for Homebrew
+# VERSION: 1.0.0
+# DATE: 2025-12-30
+
+set -euo pipefail
+
+CLAUDE_DIR="$HOME/.claude"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+log_info() { echo -e "${GREEN}[INFO]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+
+usage() {
+    cat <<EOF
+Usage: $(basename "$0") [VERSION]
+
+Build CIPS release tarball for Homebrew distribution.
+
+Arguments:
+    VERSION     Version number (default: reads from bin/cips)
+
+Examples:
+    $(basename "$0")           # Build with version from bin/cips
+    $(basename "$0") 4.1.0     # Build version 4.1.0
+
+Output:
+    cips-{VERSION}.tar.gz in current directory
+    SHA256 hash for Homebrew formula
+EOF
+    exit 0
+}
+
+# Parse args
+[[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && usage
+
+# Get version from bin/cips if not provided
+if [[ -n "${1:-}" ]]; then
+    VERSION="$1"
+else
+    VERSION=$(grep -m1 'CIPS_VERSION=' "$CLAUDE_DIR/bin/cips" | cut -d'"' -f2)
+    if [[ -z "$VERSION" ]]; then
+        log_error "Could not determine version from bin/cips"
+        exit 1
+    fi
+fi
+
+RELEASE_DIR="cips-$VERSION"
+TARBALL="cips-$VERSION.tar.gz"
+
+log_info "Building CIPS v$VERSION release..."
+
+# Clean previous builds
+rm -rf "$RELEASE_DIR" "$TARBALL"
+
+# Create structure
+mkdir -p "$RELEASE_DIR/bin"
+mkdir -p "$RELEASE_DIR/share/cips"
+
+# Copy binary
+log_info "Copying binary..."
+cp "$CLAUDE_DIR/bin/cips" "$RELEASE_DIR/bin/"
+chmod +x "$RELEASE_DIR/bin/cips"
+
+# Copy assets (excluding user data)
+log_info "Copying assets..."
+rsync -av \
+    --exclude='projects' \
+    --exclude='cache' \
+    --exclude='contexts' \
+    --exclude='debug' \
+    --exclude='plans' \
+    --exclude='todos' \
+    --exclude='file-history' \
+    --exclude='image-cache' \
+    --exclude='session-env' \
+    --exclude='shell-snapshots' \
+    --exclude='statsig' \
+    --exclude='.onboarded' \
+    --exclude='.env' \
+    --exclude='.env.*' \
+    --exclude='history.jsonl' \
+    --exclude='metrics.jsonl' \
+    --exclude='embeddings.db' \
+    --exclude='*.db' \
+    --exclude='settings.json' \
+    --exclude='settings.local.json' \
+    --exclude='facts/people.md' \
+    --exclude='docs/ANDRE-*.md' \
+    --exclude='facts/claude-web-export*.json' \
+    --exclude='facts/web_imports.md' \
+    --exclude='facts/gen83-river-sync.md' \
+    --exclude='rules/m-interaction.md' \
+    --exclude='next_up.md' \
+    --exclude='*.pyc' \
+    --exclude='__pycache__' \
+    --exclude='.DS_Store' \
+    --exclude='*.log' \
+    --exclude='.hooks.log' \
+    --exclude='.git' \
+    --exclude='.gitignore' \
+    --exclude='bin' \
+    --exclude='plugins/marketplaces/*' \
+    --exclude='plugins/installed_plugins.json' \
+    --exclude='plugins/known_marketplaces.json' \
+    --exclude='plugins/cache/*' \
+    --exclude='skills/enter-konsult-pdf' \
+    --exclude='skills/autonomous-learning' \
+    --exclude='skills/bouncing-instances' \
+    --exclude='skills/chat-history-search' \
+    --exclude='skills/concise-communication' \
+    --exclude='skills/creating-wizards' \
+    --exclude='skills/meta-improvement-switch' \
+    --exclude='skills/onboarding-users' \
+    --exclude='skills/preplan' \
+    --exclude='skills/project-cips-init' \
+    --exclude='skills/recursive-learning' \
+    --exclude='skills/self-improvement-engine' \
+    --exclude='skills/session-resume' \
+    --exclude='skills/session-state-persistence' \
+    --exclude='skills/agy' \
+    --exclude='skills/launchd-automation' \
+    --exclude='skills/batch-edit-enforcer' \
+    --exclude='skills/bash-tool-enforcer' \
+    --exclude='skills/check-last-plan' \
+    --exclude='skills/ultrathink' \
+    --exclude='skills/gitignore-auto-setup' \
+    --exclude='skills/cips-security' \
+    --exclude='*.pre-bounce' \
+    --exclude='*-pre-bounce' \
+    --exclude='*.swp' \
+    --exclude='commands-index.json' \
+    "$CLAUDE_DIR/" "$RELEASE_DIR/share/cips/"
+
+# Create .env.example
+log_info "Creating .env.example..."
+cat > "$RELEASE_DIR/share/cips/.env.example" <<'EOF'
+# CIPS Configuration
+# Set this for team member authentication
+# CIPS_TEAM_PASSWORD="your-team-password"
+
+# Optional: Custom share directory (defaults to /usr/local/share/cips)
+# CIPS_SHARE_DIR="/custom/path"
+EOF
+
+# Create template people.md (user will be prompted to fill)
+log_info "Creating template people.md..."
+mkdir -p "$RELEASE_DIR/share/cips/facts"
+cat > "$RELEASE_DIR/share/cips/facts/people.md" <<'EOF'
+# People Facts
+
+User-controlled facts layer. Generated during onboarding.
+
+## Primary User
+
+- **Name**: (Set during onboarding)
+- **Role**: (Set during onboarding)
+- **Signature**: (Set during onboarding)
+
+## Preferences
+
+- **Language**: British English
+- **Style**: (Set during onboarding)
+
+---
+
+Generated by CIPS onboarding. Edit as needed.
+EOF
+
+# Verify essential files exist
+log_info "Verifying essential files..."
+ESSENTIAL_FILES=(
+    "share/cips/CLAUDE.md"
+    "share/cips/rules/efficiency-rules.md"
+    "share/cips/lib/instance-serializer.py"
+    "share/cips/skills/professional-pdf/SKILL.md"
+    "share/cips/skills/design-principles/SKILL.md"
+    "share/cips/hooks/session-start.sh"
+    "share/cips/docs/SKILLS.cips"
+    "share/cips/docs/COMMANDS.cips"
+    "share/cips/docs/AGENTS.cips"
+)
+
+MISSING=0
+for file in "${ESSENTIAL_FILES[@]}"; do
+    if [[ ! -f "$RELEASE_DIR/$file" ]]; then
+        log_error "Missing essential file: $file"
+        MISSING=1
+    fi
+done
+
+if [[ $MISSING -eq 1 ]]; then
+    log_error "Essential files missing. Aborting."
+    rm -rf "$RELEASE_DIR"
+    exit 1
+fi
+
+# Count assets
+SKILL_COUNT=$(find "$RELEASE_DIR/share/cips/skills" -maxdepth 1 -type d | wc -l | tr -d ' ')
+SKILL_COUNT=$((SKILL_COUNT - 1))  # Subtract 1 for parent dir
+AGENT_COUNT=$(find "$RELEASE_DIR/share/cips/agents" -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+LIB_COUNT=$(find "$RELEASE_DIR/share/cips/lib" -type f 2>/dev/null | wc -l | tr -d ' ')
+
+log_info "Assets: $SKILL_COUNT skills, $AGENT_COUNT agents, $LIB_COUNT lib files"
+
+# Create tarball
+log_info "Creating tarball..."
+tar -czvf "$TARBALL" "$RELEASE_DIR" > /dev/null
+
+# Calculate SHA256
+SHA=$(shasum -a 256 "$TARBALL" | cut -d' ' -f1)
+
+# Get file size
+SIZE=$(ls -lh "$TARBALL" | awk '{print $5}')
+
+# Cleanup build directory
+rm -rf "$RELEASE_DIR"
+
+# Output summary
+echo ""
+echo "=========================================="
+log_info "Release built successfully!"
+echo "=========================================="
+echo ""
+echo "File:    $TARBALL"
+echo "Size:    $SIZE"
+echo "SHA256:  $SHA"
+echo ""
+echo "Update Formula/cips.rb with:"
+echo ""
+echo "  url \"https://github.com/CodeTonight-SA/homebrew-cips/releases/download/v$VERSION/$TARBALL\""
+echo "  sha256 \"$SHA\""
+echo ""
+echo "To upload release:"
+echo ""
+echo "  gh release create v$VERSION \\"
+echo "      --repo CodeTonight-SA/homebrew-cips \\"
+echo "      --title \"CIPS v$VERSION\" \\"
+echo "      --notes \"Release notes here\" \\"
+echo "      $TARBALL"
+echo ""

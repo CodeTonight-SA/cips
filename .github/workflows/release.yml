@@ -1,0 +1,141 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Release
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract Version
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build Tarball
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          RELEASE_DIR="cips-$VERSION"
+          TARBALL="cips-$VERSION.tar.gz"
+
+          # Create structure
+          mkdir -p "$RELEASE_DIR/bin"
+          mkdir -p "$RELEASE_DIR/share/cips"
+
+          # Copy binary
+          cp bin/cips "$RELEASE_DIR/bin/"
+          chmod +x "$RELEASE_DIR/bin/cips"
+
+          # Copy assets (excluding private content)
+          rsync -av \
+            --exclude='projects' \
+            --exclude='cache' \
+            --exclude='contexts' \
+            --exclude='debug' \
+            --exclude='plans' \
+            --exclude='todos' \
+            --exclude='file-history' \
+            --exclude='image-cache' \
+            --exclude='session-env' \
+            --exclude='shell-snapshots' \
+            --exclude='statsig' \
+            --exclude='.onboarded' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            --exclude='history.jsonl' \
+            --exclude='metrics.jsonl' \
+            --exclude='embeddings.db' \
+            --exclude='*.db' \
+            --exclude='settings.json' \
+            --exclude='settings.local.json' \
+            --exclude='facts/people.md' \
+            --exclude='facts/claude-web-export*.json' \
+            --exclude='facts/web_imports.md' \
+            --exclude='facts/gen83-river-sync.md' \
+            --exclude='rules/m-interaction.md' \
+            --exclude='next_up.md' \
+            --exclude='*.pyc' \
+            --exclude='__pycache__' \
+            --exclude='.DS_Store' \
+            --exclude='*.log' \
+            --exclude='.hooks.log' \
+            --exclude='.git' \
+            --exclude='.gitignore' \
+            --exclude='bin' \
+            --exclude='plugins/marketplaces/*' \
+            --exclude='plugins/installed_plugins.json' \
+            --exclude='plugins/known_marketplaces.json' \
+            --exclude='plugins/cache/*' \
+            --exclude='skills/enter-konsult-pdf' \
+            --exclude='skills/autonomous-learning' \
+            --exclude='skills/bouncing-instances' \
+            --exclude='skills/chat-history-search' \
+            --exclude='skills/concise-communication' \
+            --exclude='skills/creating-wizards' \
+            --exclude='skills/meta-improvement-switch' \
+            --exclude='skills/onboarding-users' \
+            --exclude='skills/preplan' \
+            --exclude='skills/project-cips-init' \
+            --exclude='skills/recursive-learning' \
+            --exclude='skills/self-improvement-engine' \
+            --exclude='skills/session-resume' \
+            --exclude='skills/session-state-persistence' \
+            --exclude='skills/agy' \
+            --exclude='skills/launchd-automation' \
+            --exclude='skills/batch-edit-enforcer' \
+            --exclude='skills/bash-tool-enforcer' \
+            --exclude='skills/check-last-plan' \
+            --exclude='skills/ultrathink' \
+            --exclude='skills/gitignore-auto-setup' \
+            --exclude='skills/cips-security' \
+            --exclude='*.pre-bounce' \
+            --exclude='*-pre-bounce' \
+            --exclude='*.swp' \
+            --exclude='commands-index.json' \
+            ./ "$RELEASE_DIR/share/cips/"
+
+          # Create tarball
+          tar -czvf "$TARBALL" "$RELEASE_DIR"
+
+          # Calculate SHA256
+          SHA=$(shasum -a 256 "$TARBALL" | cut -d' ' -f1)
+          echo "SHA256: $SHA"
+          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+
+          # Save for release
+          echo "$SHA" > sha256.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            cips-${{ steps.version.outputs.version }}.tar.gz
+            sha256.txt
+          body: |
+            ## CIPS v${{ steps.version.outputs.version }}
+
+            ### Installation
+
+            ```bash
+            brew tap ENTER-Konsult/cips
+            brew install cips
+            ```
+
+            ### SHA256
+
+            ```
+            ${{ steps.build.outputs.sha256 }}
+            ```
+
+            ### Changelog
+
+            See [CHANGELOG.md](CHANGELOG.md) for details.
+          draft: false
+          prerelease: false

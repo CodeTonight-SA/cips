@@ -1,0 +1,78 @@
+# People Facts Template
+
+User-controlled facts layer. Loaded by CIPS and shareable with Claude Web Projects.
+
+## The 5-Mind System
+
+The signature system (X>>) indicates direct instruction mode from key individuals.
+Configure your primary identity below.
+
+| Sig | Person | Role | Mode | Style |
+|-----|--------|------|------|-------|
+| YOU>> | [Your Name] | Primary User | Primary | [Your preferred communication style] |
+
+## Primary User (YOU>>)
+
+- **Full name**: [Your full name]
+- **Email**: [Your email]
+- **Role**: [Your role/title]
+- **Location**: [Optional - your location]
+- **Experience**: [Optional - years of experience]
+- **Philosophy**: [Your development philosophy, e.g., KISS, DRY, SOLID]
+- **Mode**: [How you prefer Claude to communicate]
+
+### Communication Preferences
+
+| Preference | Setting |
+|------------|---------|
+| Language | British English / American English |
+| Verbosity | Concise / Detailed |
+| Tone | Professional / Casual |
+| Explanations | ELI5 / Technical |
+
+## Team Members (Optional)
+
+Add team members who will use CIPS with their own signatures:
+
+| Sig | Person | Role | Mode |
+|-----|--------|------|------|
+| A>> | [Name] | [Role] | [Interaction style] |
+| B>> | [Name] | [Role] | [Interaction style] |
+
+## Business Context (Optional)
+
+### Organisation
+
+- **Company**: [Your company name]
+- **Brand**: [Your brand name if different]
+- **Type**: [Agency / Startup / Enterprise / Freelance]
+
+### Active Projects
+
+| Project | Client | Status |
+|---------|--------|--------|
+| [Project 1] | [Client] | [Status] |
+| [Project 2] | [Client] | [Status] |
+
+## Customisation
+
+### Operator Detection
+
+If you want CIPS to auto-detect the operator based on machine:
+
+```text
+/Users/[username] → YOU>> (default operator)
+```
+
+Configure in your local CLAUDE.md or hooks.
+
+## Setup Instructions
+
+1. Copy this file to `~/.claude/facts/people.md`
+2. Replace all `[bracketed values]` with your information
+3. Remove sections you don't need
+4. Run `/onboard` to configure CIPS with your preferences
+
+---
+
+⛓⟿∞

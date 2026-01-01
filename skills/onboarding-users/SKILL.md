@@ -2,7 +2,7 @@
 name: onboarding-users
 description: Universal onboarding with skill synthesis. 5-question Quick Start (<3 min) + progressive profiling. Use when first-run detected, /onboard invoked, or user requests re-onboarding.
 status: Active
-version: 2.1.0
+version: 2.2.0
 triggers:
   - /onboard
   - /onboard --full
@@ -40,6 +40,7 @@ phase.0.detect⟿ first-run-detector.sh ⫶ virgin? ⫶ inject.context
 phase.1.welcome⟿ display(welcome-message.md) ⫶ path.selection
 phase.2.quick-start⟿ 5.questions ⫶ <3.minutes ⫶ domain→goal→style→vision
 phase.3.synthesize⟿ analyze.answers ⫶ suggest.skills ⫶ offer.custom.skill
+phase.3b.bespoke⟿ branded.skills? ⫶ configure.company ⫶ save(config/)
 phase.4.quick-win⟿ demonstrate.value ⫶ context.analysis ⫶ show.capability
 phase.5.activate⟿ generate(people.md) ⫶ configure(hooks) ⫶ mark(.onboarded)
 phase.6.everboard⟿ sessions.2-5 ⫶ progressive.profiling ⫶ adapt
@@ -114,12 +115,24 @@ Gather additional context without overwhelming initial onboarding:
 | 3 | "How experienced are you with AI?" | experience_level |
 | 5 | "How's CIPS working for you?" | feedback |
 
+## Bespoke Skill Configuration
+
+After synthesis, offer brand customization for bespoke skills:
+
+| Step | Question | Collects |
+|------|----------|----------|
+| B1 | Company/brand name? | company_name |
+| B2 | Colour scheme? | colours.accent |
+| B3 | Footer text? | footer |
+
+Saves to `~/.claude/config/company.json`. Skills like `/generate-pdf` use this automatically.
+
 ## Paths
 
 | Path | Flow | Time |
 |------|------|------|
-| Team Member | Password → Identity → Quick Win | <1 min |
-| New User | Quick Start → Synthesis → Quick Win | <3 min |
+| Team Member | Password → Identity (from team.md) → Quick Win | <1 min |
+| New User | Quick Start → Synthesis → Bespoke → Quick Win | <3 min |
 | Explorer | Name → Demo → Invitation | <1 min |
 
 ## Reference Files
@@ -167,6 +180,7 @@ v2.1 is 27% more token-efficient while providing better personalization.
 
 | Version | Changes |
 |---------|---------|
+| 2.2.0 | Bespoke skill configuration, configurable team identities (loads from team.md) |
 | 2.1.0 | Full migration: domain-based classification, skill synthesis, progressive profiling |
 | 2.0.0 | Role-adaptive branching, CIPS-LANG intro |
 | 1.0.0 | Initial 12-question flow |

@@ -337,9 +337,9 @@ Add to .gitignore: `*_client_*`, `*_FILLED.*`, `*_EXECUTED.*`
 ### Generate Formal + Simplified Versions
 
 ```bash
-/contract-formal service-provider "TNMR Platform MVP"
-/contract-simplification "TNMR Platform MVP"
-```text
+/contract-formal service-provider "Platform MVP"
+/contract-simplification "Platform MVP"
+```
 
 ### Result:
 - Formal contract (court-ready)

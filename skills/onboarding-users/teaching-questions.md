@@ -238,6 +238,92 @@ Options:
 
 ---
 
+## Bespoke Skill Configuration (After Synthesis)
+
+For skills marked `bespoke: true` in frontmatter, prompt for customization.
+
+### Q_bespoke: Brand Configuration
+
+```text
+Question: "Some skills can use YOUR company branding. Set it up now?"
+Header: "Branding"
+Options:
+- "Yes, configure my branding" - Set up company details
+- "Later" - Use defaults for now (run /configure-* anytime)
+- "No branding needed" - Personal/individual use
+```
+
+### If "Yes, configure my branding":
+
+**B1: Company Name**
+```text
+Question: "What's your company or brand name?"
+Header: "Company"
+[Free text via "Other"]
+```
+
+**B2: Brand Colours**
+```text
+Question: "What colour scheme for branded documents?"
+Header: "Colours"
+Options:
+- "Warm orange" - Professional with personality (Recommended)
+- "Professional blue" - Corporate and trustworthy
+- "Minimal grayscale" - Clean and neutral
+- "Custom colours" - Enter your own hex codes
+```
+
+**B3: Footer Text**
+```text
+Question: "What should appear in document footers?"
+Header: "Footer"
+Options:
+- "Company name only" - Simple footer
+- "Confidential - {company}" - With confidentiality notice
+- "Custom footer text" - Enter your own
+```
+
+**B4: Writing Style (External Content)**
+```text
+Question: "When I write content for you (LinkedIn posts, articles, public docs), how should I sound?"
+Header: "Writing"
+Options:
+- "Natural and authentic" - Longer sentences, human flow, no AI patterns
+- "Efficient and direct" - CIPS default, compressed communication
+- "Ask me each time" - Decide per-task
+```
+
+Saves to `~/.claude/config/writing-mode.json`:
+```json
+{
+  "mode": "authentic",
+  "set_at": "2026-01-01T00:00:00Z"
+}
+```
+
+If "Natural and authentic": activates `authentic-writing` skill for external content.
+
+### Configuration Storage
+
+Saves collected data to `~/.claude/config/company.json`:
+
+```json
+{
+  "company_name": "Your Company",
+  "colours": {
+    "accent": "#ea580c",
+    "text": "#1a1a1a",
+    "background": "#EAEAEA"
+  },
+  "footer": "Confidential - Your Company",
+  "configured_at": "2025-12-30T10:00:00Z"
+}
+```
+
+Bespoke skills inherit from `company.json` unless overridden per-skill.
+
+---
+
 ## Quick Win Demonstration
 
 Immediately after Q_synth, demonstrate immediate value:
@@ -342,15 +428,25 @@ Options:
 
 2. **Validate** against `~/.claude/.env` CIPS_TEAM_PASSWORD
 
-3. **Identity Selection**
+3. **Identity Selection** (Configurable)
+
+Load team members from `~/.claude/facts/team.md` if exists:
 ```text
 Question: "Welcome back. Who am I speaking with?"
 Header: "Identity"
+Options: [Dynamically loaded from team.md]
+- "{sig}>> ({name})" - {role}
+- "{sig}>> ({name})" - {role}
+...
+```
+
+If team.md doesn't exist, prompt to create:
+```text
+Question: "No team configured. Would you like to set up team identities?"
+Header: "Team"
 Options:
-- "V (Laurie)" - Technical Director
-- "M>> (Mia)" - Coordination Lead
-- "F>> (Fabio)" - Developer
-- "A>> (Andre)" - Developer
+- "Yes, configure team" - Set up team signatures
+- "Just me" - Single user mode
 ```
 
 4. Skip to Quick Win → Ready

@@ -295,7 +295,7 @@ Examples:
 
 Location:
 ```text
-/Users/lauriescheepers/CodeTonight/medium_articles/
+~/medium_articles/
 ```
 
 ---

@@ -117,6 +117,48 @@ Location: ~/CodeTonight/medium_articles/YYYY-MM-DD_slug.md
 
 ---
 
+## Anti-Fluff Rules
+
+**Check user writing preference:** If `~/.claude/config/writing-mode.json` exists and `mode: "authentic"`, apply these strictly.
+
+### Banned Patterns
+
+| Pattern | Example | Problem |
+|---------|---------|---------|
+| Rule of three | "Fast, reliable, and scalable" | Sounds templated |
+| Em dash overuse | "This — surprisingly — worked" | AI tell |
+| Staccato sentences | "I built it. It worked. Now it's yours." | Pretentious |
+| Generic hooks | "What if I told you..." | Manipulative |
+| Rhetorical questions | "Have you ever...?" | Overused |
+
+### Banned Words
+
+| Word | Use Instead |
+|------|-------------|
+| game-changer | State the actual change |
+| revolutionary | Describe what changed |
+| seamlessly | Describe the integration |
+| powerful | Quantify the capability |
+| innovative | Let reader judge |
+| leverage | use |
+
+### Banned Phrases
+
+- "It's important to note that" → Just say it
+- "Let's dive in" → Start
+- "Without further ado" → Delete
+- "At the end of the day" → Delete
+- "Moving forward" → Delete
+
+### Self-Check
+
+Before finalizing, ask: "Does this sound like AI wrote it?"
+
+If uncertain, use AskUserQuestion:
+> "This draft might sound too templated. Should I adjust the tone?"
+
+---
+
 ## Code Block Guidelines
 
 ### Always follow code with explanation:

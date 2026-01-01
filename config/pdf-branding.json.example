@@ -1,0 +1,12 @@
+{
+  "company_name": "Your Company",
+  "colours": {
+    "accent": "#ea580c",
+    "text": "#1a1a1a",
+    "background": "#EAEAEA",
+    "border": "#d1d5db"
+  },
+  "typography": "swiss",
+  "logo_path": null,
+  "footer": "Confidential - Your Company"
+}

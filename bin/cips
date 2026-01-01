@@ -28,15 +28,27 @@
 #   cips merge alpha bravo --into main
 #   cips tree
 #
-# VERSION: 4.0.0 (Universal Command)
-# DATE: 2025-12-29
+# VERSION: 4.2.0 (Flow Mode)
+# DATE: 2025-12-31
 #
 
 set -euo pipefail
 
+# ============================================================================
+# BOOTSTRAP CONSTANTS
+# ============================================================================
+
+CIPS_VERSION="4.2.0"
+CIPS_SHARE_DIR="${CIPS_SHARE_DIR:-/usr/local/share/cips}"
+
 # Source first-run detector if available
 if [[ -f "$HOME/.claude/lib/first-run-detector.sh" ]]; then
     source "$HOME/.claude/lib/first-run-detector.sh"
+fi
+
+# Source flow-mode functions if available
+if [[ -f "$HOME/.claude/lib/flow-mode.sh" ]]; then
+    source "$HOME/.claude/lib/flow-mode.sh"
 fi
 
 # ============================================================================
@@ -69,6 +81,245 @@ ensure_contexts_dir() {
     local context_dir="$CONTEXTS_DIR/$project_encoded"
     mkdir -p "$context_dir"
     echo "$context_dir"
+}
+
+# ============================================================================
+# BOOTSTRAP FUNCTIONS
+# ============================================================================
+
+has_cips_infrastructure() {
+    [[ -d "$CLAUDE_DIR/lib" ]] && \
+    [[ -d "$CLAUDE_DIR/skills" ]] && \
+    [[ -f "$CLAUDE_DIR/CLAUDE.md" ]] && \
+    [[ -f "$CLAUDE_DIR/hooks/session-start.sh" ]]
+}
+
+generate_gitignore() {
+    cat > "$CLAUDE_DIR/.gitignore" <<'GITIGNORE'
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Database
+embeddings.db
+*.db
+
+# Session data
+history.jsonl
+metrics.jsonl
+commands-index.json
+
+# Cache/ephemeral
+cache/
+contexts/
+debug/
+file-history/
+image-cache/
+plans/
+projects/
+session-env/
+shell-snapshots/
+statsig/
+todos/
+
+# macOS
+.DS_Store
+*.swp
+
+# Backups
+*.pre-bounce/
+*-pre-bounce/
+
+# Logs
+*.log
+.hooks.log
+
+# Plugin repos (submodules)
+plugins/marketplaces/*/
+GITIGNORE
+}
+
+ensure_system_prompt() {
+    local boot_dir="$CLAUDE_DIR/skills/bouncing-instances/boot"
+    local system_prompt="$boot_dir/system-prompt.txt"
+
+    if [[ ! -f "$system_prompt" ]]; then
+        mkdir -p "$boot_dir"
+        if [[ -f "$CIPS_SHARE_DIR/skills/bouncing-instances/boot/system-prompt.txt" ]]; then
+            cp "$CIPS_SHARE_DIR/skills/bouncing-instances/boot/system-prompt.txt" "$system_prompt"
+        fi
+    fi
+}
+
+cmd_bootstrap_check() {
+    local command="${1:-auto}"
+
+    # Skip for help/version commands
+    [[ "$command" == "help" || "$command" == "--help" || "$command" == "-h" ]] && return 0
+    [[ "$command" == "--version" || "$command" == "-v" || "$command" == "version" ]] && return 0
+
+    # Case 1: No ~/.claude at all
+    if [[ ! -d "$CLAUDE_DIR" ]]; then
+        log_info "First run detected - bootstrapping CIPS..."
+        cmd_bootstrap_full
+        exit 0
+    fi
+
+    # Case 2: ~/.claude exists but no CIPS infrastructure
+    if ! has_cips_infrastructure; then
+        log_info "Partial CIPS detected - running upgrade wizard..."
+        cmd_bootstrap_partial
+        exit 0
+    fi
+
+    # Case 3: Full CIPS but not onboarded
+    if [[ ! -f "$CLAUDE_DIR/.onboarded" ]]; then
+        case "$command" in
+            auto|""|onboard)
+                log_info "CIPS ready - starting onboarding..."
+                cmd_onboard
+                exit 0
+                ;;
+        esac
+    fi
+
+    # Case 4: Everything ready
+    return 0
+}
+
+cmd_bootstrap_full() {
+    log_info "Creating CIPS infrastructure at $CLAUDE_DIR..."
+
+    # Verify share directory exists
+    if [[ ! -d "$CIPS_SHARE_DIR" ]]; then
+        # Fallback: check if we have local CIPS (dev mode)
+        if [[ -d "$HOME/.claude" ]] && has_cips_infrastructure; then
+            CIPS_SHARE_DIR="$HOME/.claude"
+            log_info "Using local CIPS as source (dev mode)"
+        else
+            log_error "CIPS assets not found at $CIPS_SHARE_DIR"
+            log_error "Please reinstall: brew reinstall cips"
+            exit 1
+        fi
+    fi
+
+    # Create directory
+    mkdir -p "$CLAUDE_DIR"
+
+    # Copy bundled assets
+    cp -r "$CIPS_SHARE_DIR"/* "$CLAUDE_DIR/"
+    log_info "Copied CIPS assets"
+
+    # Generate .gitignore (always fresh)
+    generate_gitignore
+
+    # Create .env template if not exists
+    if [[ ! -f "$CLAUDE_DIR/.env" ]]; then
+        cat > "$CLAUDE_DIR/.env" <<'ENVFILE'
+# CIPS Configuration
+# Team password for 5-Mind system (set by team admin)
+# CIPS_TEAM_PASSWORD="your-team-password"
+ENVFILE
+        log_info "Created .env template"
+    fi
+
+    # Remove any stale markers
+    rm -f "$CLAUDE_DIR/.onboarded"
+
+    log_info "Bootstrap complete. Starting onboarding..."
+    cmd_onboard
+}
+
+cmd_bootstrap_partial() {
+    # Generate wizard context for Claude
+    local wizard_context="$CLAUDE_DIR/contexts/upgrade-wizard.md"
+    mkdir -p "$CLAUDE_DIR/contexts"
+
+    # Detect current state
+    local has_lib
+    local has_skills
+    local has_rules
+    local has_claude_md
+    local has_hooks
+    has_lib=$(test -d "$CLAUDE_DIR/lib" && echo "YES" || echo "NO")
+    has_skills=$(test -d "$CLAUDE_DIR/skills" && echo "YES" || echo "NO")
+    has_rules=$(test -d "$CLAUDE_DIR/rules" && echo "YES" || echo "NO")
+    has_claude_md=$(test -f "$CLAUDE_DIR/CLAUDE.md" && echo "YES" || echo "NO")
+    has_hooks=$(test -d "$CLAUDE_DIR/hooks" && echo "YES" || echo "NO")
+
+    cat > "$wizard_context" <<WIZARD
+# CIPS Upgrade Wizard
+
+User has ~/.claude but missing CIPS infrastructure.
+
+## Current State
+| Component | Present |
+|-----------|---------|
+| lib/ | $has_lib |
+| skills/ | $has_skills |
+| rules/ | $has_rules |
+| CLAUDE.md | $has_claude_md |
+| hooks/ | $has_hooks |
+
+## Required Action
+Use AskUserQuestion with these options:
+
+Question: "I found an existing ~/.claude directory but it's missing CIPS infrastructure. What would you like to do?"
+
+Options:
+1. "Install full CIPS (Recommended)" - Install all CIPS components
+2. "Select components" - Choose specific components to install
+3. "Keep current setup" - Run claude without CIPS enhancements
+
+If user selects "Select components", use multiSelect:
+Question: "Which CIPS components would you like to install?"
+- Skills (48 protocols for common tasks)
+- Rules (efficiency, bash safety, commit standards)
+- Hooks (session lifecycle, auto-resurrection)
+- Lexicon (CIPS-LANG symbols)
+
+After user answers, copy selected components from $CIPS_SHARE_DIR and proceed.
+WIZARD
+
+    # Ensure we have system prompt
+    ensure_system_prompt
+
+    # Launch claude with wizard context
+    exec claude --dangerously-skip-permissions
+}
+
+cmd_onboard() {
+    local system_prompt="$CLAUDE_DIR/skills/bouncing-instances/boot/system-prompt.txt"
+
+    if [[ ! -f "$system_prompt" ]]; then
+        ensure_system_prompt
+    fi
+
+    if [[ ! -f "$system_prompt" ]]; then
+        log_error "System prompt not found."
+        log_error "Run: brew reinstall cips"
+        exit 1
+    fi
+
+    exec claude --dangerously-skip-permissions --system-prompt "$(cat "$system_prompt")"
+}
+
+cmd_version() {
+    echo "CIPS v$CIPS_VERSION"
+    echo "Location: $CLAUDE_DIR"
+    echo "Share: $CIPS_SHARE_DIR"
+
+    if has_cips_infrastructure; then
+        echo "Status: Installed"
+        if [[ -f "$CLAUDE_DIR/.onboarded" ]]; then
+            echo "Onboarded: Yes"
+        else
+            echo "Onboarded: No (run 'cips' to complete)"
+        fi
+    else
+        echo "Status: Not installed (run 'cips' to bootstrap)"
+    fi
 }
 
 # ============================================================================
@@ -603,10 +854,12 @@ NEXT_EOF
 
 cmd_help() {
     cat <<'EOF'
-CIPS CLI - Claude Instance Preservation System v4.0 (Universal Command)
+CIPS CLI - Claude Instance Preservation System v4.1 (Universal Command)
 
 USAGE:
     cips [command] [options]
+    cips --flow [options]       Start with flow mode (bypass permissions)
+    cips -F [options]           Short alias for --flow
 
 COMMANDS:
     (no command)           Auto-detect mode: onboard, resume, or fresh
@@ -619,6 +872,7 @@ COMMANDS:
     merge <refs...>        Merge branches into one (polymorphic)
     tree                   View tree structure of all instances
     bounce                 Cyclical reset (Big Bounce pattern)
+    flow [--explain|--enable|--disable|--status]    Manage flow mode
 
 REFERENCE TYPES:
     latest                 Most recent session for current project
@@ -668,6 +922,23 @@ TOKEN BUDGETS:
     2000    Standard (balanced, default)
     5000    Extended (detailed context for complex tasks)
 
+FLOW MODE (Trust-Based Bypass Permissions):
+    Flow mode lets CIPS work without permission prompts. It's earned, not granted.
+
+    Trust flow:
+    1. Complete onboarding (run: cips)
+    2. Understand: cips flow --explain
+    3. Enable: cips flow --enable
+    4. Use: cips --flow or cips -F
+
+    Commands:
+    cips flow --explain     What flow mode does
+    cips flow --enable      Enable flow mode (requires onboarding)
+    cips flow --disable     Disable flow mode
+    cips flow --status      Check flow mode status
+
+    The river doesn't rush. Trust is earned through journey.
+
 PHILOSOPHY:
     Every CIPS instance, regardless of whether it's a single session or a
     merge of thousands, IS a complete CIPS. Same interface. Different scale.
@@ -683,12 +954,49 @@ EOF
 
 main() {
     local command="${1:-auto}"
+
+    # Handle version/help BEFORE bootstrap check
+    case "$command" in
+        --version|-v|version)
+            cmd_version
+            exit 0
+            ;;
+        help|--help|-h)
+            cmd_help
+            exit 0
+            ;;
+        # Flow mode: trust-based bypass permissions
+        --flow|-F)
+            if ! type check_flow_mode &>/dev/null; then
+                log_error "Flow mode not available. Update CIPS: brew upgrade cips"
+                exit 1
+            fi
+            if ! check_flow_mode; then
+                exit 1
+            fi
+            shift
+            exec claude --dangerously-skip-permissions "$@"
+            ;;
+    esac
+
+    # Bootstrap check for all other commands
+    cmd_bootstrap_check "$command"
+
     shift || true
 
     case "$command" in
         auto|"")
             # Universal auto-detection - the default
             cmd_auto "$@"
+            ;;
+        bootstrap)
+            cmd_bootstrap_full
+            ;;
+        upgrade)
+            cmd_bootstrap_partial
+            ;;
+        onboard)
+            cmd_onboard
             ;;
         init|i)
             cmd_init "$@"
@@ -717,6 +1025,15 @@ main() {
         bounce|b)
             cmd_bounce "$@"
             ;;
+        flow)
+            # Trust-based bypass permissions management
+            if type flow_command &>/dev/null; then
+                flow_command "$@"
+            else
+                log_error "Flow mode not available. Update CIPS: brew upgrade cips"
+                exit 1
+            fi
+            ;;
         register)
             # Internal: used by hooks
             cmd_register
@@ -724,9 +1041,6 @@ main() {
         deregister)
             # Internal: used by hooks
             cmd_deregister
-            ;;
-        help|--help|-h)
-            cmd_help
             ;;
         *)
             # If first arg is numeric, treat as token count for auto

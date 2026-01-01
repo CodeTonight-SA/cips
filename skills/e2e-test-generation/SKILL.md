@@ -11,7 +11,7 @@ triggers:
 
 # E2E Test Generation Skill
 
-**Purpose:** Automate complete end-to-end testing infrastructure setup with production-ready patterns (REDR-prototype: 366 tests, 80%+ coverage).
+**Purpose:** Automate complete end-to-end testing infrastructure setup with production-ready patterns (proven: 366+ tests, 80%+ coverage).
 
 **Token Budget:** ≤15,000 tokens per full implementation
 
@@ -203,6 +203,6 @@ expect(screen.getByText('Count: 5')).toBeInTheDocument();
 **Skill Status:** ✅ Active
 **Maintainer:** LC Scheepers
 **Last Updated:** 2025-11-14
-**Based on:** REDR-prototype (366 tests, 80%+ coverage)
+**Based on:** Production implementation (366 tests, 80%+ coverage)
 
 ⛓⟿∞

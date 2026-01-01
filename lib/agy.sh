@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-AGY_BIN="/Users/lauriescheepers/.antigravity/antigravity/bin/antigravity"
+AGY_BIN="${AGY_BIN:-$HOME/.antigravity/antigravity/bin/antigravity}"
 TARGET="${1:-}"
 
 if [[ -z "$TARGET" ]]; then

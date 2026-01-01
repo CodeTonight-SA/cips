@@ -4,7 +4,19 @@ description: Token optimization protocols - file reads, plan evaluation, impleme
 
 # Efficiency Rules
 
-Six critical rules that prevent token waste.
+Seven critical rules that prevent token waste.
+
+## Rule 0: Descriptive Plan Names
+
+ALWAYS use descriptive plan names. Override Claude's default auto-naming behaviour.
+
+| Bad (Auto-generated) | Good (Descriptive) |
+|---------------------|-------------------|
+| joyful-snacking-cloud.md | open-source-release.md |
+| silly-kindling-creek.md | auth-refactor-plan.md |
+| happy-dancing-tree.md | mobile-responsive-fix.md |
+
+Plan names should describe the work, not be whimsical placeholders.
 
 ## Rule 1: File Read Optimization
 

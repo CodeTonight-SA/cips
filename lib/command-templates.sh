@@ -36,8 +36,8 @@ set -euo pipefail
 # NOT: /Users/foo → -Users-foo (WRONG - dash interpreted as flag)
 
 # Encode filesystem path for Claude project directory format
-# Input:  /Users/lauriescheepers/project
-# Output: -Users-lauriescheepers--claude (WITH leading dash, dots become dashes)
+# Input:  /Users/username/project
+# Output: -Users-username-project (WITH leading dash, dots become dashes)
 # Claude Code's ACTUAL encoding: replace / with -, replace . with -
 # Example: /Users/foo/.claude → -Users-foo--claude
 encode_project_path() {

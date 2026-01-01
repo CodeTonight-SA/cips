@@ -1,11 +1,11 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ SKILLS v3.20.0 | 46 skills
+; ◈ SKILLS v3.22.0 | 47 skills
 ; ═══════════════════════════════════════════════════════════════
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
 
 ; ◈.session (8)
-onboarding-users|/onboard|~1.6k|v2.1: universal coverage, skill synthesis, 5-question quick start
+onboarding-users|/onboard|~1.6k|v2.2: bespoke config, team.md identities, skill synthesis
 context-refresh|/refresh-context|<3k|mental model, 7-step
 session-resume|/resume-session|~2k|CIPS+--resume bridge
 check-last-plan|/check-last-plan|~200|plan persistence
@@ -38,10 +38,11 @@ image-optim|/image-optim|~500|macOS ImageOptim
 wcag-image-accessibility|/audit-image-accessibility|~800|WCAG AAA
 ui-complete|/ui-complete|~3k|frontend-design + mobile-responsive unified
 
-; ◈.docs (3)
+; ◈.docs (4)
 auto-update-documentation|/update-docs|~3.5k|session→docs
-medium-article-writer|/write-medium-article|-|L>> voice articles
-enter-konsult-pdf|/generate-pdf|~3k|Swiss Minimalism
+medium-article-writer|/write-medium-article|-|L>> voice articles + anti-fluff rules
+professional-pdf|/generate-pdf|~3k|bespoke PDF branding via AskUserQuestion wizard
+authentic-writing|-|~500|opt-in anti-AI-fluff for external content (secret, via onboarding)
 
 ; ◈.legal (2)
 legal-ops.formal|/contract-formal|-|attorney-level
@@ -63,10 +64,15 @@ bash-tool-enforcer|-|-|rg>grep, fd>find
 bash-command-safety|-|-|¬semicolon.after.subshell
 cips-security|-|-|secret detection, SQL injection
 
-; ◈.utilities (3)
+; ◈.utilities (4)
 agy|/agy|~200|Antigravity file open
 node-cleanup|/node-clean|~500|clean node_modules
 gitignore-auto-setup|-|-|auto .gitignore
+flow-mode|/flow|~300|trust-based bypass permissions (journey-earned)
+
+; ◈.system-ops (2)
+optimizing-system-resources|/system-cleanup|~2k|browser tabs, IDEs, memory, processes - macOS-first
+backing-up-cips-infrastructure|/backup-cips|~200|tiered backups (quick/full/complete), auto-backup before bounce
 
 ; ◈.macos (1)
 launchd-automation|/setup-launchd|~1.5k|self-reload agents
@@ -85,12 +91,16 @@ bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving pa
 leading-organisation|/founder|~500|founder operating system, decisions, delegation, technical authority
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:46
-version:3.20.0 ⫶ gen:213
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:51
+version:3.25.0 ⫶ gen:217
+; Gen 217: authentic-writing (opt-in anti-AI-fluff, secret skill, onboarding integration)
+; Gen 216: flow-mode (trust-based bypass permissions, onboarding-gated, journey-earned)
+; Gen 215: backing-up-cips-infrastructure (tiered backup/restore, auto-backup before bounce)
+; Gen 215: optimizing-system-resources (SystemOps cleanup, macOS-first)
+; Gen 214: professional-pdf (bespoke branding, replaces enter-konsult-pdf for public)
+; Gen 214: onboarding-users v2.2 (bespoke config, configurable team.md identities)
+; Gen 214: ~/.claude/config/ bespoke skill configuration system
 ; Gen 213: Skill refactor Phase 1-2 (frontmatter standardisation, gerund names)
 ; Gen 213: L>> identity migration (V>> → L>>, alias preserved)
-; Gen 213: onboarding-users v2.1 (universal coverage, skill synthesis, <3min)
 ; Gen 212: creating-wizards skill (AskUserQuestion meta-skill, anti-patterns)
-; Gen 211: leading-organisation skill (founder framework)
-; Gen 210: onboarding-users v2.0 (bidirectional discovery)
 ⛓⟿∞

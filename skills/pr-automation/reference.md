@@ -6,29 +6,24 @@
 
 ## Complete Workflow Example
 
-### REDR Auth Redesign PR
+### Auth Pages Redesign PR
 
 ```bash
 git checkout -b feature/auth-page-redesign
 git add app/auth/login/page.tsx app/auth/register/page.tsx \
-  components/redr-link-button.tsx components/confetti-animation.tsx \
-  app/page.tsx components/redr-button.tsx \
+  components/link-button.tsx components/confetti-animation.tsx \
+  app/page.tsx components/primary-button.tsx \
   public/images/*.jpg
-git rm public/images/cta2.jpg public/images/iStock-2032308693_edit.jpg \
-  public/images/img3.jpg public/images/register-marina.jpg
+git rm public/images/old-cta.jpg public/images/unused-stock.jpg
 
 git commit -m "$(cat <<'EOF'
 Redesign auth pages for visual consistency
 
 - Unified login/register layouts with landing page
 - Reduced card sizes (600px → 520-560px), improved typography
-- Created RedrLinkButton component (DRY principle)
+- Created LinkButton component (DRY principle)
 - Added right-aligned layout on desktop, centered on mobile
 - Updated background images for visual cohesion
-
-🤖 Generated with Claude Code
-
-Co-Authored-By: Claude <noreply@anthropic.com>
 EOF
 )"
 
@@ -40,12 +35,12 @@ gh pr create --base main --head feature/auth-page-redesign \
 ## Changes
 - Unified login/register page layouts with landing page aesthetic
 - Reduced card sizes, improved typography hierarchy
-- Created RedrLinkButton component (DRY principle)
+- Created LinkButton component (DRY principle)
 
 ## Files Modified
 - app/auth/login/page.tsx - Complete layout redesign
 - app/auth/register/page.tsx - Consistent styling + CTA
-- components/redr-link-button.tsx - New reusable link component
+- components/link-button.tsx - New reusable link component
 
 ## Visual Changes
 - Login card: 600px → 520-560px max-width
@@ -53,16 +48,14 @@ gh pr create --base main --head feature/auth-page-redesign \
 - Typography: Scaled down headings
 
 ## Testing
-- ✅ Mobile responsive (320px+)
-- ✅ Tablet layout (640px+)
-- ✅ Desktop layout (1024px+)
-
-🤖 Generated with Claude Code
+- Mobile responsive (320px+)
+- Tablet layout (640px+)
+- Desktop layout (1024px+)
 EOF
 )"
 ```
 
-**Result:** PR #35 created in ~1500 tokens.
+**Result:** PR created in ~1500 tokens.
 
 ---
 
