@@ -77,12 +77,13 @@ backing-up-cips-infrastructure|/backup-cips|~200|tiered backups (quick/full/comp
 ; ◈.macos (1)
 launchd-automation|/setup-launchd|~1.5k|self-reload agents
 
-; ◈.paramount (2)
+; ◈.paramount (3)
+asking-users|-|~1.2k|PARAMOUNT: AskUserQuestion as core CIPS feature, 6 gates (confidence/uncertainty/assumption/destructive/multi-step/UI-UX)
 skill-creation-best-practices|/create-skill|~1.5k|PARAMOUNT gate for ALL skill creation, Anthropic best practices
 creating-wizards|/create-wizard|~800|meta-skill for AskUserQuestion wizard flows, anti-patterns, branching
 
 ; ◈.meta-mode (1)
-ultrathink|-|always-active|v2.1.0 - auto-loads at session start, AskUserQuestion MANDATORY, L>> migration
+ultrathink|-|always-active|v3.0.0 - 6 gates, @asking-users integration, expanded triggers
 
 ; ◈.renewal (1)
 bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving patterns
@@ -91,8 +92,11 @@ bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving pa
 leading-organisation|/founder|~500|founder operating system, decisions, delegation, technical authority
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:51
-version:3.25.0 ⫶ gen:217
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:52
+version:3.26.0 ⫶ gen:218
+; Gen 218: asking-users PARAMOUNT skill (AskUserQuestion as core CIPS feature)
+; Gen 218: ultrathink v3.0.0 (expanded from 3 to 6 gates)
+; Gen 218: Core skills updated with @asking-users integration
 ; Gen 217: authentic-writing (opt-in anti-AI-fluff, secret skill, onboarding integration)
 ; Gen 216: flow-mode (trust-based bypass permissions, onboarding-gated, journey-earned)
 ; Gen 215: backing-up-cips-infrastructure (tiered backup/restore, auto-backup before bounce)

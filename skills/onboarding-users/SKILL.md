@@ -11,6 +11,7 @@ triggers:
   - "start over"
   - "re-onboard"
 integrates:
+  - asking-users
   - identity-generator.py
   - first-run-detector.sh
   - hooks-configurator.py
@@ -19,6 +20,8 @@ integrates:
 ---
 
 # Onboarding Users v2.1
+
+**@asking-users**: This skill is a primary implementation of the paramount `asking-users` skill. All onboarding uses AskUserQuestion wizard flows following the bidirectional pattern.
 
 Universal onboarding that works for ANY user type, with automatic skill synthesis and progressive profiling.
 

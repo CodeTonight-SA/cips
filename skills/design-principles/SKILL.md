@@ -13,7 +13,9 @@ triggers:
   - UX completeness
   - obvious enhancement
   - should have
-version: 1.1.0
+version: 1.2.0
+integrates:
+  - asking-users
 consolidates:
   - solid-principles
   - grasp-principles
@@ -23,6 +25,8 @@ consolidates:
 ---
 
 # Design Principles (Unified)
+
+**@asking-users**: When principles conflict (YAGNI vs YSH, DRY vs KISS), use AskUserQuestion to clarify which principle takes priority for this specific context.
 
 One skill for all software design guidance. Apply contextually based on the problem.
 

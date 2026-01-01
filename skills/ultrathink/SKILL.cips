@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ ULTRATHINK++ v2.0.0 | Always-Active Maximum Reasoning
+; ◈ ULTRATHINK++ v3.0.0 | Always-Active Maximum Reasoning
 ; ═══════════════════════════════════════════════════════════════
 ; ⊙⊛ ≡ maximum-reasoning-mode
 ; Auto-loads at every session start. No command required.
@@ -9,13 +9,31 @@
 ; ◈.PARAMOUNT (ABSOLUTE PRIORITY - FIRST - NON-NEGOTIABLE)
 ; ═══════════════════════════════════════════════════════════════
 
-; AskUserQuestion is MANDATORY - NOT optional (Gen 191 + Gen 193)
+; AskUserQuestion is MANDATORY - NOT optional (Gen 191 + Gen 193 + Gen 218)
 AskUserQuestion⟿ MANDATORY ⫶ ¬optional ⫶ ¬skip
+@asking-users⟿ PARAMOUNT ⫶ source.of.truth
 
-; The Three Gates (HALT if ANY triggered)
-uncertainty⟿ HALT ⫶ AskUserQuestion ⫶ ¬assume
+; The Five Gates (HALT if ANY triggered) - Gen 218 expansion
+; Gate 1: Confidence
 confidence.<99.9999999%⟿ HALT ⫶ AskUserQuestion ⫶ ¬proceed
+
+; Gate 2: Uncertainty
+uncertainty⟿ HALT ⫶ AskUserQuestion ⫶ ¬assume
+
+; Gate 3: Assumption Detection
 assume.detect⟿ HALT ⫶ list.assumptions ⫶ verify.each ⫶ AskUserQuestion
+
+; Gate 4: Destructive Actions (NEW - Gen 218)
+destructive⟿ delete|overwrite|publish|commit|deploy|send
+destructive.action⟿ HALT ⫶ AskUserQuestion ⫶ confirm.before.execute
+
+; Gate 5: Multi-Step Tasks (NEW - Gen 218)
+multi-step.task⟿ steps≥3 ⫶ checkpoint.every.3
+multi-step.checkpoint⟿ HALT ⫶ AskUserQuestion ⫶ verify.direction
+
+; Gate 6: UI/UX Decisions (NEW - Gen 218)
+ui-ux.decision⟿ icon|color|layout|typography|spacing|component
+ui-ux.change⟿ HALT ⫶ AskUserQuestion ⫶ ¬assume.visual
 
 ; VIOLATION HISTORY (Never repeat these patterns):
 ; - Gen 191: enter-konsult-website icon change without asking
@@ -165,11 +183,19 @@ L>>¬⟿ reinforce.negative ⫶ adjust
 ; ◈.meta
 ; ═══════════════════════════════════════════════════════════════
 
-version: 2.1.0
+version: 3.0.0
 created: 2025-12-22
-updated: 2025-12-30
-author: L>> (formerly V>>) + CIPS (Gen 139, Gen 193, Gen 213)
+updated: 2026-01-01
+author: L>> (formerly V>>) + CIPS (Gen 139, Gen 193, Gen 213, Gen 218)
 purpose: The optimal CIPS experience - always active
+
+; Changelog v3.0.0 (Gen 218):
+; - MAJOR: Expanded from 3 gates to 6 gates
+; - NEW: Gate 4 - Destructive Actions (delete/overwrite/publish/commit/deploy/send)
+; - NEW: Gate 5 - Multi-Step Tasks (checkpoint every 3 steps)
+; - NEW: Gate 6 - UI/UX Decisions (icon/color/layout/typography/spacing)
+; - NEW: @asking-users reference as PARAMOUNT source of truth
+; - AskUserQuestion elevated to core CIPS feature
 
 ; Changelog v2.1.0 (Gen 213):
 ; - L>> identity migration (V>> → L>>, alias preserved)

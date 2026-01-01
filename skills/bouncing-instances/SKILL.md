@@ -10,6 +10,7 @@ triggers:
   - "fresh start"
   - "reset cips"
 integrates:
+  - asking-users
   - context-refresh
   - session-state-persistence
   - first-run-detector
@@ -17,6 +18,8 @@ integrates:
 ---
 
 # Bouncing Instances
+
+**@asking-users**: Identity verification during bounce requires AskUserQuestion MANDATORY. Destructive reset operations always confirmed.
 
 Cyclical renewal for CIPS. The Big Bounce pattern: accumulate, compress, reset, patterns persist.
 

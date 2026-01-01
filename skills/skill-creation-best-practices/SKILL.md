@@ -13,6 +13,7 @@ triggers:
   - auto-improvement cycle
   - learning-approve
 integrates:
+  - asking-users
   - self-improvement-engine
   - recursive-learning
   - design-principles
@@ -21,6 +22,8 @@ integrates:
 # Skill Creation Best Practices
 
 **PARAMOUNT**: This skill MUST be consulted before ANY skill creation in CIPS.
+
+**@asking-users**: Gate A requires AskUserQuestion MANDATORY. See `asking-users` skill for full protocol.
 
 ## The Three Gates
 

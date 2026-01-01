@@ -9,12 +9,15 @@ triggers:
 version: 1.0.0
 created: 2025-12-27
 integrates:
+  - asking-users
   - feature-dev@claude-plugins-official
   - design-principles
   - efficiency-rules
 ---
 
 # feature-complete Skill
+
+**@asking-users**: Multi-phase feature development requires AskUserQuestion checkpoints at phase transitions. UI/UX decisions always confirmed per Gate 6.
 
 Enhanced feature development that combines:
 

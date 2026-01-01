@@ -5,9 +5,14 @@ status: Active
 priority: Critical
 generation_date: 2025-01-14
 meta_skill: true
+integrates:
+  - asking-users
+  - skill-creation-best-practices
 ---
 
 # Recursive Learning
+
+**@asking-users**: Learning approval requires AskUserQuestion MANDATORY. L>>! confirmation required before any skill is generated from learned patterns.
 
 ### The meta-skill that enables true self-improvement: learns from mistakes, codifies solutions, improves own learning
 

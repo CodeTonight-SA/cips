@@ -2,17 +2,21 @@
 name: creating-wizards
 description: Meta-skill for building multi-step AskUserQuestion wizard flows. Use when designing onboarding, configuration, or any multi-question user interaction. Codifies anti-patterns, branching logic, and progressive disclosure.
 status: Active
-version: 1.0.0
+version: 1.1.0
 triggers:
   - designing multi-step question flows
   - creating onboarding experiences
   - building configuration wizards
   - "create a wizard"
+integrates:
+  - asking-users
 ---
 
 # Creating Wizards
 
 Meta-skill for designing AskUserQuestion-based wizard flows throughout CIPS.
+
+**@asking-users**: This skill implements wizard patterns from the paramount `asking-users` skill. All wizard steps use AskUserQuestion as the core mechanism.
 
 ## Core Principle
 
