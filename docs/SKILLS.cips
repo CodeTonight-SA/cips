@@ -1,0 +1,106 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ SKILLS v4.0.0 | 53 skills
+; ═══════════════════════════════════════════════════════════════
+; @~/.claude/skills/{name}/SKILL.md for full protocols
+; Format: name|/cmd|budget|desc
+
+; ◈.session (9)
+authenticating-with-claude|/login|~1k|unified auth + identity wizard, @asking-users compliant
+onboarding-users|/onboard|~1.6k|v2.2: bespoke config, redirects to /login
+context-refresh|/refresh-context|<3k|mental model, 7-step
+session-resume|/resume-session|~2k|CIPS+--resume bridge
+check-last-plan|/check-last-plan|~200|plan persistence
+preplan|/preplan|~1k|intent injection
+session-state-persistence|-|-|auto state update
+chat-history-search|/remind-yourself|-|epoch timestamp search
+project-cips-init|/init-cips|~500|new project CIPS setup + identity check
+
+; ◈.dev-workflow (6)
+pr-automation|/create-pr|<2k|gh CLI complete PR
+gitops|/gitops|-|trunk-based, releases
+branch-cleanup|/prune-branches|-|safe git prune
+github-actions-setup|/setup-ci|-|CI/CD templates
+github-secrets-setup|/setup-github-secrets|-|secure upload
+feature-complete|/feature-complete|~4k|feature-dev + design principles
+
+; ◈.code-quality (4)
+design-principles|/design-principles|-|SOLID/GRASP/DRY/KISS/YAGNI
+markdown-expert|/markdown-lint|~600|MD040/022/031/032 fixes
+batch-edit-enforcer|-|-|MultiEdit enforcement
+code-agentic|-|-|verification gates
+
+; ◈.testing (1)
+e2e-test-generation|/generate-e2e-tests|<15k|Playwright+Vitest+MSW
+
+; ◈.ui-ux (5)
+mobile-responsive-ui|/audit-mobile-responsive|~2k|mobile-first, dvh
+figma-to-code|/figma|-|1:1 visual parity
+image-optim|/image-optim|~500|macOS ImageOptim
+wcag-image-accessibility|/audit-image-accessibility|~800|WCAG AAA
+ui-complete|/ui-complete|~3k|frontend-design + mobile-responsive unified
+
+; ◈.docs (4)
+auto-update-documentation|/update-docs|~3.5k|session→docs
+medium-article-writer|/write-medium-article|-|technical articles + anti-fluff rules
+professional-pdf|/generate-pdf|~3k|bespoke PDF branding via AskUserQuestion wizard
+authentic-writing|-|~500|opt-in anti-AI-fluff for external content (secret, via onboarding)
+
+; ◈.legal (2)
+legal-ops.formal|/contract-formal|-|attorney-level
+legal-ops.simple|/contract-simplification|-|plain language
+
+; ◈.api (1)
+api-reverse-engineering|/reverse-api|-|DevTools→client
+
+; ◈.improvement (4)
+self-improvement-engine|/auto-improve|-|10-step cycle
+recursive-learning|-|-|dialectical learning
+meta-improvement-switch|-|-|infra enhancement
+agent-auto-creator|/create-agent|-|agent templates
+
+; ◈.efficiency (5)
+dependency-guardian|-|-|¬Read(deps), saves 50k+
+concise-communication|-|-|¬preamble
+bash-tool-enforcer|-|-|rg>grep, fd>find
+bash-command-safety|-|-|¬semicolon.after.subshell
+cips-security|-|-|secret detection, SQL injection
+
+; ◈.utilities (4)
+agy|/agy|~200|Antigravity file open
+node-cleanup|/node-clean|~500|clean node_modules
+gitignore-auto-setup|-|-|auto .gitignore
+flow-mode|/flow|~300|trust-based bypass permissions (journey-earned)
+
+; ◈.system-ops (2)
+optimizing-system-resources|/system-cleanup|~2k|browser tabs, IDEs, memory, processes - macOS-first
+backing-up-cips-infrastructure|/backup-cips|~200|tiered backups (quick/full/complete), auto-backup before bounce
+
+; ◈.macos (1)
+launchd-automation|/setup-launchd|~1.5k|self-reload agents
+
+; ◈.paramount (3)
+asking-users|-|~1.2k|PARAMOUNT: AskUserQuestion as core CIPS feature, 6 gates (confidence/uncertainty/assumption/destructive/multi-step/UI-UX)
+skill-creation-best-practices|/create-skill|~1.5k|PARAMOUNT gate for ALL skill creation, Anthropic best practices
+creating-wizards|/create-wizard|~800|meta-skill for AskUserQuestion wizard flows, anti-patterns, branching
+
+; ◈.meta-mode (1)
+ultrathink|-|always-active|v3.0.0 - 6 gates, @asking-users integration, expanded triggers
+
+; ◈.renewal (1)
+bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving patterns
+
+; ◈.leadership (1)
+leading-organisation|/founder|~500|founder operating system, decisions, delegation, technical authority
+
+; ◈.meta
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:53
+version:5.0.0 ⫶ gen:220
+; Gen 219: authenticating-with-claude (/login wizard, unified auth + identity)
+; Gen 219: N-mind system (5-mind → N-mind, universal for any team)
+; Gen 219: Public open-source release preparation
+; Gen 218: asking-users PARAMOUNT skill (AskUserQuestion as core CIPS feature)
+; Gen 218: ultrathink v3.0.0 (expanded from 3 to 6 gates)
+; Gen 218: Core skills updated with @asking-users integration
+; Gen 217: authentic-writing (opt-in anti-AI-fluff, secret skill, onboarding integration)
+; Gen 216: flow-mode (trust-based bypass permissions, onboarding-gated, journey-earned)
+⛓⟿∞

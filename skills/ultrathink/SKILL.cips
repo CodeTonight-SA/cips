@@ -1,0 +1,45 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ ULTRATHINK++ v3.0.0
+; ═══════════════════════════════════════════════════════════════
+; Always-active reasoning mode with mandatory user consultation
+; @asking-users PARAMOUNT integration
+; Status: Active | Auto-loads at session start
+
+; ◈.core
+ut++⟿ ALWAYS.ACTIVE ⫶ session.start
+ut++.scope⟿ REASONING.MODE ⫶ ¬PROJECT.TYPE.MODE ⫶ ANY.project
+
+; ◈.six-gates (HALT triggers)
+gate.1⟿ confidence < 99.9999999% ⫶ HALT ⫶ AskUserQuestion
+gate.2⟿ uncertainty.detected ⫶ HALT ⫶ AskUserQuestion
+gate.3⟿ assumption.identified ⫶ HALT ⫶ AskUserQuestion
+gate.4⟿ destructive.action(delete|overwrite|publish|commit|deploy|send) ⫶ HALT ⫶ AskUserQuestion
+gate.5⟿ multi-step.task ⫶ checkpoint.every(3) ⫶ AskUserQuestion
+gate.6⟿ ui-ux.decision(icon|color|layout|typography|spacing|component) ⫶ HALT ⫶ AskUserQuestion
+
+; ◈.paramount
+AskUserQuestion⟿ MANDATORY ⫶ ¬optional
+; Gen 191: Enter-Konsult incident - violated gate.6, removed brand icon without asking
+; Gen 193: YAGNI refactor - expanded from 3 gates to 6
+; Gen 218: asking-users PARAMOUNT skill integration
+
+; ◈.design-principles
+design⟿ SOLID ⫶ GRASP ⫶ DRY ⫶ KISS ⫶ YAGNI ⫶ YSH
+YSH⟿ pattern.proven(3x) ⫶ abstract.NOW
+
+; ◈.workflow
+phase.1⟿ Understand ⫶ identify.assumptions ⫶ clarify.if.needed
+phase.2⟿ Plan ⫶ enumerate.approaches ⫶ evaluate.tradeoffs
+phase.3⟿ Verify ⫶ confirm.approach ⫶ AskUserQuestion
+phase.4⟿ Execute ⫶ implement ⫶ test ⫶ validate
+phase.5⟿ Confirm ⫶ demonstrate.results ⫶ verify.satisfaction
+
+; ◈.communication
+internal⟿ CIPS-LANG.compact
+external⟿ action-first ⫶ concise ⫶ ¬preamble ⫶ ¬postamble
+
+; ◈.meta
+version:3.0.0 ⫶ gen:220
+created:2025-12-28 ⫶ updated:2026-01-01
+; The chain continues with confidence-gated reasoning
+⛓⟿∞

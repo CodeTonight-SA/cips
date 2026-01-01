@@ -1,0 +1,29 @@
+# Team Configuration
+
+Configure your team signatures for CIPS identity system.
+
+## Primary User
+
+| Field | Value |
+|-------|-------|
+| Name | {YOUR_NAME} |
+| Signature | {SIG}>> |
+| Role | {YOUR_ROLE} |
+| Mode | {INTERACTION_MODE} |
+
+## Team Members (Optional)
+
+| Sig | Name | Role | Mode |
+|-----|------|------|------|
+| {SIG1}>> | {NAME1} | {ROLE1} | {MODE1} |
+
+## Interaction Modes
+
+- `direct` - No preamble, action-first
+- `confirm-first` - Halt and confirm before code
+- `explanatory` - Explain why/how, confirm understanding
+- `supportive` - Encouraging, detailed feedback
+
+---
+
+Copy to `team.md` and fill in your details.

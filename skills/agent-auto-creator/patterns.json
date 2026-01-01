@@ -1,0 +1,110 @@
+{
+  "version": "1.0.0",
+  "description": "Pattern definitions for agent auto-creation detection",
+  "builtInPatterns": [
+    {
+      "name": "pr-workflow",
+      "signature": "git status.*git diff.*git commit.*git push|create.*pull request|open.*PR",
+      "minOccurrences": 3,
+      "tools": ["Bash", "Read", "Glob"],
+      "model": "sonnet",
+      "tokenBudget": 2000,
+      "priority": "high",
+      "description": "Automates PR creation workflow",
+      "estimatedSavings": 13000
+    },
+    {
+      "name": "dependency-guardian",
+      "signature": "node_modules|venv|\\.next|\\.venv|__pycache__|dist/|build/",
+      "minOccurrences": 1,
+      "tools": ["Glob", "Grep", "Read"],
+      "model": "haiku",
+      "tokenBudget": 1000,
+      "priority": "critical",
+      "description": "Prevents catastrophic token waste from dependency reads",
+      "estimatedSavings": 50000
+    },
+    {
+      "name": "file-read-optimizer",
+      "signature": "Read.*Read.*same.*file|redundant.*read|read.*again",
+      "minOccurrences": 2,
+      "tools": ["Read", "Bash"],
+      "model": "haiku",
+      "tokenBudget": 1000,
+      "priority": "critical",
+      "description": "Eliminates redundant file reads",
+      "estimatedSavings": 8000
+    },
+    {
+      "name": "history-mining",
+      "signature": "have we.*before|search.*history|past.*solution|remind.*yourself",
+      "minOccurrences": 3,
+      "tools": ["Bash", "Read"],
+      "model": "haiku",
+      "tokenBudget": 2000,
+      "priority": "high",
+      "description": "Searches past conversations for solutions",
+      "estimatedSavings": 12000
+    },
+    {
+      "name": "context-refresh",
+      "signature": "session.*start|project.*context|understand.*codebase|cold.*start",
+      "minOccurrences": 3,
+      "tools": ["Read", "Bash", "Glob", "Grep"],
+      "model": "haiku",
+      "tokenBudget": 3000,
+      "priority": "critical",
+      "description": "Rapid project context building",
+      "estimatedSavings": 6000
+    },
+    {
+      "name": "efficiency-auditor",
+      "signature": "audit.*efficiency|token.*waste|violation.*score|efficiency.*report",
+      "minOccurrences": 2,
+      "tools": ["Read", "Bash"],
+      "model": "haiku",
+      "tokenBudget": 3000,
+      "priority": "medium",
+      "description": "Analyses workflows for efficiency violations",
+      "estimatedSavings": 0
+    },
+    {
+      "name": "yagni-enforcer",
+      "signature": "future.*proof|just.*in.*case|might.*need|make.*flexible|premature.*optimization",
+      "minOccurrences": 3,
+      "tools": ["Read"],
+      "model": "haiku",
+      "tokenBudget": 2000,
+      "priority": "medium",
+      "description": "Prevents over-engineering and premature features",
+      "estimatedSavings": 15000
+    },
+    {
+      "name": "direct-implementation",
+      "signature": "temp.*script|intermediate.*file|create.*script.*to|multi.*step.*workflow",
+      "minOccurrences": 3,
+      "tools": ["Bash", "Edit", "Read", "Write"],
+      "model": "sonnet",
+      "tokenBudget": 3000,
+      "priority": "medium",
+      "description": "Eliminates temporary scripts and intermediate steps",
+      "estimatedSavings": 4000
+    }
+  ],
+  "customPatterns": [],
+  "detectionRules": {
+    "minOccurrencesGlobal": 3,
+    "minTokenSavings": 5000,
+    "confidenceThreshold": 0.75,
+    "lookbackMessages": 1000,
+    "excludePatterns": [
+      "^/",
+      "^@",
+      "^\\$"
+    ]
+  },
+  "ruleOfThree": {
+    "enabled": true,
+    "description": "Wait for 3 occurrences before suggesting agent creation"
+  }
+}

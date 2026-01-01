@@ -1,0 +1,121 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ COMMANDS v4.0.0 | 40 commands
+; ═══════════════════════════════════════════════════════════════
+; Format: /cmd|budget|savings|desc
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.session
+; ═══════════════════════════════════════════════════════════════
+/login|~1k|-|unified auth + identity wizard (first-run entry point)
+/onboard|~2.2k|-|legacy, redirects to /login
+/refresh-context|<3k|5k-8k|mental model, 7-step discovery
+/resume-session|~2k|~2k fresh|CIPS bridge (latest|gen:N|ID|--fresh|--tokens N)
+/check-last-plan|~200|-|load cached plan
+/preplan|~1k|~1k|intent injection for next session
+/save-session-state|-|-|checkpoint to next_up.md
+/resurrect-instance|-|-|resurrect CIPS instance
+/sync-web|-|-|import Claude Web memories
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.dev-workflow
+; ═══════════════════════════════════════════════════════════════
+/create-pr|<2k|1k-2k|branch→stage→commit→push→pr
+/remind-yourself|~800|5k-20k|epoch search ("topic")
+/gitops|-|-|trunk-based, branch strategy
+/prune-branches|-|-|safe git cleanup
+/setup-ci|-|-|GitHub Actions setup
+/setup-github-secrets|-|-|secure upload via gh
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.code-quality
+; ═══════════════════════════════════════════════════════════════
+/audit-efficiency|~600|-|score 0-100, violations
+/markdown-lint|~600|-|MD040/022/031/032 fixes
+/design-principles|-|-|SOLID/GRASP/DRY/KISS/YAGNI
+/audit-mobile-responsive|~2k|-|mobile-first audit (--fix)
+/feature-complete|~4k|-|feature-dev + design principles
+/ui-complete|~3k|-|frontend-design + mobile-responsive
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.testing
+; ═══════════════════════════════════════════════════════════════
+/generate-e2e-tests|<15k|-|Playwright+Vitest+MSW+GHA
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.docs
+; ═══════════════════════════════════════════════════════════════
+/update-docs|~3.5k|-|session+git→docs
+/generate-pdf|~3k|-|bespoke PDF branding via wizard
+/write-medium-article|-|-|technical articles + anti-fluff
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.legal
+; ═══════════════════════════════════════════════════════════════
+/contract-formal|-|-|attorney-level, contra proferentem
+/contract-simplification|-|-|plain language
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.integration
+; ═══════════════════════════════════════════════════════════════
+/reverse-api|-|-|DevTools→authenticated client
+/figma|-|-|1:1 visual parity
+/image-optim|~500|-|macOS ImageOptim (<files>)
+/audit-image-accessibility|~800|-|WCAG AAA
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.system
+; ═══════════════════════════════════════════════════════════════
+/create-agent|-|-|agent from template
+/create-wizard|~800|-|meta-skill for AskUserQuestion wizard flows
+/install-mcp|-|-|MCP server install
+/node-clean|~500|-|clean node_modules+build
+/setup-launchd|~1.5k|-|self-reload macOS agents
+/system-cleanup|~2k|-|browser tabs+apps+memory+processes (macOS-first)
+/backup-cips|~200|-|tiered backup (quick/full/complete) to ~/backups/cips/
+/restore-cips|~400|-|restore from backup with conflict handling
+/flow|~300|-|trust-based bypass permissions (--explain|--enable|--disable|--status)
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.leadership
+; ═══════════════════════════════════════════════════════════════
+/founder|~500|-|founder operating system, decisions, delegation
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.meta-mode (Gen 193: ut++ now always-active, no command needed)
+; ═══════════════════════════════════════════════════════════════
+; ut++ protocol auto-loads at session start
+; See @skills/ultrathink/SKILL.cips
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.cli (bash aliases)
+; ═══════════════════════════════════════════════════════════════
+cc                          ; cips fresh 2000 (quick)
+cc++                        ; cips fresh 8000 (deep)
+ccr                         ; cips resume latest
+ccl                         ; cips list
+oc                          ; ./optim.sh cycle
+
+; ◈.cli (full commands)
+cips list                   ; list sessions
+cips resume latest          ; resume last
+cips fresh gen:N 2000       ; fresh with context
+./optim.sh detect           ; pattern detection (timeout:180000)
+./optim.sh audit            ; efficiency audit (timeout:300000)
+./optim.sh cycle            ; full cycle (timeout:600000)
+./optim.sh learning "<msg>" ; learning detection
+./optim.sh learning-list    ; pending candidates
+./optim.sh learning-approve ; approval required
+./optim.sh learning-reject  ; with reason
+
+; ◈.discovery
+; Type / in Claude Code for autocomplete
+
+; ◈.meta
+count:40 ⫶ version:5.0.0 ⫶ gen:220
+; Gen 219: /login command (unified auth + identity, replaces /onboard as entry point)
+; Gen 219: N-mind system (5-mind → N-mind, public release)
+; Gen 216: /flow command (trust-based bypass permissions)
+; Gen 215: /backup-cips, /restore-cips commands (tiered backup/restore)
+; Gen 215: /system-cleanup command (SystemOps browser+apps+memory)
+; Gen 212: /create-wizard command (AskUserQuestion meta-skill)
+⛓⟿∞

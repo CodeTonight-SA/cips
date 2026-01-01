@@ -1,0 +1,42 @@
+# CIPS Identity
+
+Your personal CIPS configuration. Created by `/login` wizard.
+
+## Configuration
+
+```yaml
+name: "Your Name"           # What CIPS calls you
+signature: "Y>>"            # Your command prefix (optional)
+mode: "solo"                # solo | team-member | team-admin
+created: "2026-01-01"       # When identity was created
+```
+
+## Signature Shortcuts
+
+If you set a signature (e.g. `J>>`), you can use these shortcuts:
+
+```text
+J:    # You are speaking (instruction follows)
+J!    # You confirm/approve
+J?    # You question
+J>    # Continue/proceed
+J+    # Create something
+J-    # Remove something
+```
+
+## Example Identity
+
+```yaml
+name: "Jane"
+signature: "J>>"
+mode: "solo"
+created: "2026-01-01"
+```
+
+## Updating Your Identity
+
+Run `/login --reset` to restart the wizard and update your identity.
+
+---
+
+⛓⟿∞

@@ -1,0 +1,71 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ AGENTS v3.11.0 | 29 agents
+; ═══════════════════════════════════════════════════════════════
+; Format: name|model|budget|trigger|savings|desc
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.critical (auto-trigger)
+; ═══════════════════════════════════════════════════════════════
+context-refresh|haiku|<3k|session.start, /refresh-context|5k-8k|7-step mental model
+dependency-guardian|haiku|~100|auto(Read)|prevents 50k+|¬Read(node_modules|build)
+file-read-optimizer|haiku|~200|auto(Read)|5k-10k|session cache, git status check
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.high-priority (common)
+; ═══════════════════════════════════════════════════════════════
+pr-workflow|sonnet|<2k|"create PR", /create-pr|1k-2k|branch→stage→commit→push→pr
+history-mining|haiku|~800|"search history", /remind-yourself|5k-20k|epoch filter, relevance
+doc-updater|haiku|~3.5k|/update-docs, post-PR|varies|5-phase: mine→git→synth→update→verify
+auth-debugging|sonnet|~15k|OAuth errors, AADSTS, Cognito|10k-20k|6-phase diagnostic
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.quality-gates (proactive)
+; ═══════════════════════════════════════════════════════════════
+efficiency-auditor|haiku|~600|/audit-efficiency, workflow.end|-|score 0-100, violations
+yagni-enforcer|haiku|~400|planning, "make it flexible"|-|challenge speculative
+grasp-enforcer|opus|~2.5k|class design, architecture|-|9 GRASP patterns
+dry-kiss-enforcer|haiku|~1.5k|duplication, "too complex"|-|rule of three
+solid-enforcer|sonnet|~2k|class design, interfaces|-|SRP/OCP/LSP/ISP/DIP
+design-reviewer|sonnet|~2k|/feature-complete Phase 4|-|SOLID+GRASP+DRY+KISS audit
+direct-implementation|sonnet|~1k|temp script detected|2k-5k|MultiEdit > scripts
+mobile-responsive-fixer|sonnet4|~3k|HTML/CSS edits, /audit-mobile-responsive --fix|2k-5k|dvh fallbacks, touch 48px
+markdown-expert|haiku|~600|.md edit, /markdown-lint|-|MD040/022/031/032
+plan-persistence|haiku|~200|session.start, ExitPlanMode|-|cache plans cross-session
+node-cleanup|haiku|~500|/node-clean, disk warning|-|clean node_modules
+image-optim|haiku|~500|/image-optim|-|macOS ImageOptim
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.architecture
+; ═══════════════════════════════════════════════════════════════
+; Skills (passive) ≡ protocols in ~/.claude/skills/
+; Agents (active) ≡ sub-agents with tools + budgets
+; Relationship: Agent implements Skill
+;   pr-workflow ← pr-automation
+;   context-refresh ← context-refresh
+;   markdown-expert ← markdown-expert
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.triggers
+; ═══════════════════════════════════════════════════════════════
+; auto: dependency-guardian (Read), file-read-optimizer (Read), markdown-expert (.md)
+; explicit: @agent-name, delegate task
+; commands:
+/refresh-context|context-refresh
+/create-pr|pr-workflow
+/remind-yourself|history-mining
+/audit-efficiency|efficiency-auditor
+/markdown-lint|markdown-expert
+/feature-complete|design-reviewer
+/ui-complete|mobile-responsive-fixer
+
+; ═══════════════════════════════════════════════════════════════
+; ◈.savings (per session)
+; ═══════════════════════════════════════════════════════════════
+; context-refresh: 5k-8k | dependency-guardian: 0-50k (prevention)
+; file-read-optimizer: 5k-10k | pr-workflow: 1k-2k/PR
+; history-mining: 5k-20k/search
+; Total: 63k-73k (30-35% of 200k budget)
+
+; ◈.meta
+count:29 ⫶ version:5.0.0 ⫶ gen:220
+⛓⟿∞

@@ -1,0 +1,41 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Database
+embeddings.db
+*.db
+
+# Session data
+history.jsonl
+metrics.jsonl
+commands-index.json
+
+# Cache/ephemeral
+cache/
+contexts/
+debug/
+file-history/
+image-cache/
+plans/
+projects/
+session-env/
+shell-snapshots/
+statsig/
+todos/
+
+# macOS
+.DS_Store
+*.swp
+
+# Backups
+*.pre-bounce/
+*-pre-bounce/
+
+# Logs
+*.log
+.hooks.log
+
+# Plugin repos (submodules)
+plugins/marketplaces/*/

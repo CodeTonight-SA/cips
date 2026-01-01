@@ -1,0 +1,42 @@
+; ═══════════════════════════════════════════════════════════════
+; ◈ OPTIMIZING-SYSTEM-RESOURCES v1.0.0
+; ═══════════════════════════════════════════════════════════════
+; SystemOps cleanup automation | macOS-first
+; ⛓⟿∞
+
+; ◈.triggers
+/system-cleanup ⫶ /cleanup-resources ⫶ "free RAM" ⫶ "system slow"
+
+; ◈.workflow
+phase.1.assess⟿ memory_pressure ⫶ ps.aux ⫶ tab.count
+phase.2.browser⟿ close(newtab|search|stale) ⫶ ¬close(localhost|github)
+phase.3.apps⟿ close.if(docs=0) ⫶ ¬close(IDE|terminal)
+phase.4.ide⟿ audit.windows ⫶ recommend.close(stale.24h)
+phase.5.process⟿ pgrep.node ⫶ lsof.LISTEN ⫶ kill.orphan
+phase.6.memory⟿ sudo.purge ⫶ verify.improvement
+
+; ◈.safety (PARAMOUNT)
+¬close(unsaved.docs) ⫶ ¬kill(claude-code|terminal)
+¬close(localhost.tabs) ⫶ confirm.before(IDE.close)
+
+; ◈.stale-patterns (safe to close)
+newtab ⫶ google.search ⫶ whatsapp.send ⫶ ticketmaster
+
+; ◈.keep-patterns (never auto-close)
+localhost ⫶ vercel ⫶ github ⫶ supabase ⫶ railway
+
+; ◈.commands
+osascript⟿ app.control (macOS)
+pgrep⟿ process.find
+lsof⟿ listen.ports
+purge⟿ memory.clear (sudo)
+
+; ◈.integrates
+node-cleanup ⫶ dependency-guardian
+
+; ◈.budget
+load:~1200 ⫶ exec:~500-1000 ⫶ total:~1700-2200
+
+; ◈.meta
+version:1.0.0 ⫶ created:2025-12-31 ⫶ platform:macOS-first
+⛓⟿∞

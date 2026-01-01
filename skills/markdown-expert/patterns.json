@@ -1,0 +1,42 @@
+{
+  "markdown-linting-violations": {
+    "name": "markdown-linting-violations",
+    "signature": "```\\n[^`]|\\*\\*[A-Z][^*]+:\\*\\*|^###[^\\n]*\\n[^\\n]|[^\\n]\\n---\\n|---\\n[^\\n]",
+    "description": "Missing code language tags, emphasis as headings, missing blank lines around structures and horizontal rules",
+    "minOccurrences": 3,
+    "severity": "major",
+    "tokenImpact": "1000-3000",
+    "remediation": "Add language tags (bash/text/json), use proper # headings, add blank lines around structures (headings, lists, code blocks, horizontal rules)",
+    "autoFix": true,
+    "examples": [
+      {
+        "violation": "```\\nnpm install\\n```",
+        "fix": "```bash\\nnpm install\\n```",
+        "type": "MD040"
+      },
+      {
+        "violation": "**Date:** 2025-01-14",
+        "fix": "Date: 2025-01-14",
+        "type": "MD036"
+      },
+      {
+        "violation": "### Heading\\nContent",
+        "fix": "### Heading\\n\\nContent",
+        "type": "MD022"
+      },
+      {
+        "violation": "Content\\n---\\n**Status**: Active",
+        "fix": "Content\\n\\n---\\n\\nStatus: Active",
+        "type": "MD022-HR"
+      }
+    ],
+    "detectionRules": {
+      "MD040": "Code blocks starting with ``` followed by newline (no language tag)",
+      "MD036": "Lines starting with ** or * containing : or structural content",
+      "MD022": "Headings not surrounded by blank lines",
+      "MD022-HR": "Horizontal rules (---) not surrounded by blank lines",
+      "MD031": "Code fences not surrounded by blank lines",
+      "MD032": "Lists not surrounded by blank lines"
+    }
+  }
+}
