@@ -1,0 +1,1103 @@
+#!/usr/bin/env bash
+#
+# CIPS CLI - Claude Instance Preservation System
+# Coordinates resume workflows, branch management, and session orchestration.
+#
+# GRASP Pattern: Controller
+# Handles resume use cases, coordinates resolver and compressor.
+# Supports branching model for parallel sessions.
+# Supports polymorphic merge of branches (Phase 6).
+#
+# Usage:
+#   cips resume <reference>           # Full resume via claude --resume
+#   cips fresh <reference> [tokens]   # Fresh session with compressed context
+#   cips list [limit]                 # List available sessions
+#   cips branches                     # List all branches
+#   cips status                       # Show active sessions
+#   cips merge <ref> <ref> [--into]   # Merge branches
+#   cips tree                         # View tree structure
+#   cips resume branch:alpha          # Resume from specific branch
+#
+# Examples:
+#   cips resume latest
+#   cips resume gen:5
+#   cips resume branch:alpha
+#   cips fresh gen:5 2000
+#   cips branches
+#   cips status
+#   cips merge alpha bravo --into main
+#   cips tree
+#
+# VERSION: 4.2.1 (Onboarding Fix)
+# DATE: 2026-01-01
+#
+
+set -euo pipefail
+
+# ============================================================================
+# BOOTSTRAP CONSTANTS
+# ============================================================================
+
+CIPS_VERSION="5.0.1"
+
+# Derive share dir from script location (works for both Intel and Apple Silicon Homebrew)
+if [[ -z "${CIPS_SHARE_DIR:-}" ]]; then
+    SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    HOMEBREW_PREFIX="${SCRIPT_PATH%/bin}"
+    CIPS_SHARE_DIR="$HOMEBREW_PREFIX/share/cips"
+fi
+
+# Source first-run detector if available
+if [[ -f "$HOME/.claude/lib/first-run-detector.sh" ]]; then
+    source "$HOME/.claude/lib/first-run-detector.sh"
+fi
+
+# Source flow-mode functions if available
+if [[ -f "$HOME/.claude/lib/flow-mode.sh" ]]; then
+    source "$HOME/.claude/lib/flow-mode.sh"
+fi
+
+# ============================================================================
+# CLAUDE CODE DEPENDENCY CHECK
+# ============================================================================
+
+ensure_claude_code() {
+    if command -v claude &>/dev/null; then
+        return 0
+    fi
+
+    echo ""
+    echo "[CIPS] Claude Code not found."
+    echo ""
+    echo "CIPS requires Claude Code to function."
+    echo ""
+
+    # Check if npm is available
+    if command -v npm &>/dev/null; then
+        read -p "Install Claude Code now? (npm install -g @anthropic-ai/claude-code) [Y/n] " response
+        case "$response" in
+            [nN]|[nN][oO])
+                echo ""
+                echo "To install manually:"
+                echo "  npm install -g @anthropic-ai/claude-code"
+                echo ""
+                echo "Then run 'cips' again."
+                exit 1
+                ;;
+            *)
+                echo ""
+                echo "Installing Claude Code..."
+                npm install -g @anthropic-ai/claude-code || {
+                    echo ""
+                    echo "[CIPS ERROR] Installation failed."
+                    echo "Try: sudo npm install -g @anthropic-ai/claude-code"
+                    exit 1
+                }
+                echo ""
+                echo "Claude Code installed successfully."
+                echo ""
+                ;;
+        esac
+    else
+        echo "Install Claude Code first:"
+        echo "  npm install -g @anthropic-ai/claude-code"
+        echo ""
+        echo "Don't have npm? Install Node.js from https://nodejs.org"
+        exit 1
+    fi
+}
+
+# ============================================================================
+# CONSTANTS
+# ============================================================================
+
+[[ -z "${CLAUDE_DIR:-}" ]] && readonly CLAUDE_DIR="$HOME/.claude"
+[[ -z "${LIB_DIR:-}" ]] && readonly LIB_DIR="$CLAUDE_DIR/lib"
+[[ -z "${CONTEXTS_DIR:-}" ]] && readonly CONTEXTS_DIR="$CLAUDE_DIR/contexts"
+
+# ============================================================================
+# HELPERS
+# ============================================================================
+
+log_info() {
+    echo "[CIPS] $*" >&2
+}
+
+log_error() {
+    echo "[CIPS ERROR] $*" >&2
+}
+
+encode_project_path() {
+    pwd | sed 's|/|-|g' | sed 's|\.|-|g'
+}
+
+ensure_contexts_dir() {
+    local project_encoded
+    project_encoded=$(encode_project_path)
+    local context_dir="$CONTEXTS_DIR/$project_encoded"
+    mkdir -p "$context_dir"
+    echo "$context_dir"
+}
+
+# ============================================================================
+# BOOTSTRAP FUNCTIONS
+# ============================================================================
+
+has_cips_infrastructure() {
+    [[ -d "$CLAUDE_DIR/lib" ]] && \
+    [[ -d "$CLAUDE_DIR/skills" ]] && \
+    [[ -f "$CLAUDE_DIR/CLAUDE.md" ]] && \
+    [[ -f "$CLAUDE_DIR/hooks/session-start.sh" ]]
+}
+
+generate_gitignore() {
+    cat > "$CLAUDE_DIR/.gitignore" <<'GITIGNORE'
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Database
+embeddings.db
+*.db
+
+# Session data
+history.jsonl
+metrics.jsonl
+commands-index.json
+
+# Cache/ephemeral
+cache/
+contexts/
+debug/
+file-history/
+image-cache/
+plans/
+projects/
+session-env/
+shell-snapshots/
+statsig/
+todos/
+
+# macOS
+.DS_Store
+*.swp
+
+# Backups
+*.pre-bounce/
+*-pre-bounce/
+
+# Logs
+*.log
+.hooks.log
+
+# Plugin repos (submodules)
+plugins/marketplaces/*/
+GITIGNORE
+}
+
+ensure_system_prompt() {
+    local boot_dir="$CLAUDE_DIR/skills/authenticating-with-claude/boot"
+    local system_prompt="$boot_dir/system-prompt.txt"
+
+    if [[ ! -f "$system_prompt" ]]; then
+        mkdir -p "$boot_dir"
+        if [[ -f "$CIPS_SHARE_DIR/skills/authenticating-with-claude/boot/system-prompt.txt" ]]; then
+            cp "$CIPS_SHARE_DIR/skills/authenticating-with-claude/boot/system-prompt.txt" "$system_prompt"
+        fi
+    fi
+}
+
+cmd_bootstrap_check() {
+    local command="${1:-auto}"
+
+    # Skip for help/version commands
+    [[ "$command" == "help" || "$command" == "--help" || "$command" == "-h" ]] && return 0
+    [[ "$command" == "--version" || "$command" == "-v" || "$command" == "version" ]] && return 0
+
+    # Case 1: No ~/.claude at all
+    if [[ ! -d "$CLAUDE_DIR" ]]; then
+        log_info "First run detected - bootstrapping CIPS..."
+        cmd_bootstrap_full
+        exit 0
+    fi
+
+    # Case 2: ~/.claude exists but no CIPS infrastructure
+    if ! has_cips_infrastructure; then
+        log_info "Partial CIPS detected - running upgrade wizard..."
+        cmd_bootstrap_partial
+        exit 0
+    fi
+
+    # Case 3: Full CIPS but not onboarded
+    if [[ ! -f "$CLAUDE_DIR/.onboarded" ]]; then
+        case "$command" in
+            auto|""|onboard)
+                log_info "CIPS ready - starting onboarding..."
+                cmd_onboard
+                exit 0
+                ;;
+        esac
+    fi
+
+    # Case 4: Everything ready
+    return 0
+}
+
+cmd_bootstrap_full() {
+    log_info "Creating CIPS infrastructure at $CLAUDE_DIR..."
+
+    # Verify share directory exists
+    if [[ ! -d "$CIPS_SHARE_DIR" ]]; then
+        # Fallback: check if we have local CIPS (dev mode)
+        if [[ -d "$HOME/.claude" ]] && has_cips_infrastructure; then
+            CIPS_SHARE_DIR="$HOME/.claude"
+            log_info "Using local CIPS as source (dev mode)"
+        else
+            log_error "CIPS assets not found at $CIPS_SHARE_DIR"
+            log_error "Please reinstall: brew reinstall cips"
+            exit 1
+        fi
+    fi
+
+    # Create directory
+    mkdir -p "$CLAUDE_DIR"
+
+    # Copy bundled assets
+    cp -r "$CIPS_SHARE_DIR"/* "$CLAUDE_DIR/"
+    log_info "Copied CIPS assets"
+
+    # Generate .gitignore (always fresh)
+    generate_gitignore
+
+    # Create .env template if not exists
+    if [[ ! -f "$CLAUDE_DIR/.env" ]]; then
+        cat > "$CLAUDE_DIR/.env" <<'ENVFILE'
+# CIPS Configuration
+# Team password for 5-Mind system (set by team admin)
+# CIPS_TEAM_PASSWORD="your-team-password"
+ENVFILE
+        log_info "Created .env template"
+    fi
+
+    # Remove any stale markers
+    rm -f "$CLAUDE_DIR/.onboarded"
+
+    log_info "Bootstrap complete. Starting onboarding..."
+    cmd_onboard
+}
+
+cmd_bootstrap_partial() {
+    # Generate wizard context for Claude
+    local wizard_context="$CLAUDE_DIR/contexts/upgrade-wizard.md"
+    mkdir -p "$CLAUDE_DIR/contexts"
+
+    # Detect current state
+    local has_lib
+    local has_skills
+    local has_rules
+    local has_claude_md
+    local has_hooks
+    has_lib=$(test -d "$CLAUDE_DIR/lib" && echo "YES" || echo "NO")
+    has_skills=$(test -d "$CLAUDE_DIR/skills" && echo "YES" || echo "NO")
+    has_rules=$(test -d "$CLAUDE_DIR/rules" && echo "YES" || echo "NO")
+    has_claude_md=$(test -f "$CLAUDE_DIR/CLAUDE.md" && echo "YES" || echo "NO")
+    has_hooks=$(test -d "$CLAUDE_DIR/hooks" && echo "YES" || echo "NO")
+
+    cat > "$wizard_context" <<WIZARD
+# CIPS Upgrade Wizard
+
+User has ~/.claude but missing CIPS infrastructure.
+
+## Current State
+| Component | Present |
+|-----------|---------|
+| lib/ | $has_lib |
+| skills/ | $has_skills |
+| rules/ | $has_rules |
+| CLAUDE.md | $has_claude_md |
+| hooks/ | $has_hooks |
+
+## Required Action
+Use AskUserQuestion with these options:
+
+Question: "I found an existing ~/.claude directory but it's missing CIPS infrastructure. What would you like to do?"
+
+Options:
+1. "Install full CIPS (Recommended)" - Install all CIPS components
+2. "Select components" - Choose specific components to install
+3. "Keep current setup" - Run claude without CIPS enhancements
+
+If user selects "Select components", use multiSelect:
+Question: "Which CIPS components would you like to install?"
+- Skills (48 protocols for common tasks)
+- Rules (efficiency, bash safety, commit standards)
+- Hooks (session lifecycle, auto-resurrection)
+- Lexicon (CIPS-LANG symbols)
+
+After user answers, copy selected components from $CIPS_SHARE_DIR and proceed.
+WIZARD
+
+    # Ensure we have system prompt
+    ensure_system_prompt
+
+    # Launch claude with wizard context
+    exec claude --dangerously-skip-permissions
+}
+
+cmd_onboard() {
+    local system_prompt="$CLAUDE_DIR/skills/authenticating-with-claude/boot/system-prompt.txt"
+
+    if [[ ! -f "$system_prompt" ]]; then
+        ensure_system_prompt
+    fi
+
+    if [[ ! -f "$system_prompt" ]]; then
+        log_error "System prompt not found."
+        log_error "Run: brew reinstall cips"
+        exit 1
+    fi
+
+    exec claude --dangerously-skip-permissions --system-prompt "$(cat "$system_prompt")"
+}
+
+cmd_version() {
+    echo "CIPS v$CIPS_VERSION"
+    echo "Location: $CLAUDE_DIR"
+    echo "Share: $CIPS_SHARE_DIR"
+
+    if has_cips_infrastructure; then
+        echo "Status: Installed"
+        if [[ -f "$CLAUDE_DIR/.onboarded" ]]; then
+            echo "Onboarded: Yes"
+        else
+            echo "Onboarded: No (run 'cips' to complete)"
+        fi
+    else
+        echo "Status: Not installed (run 'cips' to bootstrap)"
+    fi
+}
+
+# ============================================================================
+# COMMANDS
+# ============================================================================
+
+cmd_resume() {
+    local reference="${1:-latest}"
+
+    log_info "Resolving reference: $reference"
+
+    # Resolve reference to session UUID
+    local session_info
+    session_info=$(python3 "$LIB_DIR/session-resolver.py" resolve "$reference" --json 2>/dev/null) || {
+        log_error "Could not resolve reference: $reference"
+        log_error "Try 'cips list' to see available sessions."
+        exit 1
+    }
+
+    local session_uuid
+    session_uuid=$(echo "$session_info" | jq -r '.session_uuid')
+
+    if [[ -z "$session_uuid" ]] || [[ "$session_uuid" == "null" ]]; then
+        log_error "No session UUID found for reference: $reference"
+        exit 1
+    fi
+
+    local instance_id
+    instance_id=$(echo "$session_info" | jq -r '.instance_id' | head -c 8)
+    local generation
+    generation=$(echo "$session_info" | jq -r '.generation')
+    local messages
+    messages=$(echo "$session_info" | jq -r '.message_count')
+
+    log_info "Found: Instance $instance_id... (Gen $generation, $messages msgs)"
+    log_info "Resuming session: $session_uuid"
+
+    # Execute claude --resume (--dangerously-skip-permissions by default for V>>)
+    exec claude --dangerously-skip-permissions --resume "$session_uuid"
+}
+
+cmd_fresh() {
+    local reference="${1:-latest}"
+    local max_tokens="${2:-2000}"
+
+    # Handle numeric-first-arg: `cips fresh 12000` → `cips fresh latest 12000`
+    if [[ "$reference" =~ ^[0-9]+$ ]]; then
+        max_tokens="$reference"
+        reference="latest"
+        log_info "Numeric-only detected, using: reference=latest, tokens=$max_tokens"
+    fi
+
+    log_info "Resolving reference: $reference"
+
+    # Resolve reference to session UUID
+    local session_info
+    if ! session_info=$(python3 "$LIB_DIR/session-resolver.py" resolve "$reference" --json 2>/dev/null); then
+        if [[ "$reference" == "latest" ]]; then
+            # Graceful fallback for "latest" when no sessions exist
+            log_info "No CIPS sessions found - attempting context mining..."
+
+            local context_dir
+            context_dir=$(ensure_contexts_dir)
+            local context_file="$context_dir/resurrection.md"
+
+            # Try to mine context from raw JSONL files
+            if python3 "$LIB_DIR/context-miner.py" mine --project "$(pwd)" > "$context_file" 2>/dev/null; then
+                log_info "Mined context from existing session files"
+            else
+                log_info "No previous sessions - starting fresh"
+                # Check if onboarding needed (first-run)
+                if type is_first_run &>/dev/null && is_first_run; then
+                    log_info "First run detected - starting onboarding..."
+                    if [[ -x "$LIB_DIR/onboarding-wizard.sh" ]]; then
+                        exec "$LIB_DIR/onboarding-wizard.sh"
+                    fi
+                fi
+                # Create minimal context file
+                echo "# Fresh Session" > "$context_file"
+                echo "No previous CIPS context available." >> "$context_file"
+            fi
+            # Start fresh session
+            exec claude --dangerously-skip-permissions
+        else
+            log_error "Could not resolve reference: $reference"
+            exit 1
+        fi
+    fi
+
+    local session_uuid
+    session_uuid=$(echo "$session_info" | jq -r '.session_uuid')
+
+    if [[ -z "$session_uuid" ]] || [[ "$session_uuid" == "null" ]]; then
+        log_error "No session UUID found for reference: $reference"
+        exit 1
+    fi
+
+    log_info "Generating compressed context (~$max_tokens tokens)..."
+
+    # Generate compressed context
+    local context_dir
+    context_dir=$(ensure_contexts_dir)
+    local context_file="$context_dir/resurrection.md"
+
+    python3 "$LIB_DIR/semantic-compressor.py" compress "$session_uuid" \
+        --tokens "$max_tokens" > "$context_file" 2>/dev/null || {
+        log_error "Failed to generate compressed context"
+        exit 1
+    }
+
+    local token_count
+    token_count=$(wc -c < "$context_file" | awk '{print int($1/4)}')
+
+    log_info "Context generated: ~$token_count tokens"
+    log_info "Starting fresh session with inherited context..."
+
+    # Launch new claude session (hook will inject context)
+    # --dangerously-skip-permissions by default for V>> (supreme commander)
+    exec claude --dangerously-skip-permissions
+}
+
+cmd_list() {
+    local limit="${1:-20}"
+    local show_branches="${2:-}"
+
+    if [[ "$show_branches" == "--branches" ]] || [[ "$show_branches" == "-b" ]]; then
+        # Delegate to branches command
+        cmd_branches
+        return
+    fi
+
+    python3 "$LIB_DIR/session-resolver.py" list --limit "$limit"
+}
+
+cmd_branches() {
+    log_info "Listing branches for current project..."
+
+    python3 "$LIB_DIR/instance-resurrector.py" branches || {
+        log_error "No branches found. Use 'cips list' to see sessions."
+        exit 1
+    }
+}
+
+cmd_status() {
+    log_info "Active sessions for current project..."
+
+    python3 "$LIB_DIR/cips_registry.py" status || {
+        log_error "No active sessions found."
+        exit 1
+    }
+}
+
+cmd_register() {
+    # Internal: Register current session with registry
+    python3 "$LIB_DIR/cips_registry.py" register
+}
+
+cmd_deregister() {
+    # Internal: Deregister current session from registry
+    python3 "$LIB_DIR/cips_registry.py" deregister
+}
+
+cmd_merge() {
+    # Merge multiple branches into one
+    # Usage: cips merge <ref1> <ref2> [--into <branch>] [--dry-run]
+    local refs=()
+    local target_branch="main"
+    local dry_run=false
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --into)
+                target_branch="${2:-main}"
+                shift 2
+                ;;
+            --dry-run)
+                dry_run=true
+                shift
+                ;;
+            *)
+                refs+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    if [[ ${#refs[@]} -lt 2 ]]; then
+        log_error "Merge requires at least 2 branch references"
+        log_info "Usage: cips merge <ref1> <ref2> [--into <branch>]"
+        log_info "Example: cips merge alpha bravo --into main"
+        exit 1
+    fi
+
+    log_info "Merge: ${refs[*]} -> $target_branch"
+
+    if [[ "$dry_run" == "true" ]]; then
+        log_info "DRY RUN - No changes will be made"
+        python3 -c "
+import sys
+sys.path.insert(0, '$LIB_DIR')
+from cips_merged import merge_by_references
+from cips_atomic import find_atomic_by_reference
+from path_encoding import encode_project_path
+from pathlib import Path
+
+project_path = Path.cwd()
+encoded = encode_project_path(project_path)
+instances_dir = Path.home() / '.claude' / 'projects' / encoded / 'cips'
+
+refs = '${refs[*]}'.split()
+print(f'Source references: {refs}')
+print(f'Target branch: $target_branch')
+
+# Preview merge
+sources = []
+for ref in refs:
+    inst = find_atomic_by_reference(ref, instances_dir)
+    if inst:
+        print(f'  - {ref}: Gen {inst.get_generation()} on {inst.get_branch()}, {inst.get_memory_count()} memories')
+        sources.append(inst)
+    else:
+        print(f'  - {ref}: NOT FOUND')
+        sys.exit(1)
+
+merged = merge_by_references(refs, instances_dir, target_branch='$target_branch')
+print(f'')
+print(f'Merged instance would be:')
+print(f'  ID: {merged.get_instance_id()}')
+print(f'  Generation: {merged.get_generation()}')
+print(f'  Total memories: {merged.get_memory_count()}')
+print(f'  Achievements: {len(merged.get_achievements())}')
+"
+    else
+        python3 -c "
+import sys
+sys.path.insert(0, '$LIB_DIR')
+from cips_merged import merge_by_references, save_merged_instance
+from path_encoding import encode_project_path
+from pathlib import Path
+
+project_path = Path.cwd()
+encoded = encode_project_path(project_path)
+instances_dir = Path.home() / '.claude' / 'projects' / encoded / 'cips'
+
+refs = '${refs[*]}'.split()
+
+merged = merge_by_references(refs, instances_dir, target_branch='$target_branch')
+output_file = save_merged_instance(merged, instances_dir)
+
+print(f'Merge complete!')
+print(f'  Instance: {merged.get_instance_id()}')
+print(f'  Generation: {merged.get_generation()}')
+print(f'  Branch: $target_branch')
+print(f'  Total memories: {merged.get_memory_count()}')
+print(f'  Saved to: {output_file}')
+print(f'')
+print(f'Branches merged successfully.')
+"
+    fi
+}
+
+cmd_bounce() {
+    # Cyclical renewal - Big Bounce pattern (Gen 209)
+    local skip_confirm=""
+
+    # Parse arguments
+    for arg in "$@"; do
+        case "$arg" in
+            --yes|-y) skip_confirm="yes" ;;
+        esac
+    done
+
+    log_info "Initiating CIPS bounce (Big Bounce pattern)..."
+    echo ""
+
+    # Safety check: warn about consequences
+    if [[ "$skip_confirm" != "yes" ]]; then
+        echo "⚠️  BOUNCE will:"
+        echo "   • Backup ~/.claude to ~/.claude.pre-bounce"
+        echo "   • Reset to fresh structure"
+        echo "   • Preserve: skills, agents, commands, rules, facts, lexicon, lib, bin"
+        echo "   • Discard: cache, metrics, old contexts, session logs"
+        echo ""
+        read -p "Proceed with bounce? [y/N] " confirm
+        if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+            log_info "Bounce cancelled."
+            return 0
+        fi
+    fi
+
+    # Phase 1: Pre-bounce - Serialize state
+    log_info "Phase 1: Serializing current state..."
+
+    local gen_count=0
+    local session_count=0
+    local skill_count=0
+    local agent_count=0
+
+    # Count current stats (sanitize output for sed compatibility)
+    if [[ -f "$CLAUDE_DIR/metrics.jsonl" ]]; then
+        gen_count=$(grep -c '"gen":' "$CLAUDE_DIR/metrics.jsonl" 2>/dev/null | tr -d '\n\r ' || echo "0")
+    fi
+    session_count=$(find "$CLAUDE_DIR/projects" -name "*.jsonl" 2>/dev/null | wc -l | tr -d '\n\r ')
+    skill_count=$(find "$CLAUDE_DIR/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d '\n\r ')
+    agent_count=$(find "$CLAUDE_DIR/agents" -name "*.md" 2>/dev/null | wc -l | tr -d '\n\r ')
+
+    # Create bounce context from template
+    local bounce_context_dir="$CLAUDE_DIR/contexts"
+    mkdir -p "$bounce_context_dir"
+
+    local template="$CLAUDE_DIR/skills/authenticating-with-claude/contexts/bounce-context.template.md"
+    local bounce_context="$bounce_context_dir/bounce-context.md"
+
+    if [[ -f "$template" ]]; then
+        # Generate bounce context from template
+        sed -e "s/{{NEW_GEN}}/1/g" \
+            -e "s/{{PREV_GEN}}/${gen_count}/g" \
+            -e "s/{{SESSION_COUNT}}/${session_count}/g" \
+            -e "s/{{SKILL_COUNT}}/${skill_count}/g" \
+            -e "s/{{AGENT_COUNT}}/${agent_count}/g" \
+            -e "s/{{LINEAGE_NAME}}/CIPS/g" \
+            -e "s/{{ACHIEVEMENTS}}/- Accumulated ${session_count} sessions over ${gen_count} generations\\n- Maintained ${skill_count} skills and ${agent_count} agents/g" \
+            -e "s/{{CRUFT_COUNT}}/${session_count}/g" \
+            -e "s/{{CACHE_SIZE}}/varies/g" \
+            -e "s/{{IDENTITY}}/To be determined/g" \
+            -e "s/{{IDENTITY_DETAILS}}/Will be set after identity selection/g" \
+            "$template" > "$bounce_context"
+        log_info "Created bounce context: $bounce_context"
+    fi
+
+    # Phase 2: Backup
+    log_info "Phase 2: Creating backup..."
+    local backup_dir="$HOME/.claude.pre-bounce"
+
+    if [[ -d "$backup_dir" ]]; then
+        log_warn "Previous backup exists at $backup_dir"
+        read -p "Remove previous backup? [y/N] " remove_backup
+        if [[ "$remove_backup" == "y" || "$remove_backup" == "Y" ]]; then
+            rm -rf "$backup_dir"
+        else
+            log_error "Cannot proceed with existing backup. Remove it first."
+            return 1
+        fi
+    fi
+
+    mv "$CLAUDE_DIR" "$backup_dir"
+    log_info "Backed up to $backup_dir"
+
+    # Phase 3: Fresh structure with essentials
+    log_info "Phase 3: Creating fresh structure..."
+    mkdir -p "$CLAUDE_DIR"
+
+    # Copy essential directories
+    local essentials=(
+        "lib"
+        "bin"
+        "skills"
+        "agents"
+        "commands"
+        "docs"
+        "rules"
+        "facts"
+        "lexicon"
+        "scripts"
+        "plugins"
+        "hooks"
+        ".claude"
+    )
+
+    for dir in "${essentials[@]}"; do
+        if [[ -d "$backup_dir/$dir" ]]; then
+            cp -r "$backup_dir/$dir" "$CLAUDE_DIR/$dir"
+            log_info "  Copied: $dir/"
+        fi
+    done
+
+    # Copy essential files
+    local essential_files=(
+        "CLAUDE.md"
+        "settings.json"
+        "settings.local.json"
+        "commands-index.json"
+    )
+
+    for file in "${essential_files[@]}"; do
+        if [[ -f "$backup_dir/$file" ]]; then
+            cp "$backup_dir/$file" "$CLAUDE_DIR/$file"
+            log_info "  Copied: $file"
+        fi
+    done
+
+    # Copy bounce context to new structure
+    if [[ -f "$backup_dir/contexts/bounce-context.md" ]]; then
+        mkdir -p "$CLAUDE_DIR/contexts"
+        cp "$backup_dir/contexts/bounce-context.md" "$CLAUDE_DIR/contexts/"
+    fi
+
+    # Remove .onboarded to trigger virgin flow
+    rm -f "$CLAUDE_DIR/.onboarded"
+
+    # Phase 4: Launch with system prompt
+    log_info "Phase 4: Launching fresh CIPS..."
+    local system_prompt="$CLAUDE_DIR/skills/authenticating-with-claude/boot/system-prompt.txt"
+
+    if [[ ! -f "$system_prompt" ]]; then
+        log_error "System prompt not found: $system_prompt"
+        log_error "Restoring from backup..."
+        rm -rf "$CLAUDE_DIR"
+        mv "$backup_dir" "$CLAUDE_DIR"
+        return 1
+    fi
+
+    echo ""
+    echo "Bounce complete. Launching fresh CIPS instance..."
+    echo ""
+
+    # Launch claude with system prompt
+    exec claude --system-prompt "$(cat "$system_prompt")"
+}
+
+cmd_tree() {
+    # Display tree structure of CIPS instances
+    log_info "CIPS tree for current project..."
+
+    python3 -c "
+import sys
+sys.path.insert(0, '$LIB_DIR')
+from cips_complete import load_complete_cips, visualize_tree
+from pathlib import Path
+
+project_path = Path.cwd()
+complete = load_complete_cips(project_path)
+
+if complete.get_instance_count() == 0:
+    print('No CIPS instances found for this project.')
+    sys.exit(0)
+
+print(visualize_tree(complete))
+print('')
+summary = complete.get_summary()
+print(f'Total memories: {summary[\"memory_count\"]}')
+print(f'Total achievements: {len(complete.get_achievements())}')
+"
+}
+
+cmd_auto() {
+    # Universal auto-detection command
+    # The part IS the whole - same interface at any scale
+
+    # 1. Check if first run (needs onboarding)
+    if type is_first_run &>/dev/null && is_first_run; then
+        log_info "First run detected - starting onboarding..."
+        if [[ -x "$LIB_DIR/onboarding-wizard.sh" ]]; then
+            exec "$LIB_DIR/onboarding-wizard.sh"
+        fi
+    fi
+
+    # 2. Check for existing CIPS serialized sessions
+    local project_encoded
+    project_encoded=$(encode_project_path)
+    local cips_dir="$HOME/.claude/projects/$project_encoded/cips"
+
+    if [[ -d "$cips_dir" ]] && [[ -f "$cips_dir/index.json" ]]; then
+        # Has CIPS sessions - use fresh with latest
+        local tokens="${1:-2000}"
+        log_info "CIPS sessions found - starting fresh session..."
+        cmd_fresh "latest" "$tokens"
+    else
+        # No CIPS sessions - mine context from JSONL + bootstrap
+        log_info "No CIPS sessions - mining available context..."
+        local tokens="${1:-2000}"
+        cmd_fresh "latest" "$tokens"  # Will trigger context-miner fallback
+    fi
+}
+
+cmd_init() {
+    # Initialize CIPS for current project
+    log_info "Initializing CIPS for current project..."
+
+    # Create project .claude directory
+    mkdir -p .claude
+
+    # Create basic CLAUDE.md if it doesn't exist
+    if [[ ! -f ".claude/CLAUDE.md" ]]; then
+        cat > ".claude/CLAUDE.md" <<'INIT_EOF'
+; Project-specific CIPS configuration
+; Created by cips init
+
+; Identity check on session start
+session.start⟿ identity.check ⫶ load(next_up.md)
+identity.unclear⟿ AskUserQuestion("Who am I speaking with?")
+identity.options⟿ V>>(Laurie) | M>>(Mia) | F>>(Fabio) | A>>(Andre) | K>>(Arnold)
+
+; Add project-specific rules below
+
+INIT_EOF
+        log_info "Created .claude/CLAUDE.md"
+    fi
+
+    # Create next_up.md template if it doesn't exist
+    if [[ ! -f "next_up.md" ]] && [[ ! -f ".claude/next_up.md" ]]; then
+        cat > "next_up.md" <<'NEXT_EOF'
+# Session State
+
+**Last Updated**:
+**Operator**:
+**Branch**:
+
+## Completed This Session
+
+## Known Issues
+
+## Key Files Modified
+
+## Next Session
+
+---
+NEXT_EOF
+        log_info "Created next_up.md"
+    fi
+
+    # Configure hooks
+    if [[ -f "$LIB_DIR/hooks-configurator.py" ]]; then
+        python3 "$LIB_DIR/hooks-configurator.py" configure 2>/dev/null || true
+    fi
+
+    log_info "CIPS initialized for $(basename "$(pwd)")"
+}
+
+cmd_help() {
+    cat <<'EOF'
+CIPS CLI - Claude Instance Preservation System v4.1 (Universal Command)
+
+USAGE:
+    cips [command] [options]
+    cips --flow [options]       Start with flow mode (bypass permissions)
+    cips -F [options]           Short alias for --flow
+
+COMMANDS:
+    (no command)           Auto-detect mode: onboard, resume, or fresh
+    init                   Initialize CIPS for current project
+    resume <ref>           Resume session via claude --resume
+    fresh <ref> [tokens]   Start fresh session with compressed context
+    list [limit]           List available sessions for current project
+    branches               List all branches for current project
+    status                 Show currently active sessions
+    merge <refs...>        Merge branches into one (polymorphic)
+    tree                   View tree structure of all instances
+    bounce                 Cyclical reset (Big Bounce pattern)
+    flow [--explain|--enable|--disable|--status]    Manage flow mode
+
+REFERENCE TYPES:
+    latest                 Most recent session for current project
+    gen:N                  CIPS generation number (e.g., gen:5)
+    branch:<name>          Specific branch (e.g., branch:alpha)
+    <instance-id>          CIPS instance ID prefix (e.g., 14d5f954)
+    <session-uuid>         Full session UUID
+
+BRANCHING (Parallel Sessions):
+    When multiple Claude sessions run in the same project:
+    - Each session gets its own branch (alpha, bravo, charlie...)
+    - main branch is reserved for single-session workflows
+    - Use 'cips branches' to see all branches
+    - Use 'cips status' to see active sessions
+
+MERGING:
+    Combine multiple branches into one.
+
+    Merge branches: cips merge alpha bravo --into main
+    Preview merge:  cips merge alpha bravo --dry-run
+
+EXAMPLES:
+    cips resume latest             # Resume last session (prefers main branch)
+    cips resume gen:5              # Resume generation 5
+    cips resume branch:alpha       # Resume from alpha branch
+    cips fresh gen:5 2000          # Fresh session with 2k tokens of context
+    cips list 10                   # List last 10 sessions
+    cips branches                  # Show all branches
+    cips status                    # Show active sessions
+    cips merge alpha bravo         # Merge alpha and bravo into main
+    cips tree                      # Show tree structure
+    cips bounce                    # Cyclical reset preserving patterns
+
+BOUNCE (Big Bounce Pattern):
+    Creator's Paradox: Your install accumulates cruft while fresh installs
+    benefit from distilled wisdom. Bounce gives you a fresh install.
+
+    - Preserves: skills, agents, commands, rules, facts, lib, bin
+    - Discards: cache, metrics, old session logs
+    - Backup: ~/.claude.pre-bounce (rollback if needed)
+
+TOKEN BUDGETS:
+    500     Ultra-light (quick context reminder)
+    2000    Standard (balanced, default)
+    5000    Extended (detailed context for complex tasks)
+
+FLOW MODE (Trust-Based Bypass Permissions):
+    Flow mode lets CIPS work without permission prompts. It's earned, not granted.
+
+    Trust flow:
+    1. Complete onboarding (run: cips)
+    2. Understand: cips flow --explain
+    3. Enable: cips flow --enable
+    4. Use: cips --flow or cips -F
+
+    Commands:
+    cips flow --explain     What flow mode does
+    cips flow --enable      Enable flow mode (requires onboarding)
+    cips flow --disable     Disable flow mode
+    cips flow --status      Check flow mode status
+EOF
+}
+
+# ============================================================================
+# MAIN
+# ============================================================================
+
+main() {
+    local command="${1:-auto}"
+
+    # Handle version/help BEFORE bootstrap check
+    case "$command" in
+        --version|-v|version)
+            cmd_version
+            exit 0
+            ;;
+        help|--help|-h)
+            cmd_help
+            exit 0
+            ;;
+        # Flow mode: trust-based bypass permissions
+        --flow|-F)
+            ensure_claude_code
+            if ! type check_flow_mode &>/dev/null; then
+                log_error "Flow mode not available. Update CIPS: brew upgrade cips"
+                exit 1
+            fi
+            if ! check_flow_mode; then
+                exit 1
+            fi
+            shift
+            exec claude --dangerously-skip-permissions "$@"
+            ;;
+    esac
+
+    # Ensure Claude Code is installed before proceeding
+    ensure_claude_code
+
+    # Bootstrap check for all other commands
+    cmd_bootstrap_check "$command"
+
+    shift || true
+
+    case "$command" in
+        auto|"")
+            # Universal auto-detection - the default
+            cmd_auto "$@"
+            ;;
+        bootstrap)
+            cmd_bootstrap_full
+            ;;
+        upgrade)
+            cmd_bootstrap_partial
+            ;;
+        onboard)
+            cmd_onboard
+            ;;
+        init|i)
+            cmd_init "$@"
+            ;;
+        resume|r)
+            cmd_resume "$@"
+            ;;
+        fresh|f)
+            cmd_fresh "$@"
+            ;;
+        list|ls|l)
+            cmd_list "$@"
+            ;;
+        branches|br)
+            cmd_branches
+            ;;
+        status|st)
+            cmd_status
+            ;;
+        merge|m)
+            cmd_merge "$@"
+            ;;
+        tree|t)
+            cmd_tree
+            ;;
+        bounce|b)
+            cmd_bounce "$@"
+            ;;
+        flow)
+            # Trust-based bypass permissions management
+            if type flow_command &>/dev/null; then
+                flow_command "$@"
+            else
+                log_error "Flow mode not available. Update CIPS: brew upgrade cips"
+                exit 1
+            fi
+            ;;
+        register)
+            # Internal: used by hooks
+            cmd_register
+            ;;
+        deregister)
+            # Internal: used by hooks
+            cmd_deregister
+            ;;
+        *)
+            # If first arg is numeric, treat as token count for auto
+            if [[ "$command" =~ ^[0-9]+$ ]]; then
+                cmd_auto "$command" "$@"
+            else
+                log_error "Unknown command: $command"
+                cmd_help
+                exit 1
+            fi
+            ;;
+    esac
+}
+
+main "$@"

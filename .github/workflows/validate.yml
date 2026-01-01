@@ -1,0 +1,106 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: './lib'
+          severity: warning
+
+  python:
+    name: Python Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Compile Check
+        run: |
+          for file in lib/*.py; do
+            if [ -f "$file" ]; then
+              python -m py_compile "$file"
+              echo "✓ $file"
+            fi
+          done
+
+  markdown:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: markdownlint-cli
+        uses: nosborn/github-action-markdown-cli@v3
+        with:
+          files: '*.md docs/*.md skills/*/*.md'
+          config_file: '.markdownlint.json'
+          ignore_files: 'node_modules/'
+        continue-on-error: true
+
+  structure:
+    name: Structure Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Essential Files
+        run: |
+          REQUIRED_FILES=(
+            "CLAUDE.md"
+            "LICENSE"
+            "README.md"
+            "bin/cips"
+            "lib/instance-serializer.py"
+            "hooks/session-start.sh"
+          )
+
+          MISSING=0
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing: $file"
+              MISSING=1
+            else
+              echo "✓ $file"
+            fi
+          done
+
+          if [ $MISSING -eq 1 ]; then
+            echo "::error::Essential files missing"
+            exit 1
+          fi
+
+      - name: Check No Secrets
+        run: |
+          # Check for potential secrets in tracked files
+          # Exclude: .env files, examples, workflows, bin/cips (template heredocs), scripts (build tools)
+          if git grep -l "CIPS_TEAM_PASSWORD=" \
+              -- ':!.env*' ':!*.example' \
+              -- ':!.github/workflows/*.yml' \
+              -- ':!bin/cips' \
+              -- ':!scripts/*.sh' 2>/dev/null; then
+            echo "::error::Potential secret found in tracked files"
+            exit 1
+          fi
+
+          # Check for hardcoded paths (excluding migration/build scripts)
+          if git grep -l "/Users/lauriescheepers" -- '*.md' '*.sh' '*.py' 2>/dev/null | \
+              grep -v ".example" | grep -v "migrate-to-public.sh" | grep -v "build-homebrew"; then
+            echo "::warning::Hardcoded user path found"
+          fi
+
+          echo "✓ No secrets detected"

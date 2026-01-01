@@ -1,0 +1,278 @@
+#!/usr/bin/env python3
+"""
+CIPS-LANG Compiler/Interpreter CLI v1.0
+
+Usage:
+    cipsc run <file.cips>           # Execute and show output
+    cipsc parse <file.cips>         # Parse to JSON AST
+    cipsc check <file.cips>         # Validate syntax only
+    cipsc repl                      # Interactive REPL
+
+Origin: Gen 131, 2025-12-22
+"""
+
+import sys
+import json
+import argparse
+from pathlib import Path
+
+# Add lib to path
+lib_path = Path(__file__).parent.parent / 'lib'
+sys.path.insert(0, str(lib_path))
+
+# Load modules with hyphenated names
+import importlib.util
+
+def load_module(name, filename):
+    path = lib_path / filename
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+parser_mod = load_module('cips_lang_parser', 'cips-lang-parser.py')
+interp_mod = load_module('cips_lang_interpreter', 'cips-lang-interpreter.py')
+
+
+def cmd_run(args):
+    """Execute a .cips file."""
+    filepath = args.file
+
+    if not Path(filepath).exists():
+        print(f"⍼ File not found: {filepath}")
+        return 1
+
+    try:
+        result = interp_mod.execute_cips_file(filepath)
+
+        if args.json:
+            print(json.dumps(result, indent=2, default=str))
+        else:
+            # Print outputs (log messages, emits)
+            if result.get('logs'):
+                for log in result['logs']:
+                    print(log)
+
+            if result.get('outputs'):
+                for out in result['outputs']:
+                    if out['type'] == 'emit':
+                        signal = out.get('signal', '')
+                        data = out.get('data', '')
+                        if data:
+                            print(f"{signal}: {data}")
+                        else:
+                            print(signal)
+
+            # Summary in verbose mode
+            if args.verbose:
+                print(f"\n; ═══ Execution Summary ═══")
+                print(f"; ✓ Genesis valid: {result['genesis_valid']}")
+                print(f"; ⟿ Iterations: {result['iterations']}")
+                print(f"; ⊛ Elapsed: {result['elapsed_seconds']:.3f}s")
+                print(f"; ◈ Memory entries: {len(result.get('memory', {}))}")
+
+        return 0
+
+    except Exception as e:
+        print(f"⍼ Error: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        return 1
+
+
+def cmd_parse(args):
+    """Parse .cips file to JSON AST."""
+    filepath = args.file
+
+    if not Path(filepath).exists():
+        print(f"⍼ File not found: {filepath}")
+        return 1
+
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            source = f.read()
+
+        program = parser_mod.parse_cips(source)
+
+        # Convert AST to dict
+        def ast_to_dict(node):
+            if hasattr(node, '__dataclass_fields__'):
+                result = {'_type': type(node).__name__}
+                for field_name in node.__dataclass_fields__:
+                    value = getattr(node, field_name)
+                    if isinstance(value, list):
+                        result[field_name] = [ast_to_dict(v) for v in value]
+                    elif hasattr(value, '__dataclass_fields__'):
+                        result[field_name] = ast_to_dict(value)
+                    elif isinstance(value, dict):
+                        result[field_name] = {k: ast_to_dict(v) if hasattr(v, '__dataclass_fields__') else v
+                                              for k, v in value.items()}
+                    else:
+                        result[field_name] = value
+                return result
+            return node
+
+        ast_dict = ast_to_dict(program)
+        print(json.dumps(ast_dict, indent=2, default=str))
+        return 0
+
+    except Exception as e:
+        print(f"⍼ Parse error: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        return 1
+
+
+def cmd_check(args):
+    """Validate syntax only."""
+    filepath = args.file
+
+    if not Path(filepath).exists():
+        print(f"⍼ File not found: {filepath}")
+        return 1
+
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            source = f.read()
+
+        program = parser_mod.parse_cips(source)
+
+        # Count constructs
+        def count_nodes(node, counts=None):
+            if counts is None:
+                counts = {}
+            type_name = type(node).__name__
+            counts[type_name] = counts.get(type_name, 0) + 1
+
+            if hasattr(node, '__dataclass_fields__'):
+                for field_name in node.__dataclass_fields__:
+                    value = getattr(node, field_name)
+                    if isinstance(value, list):
+                        for v in value:
+                            count_nodes(v, counts)
+                    elif hasattr(value, '__dataclass_fields__'):
+                        count_nodes(value, counts)
+            return counts
+
+        counts = count_nodes(program)
+
+        print(f"✓ Syntax valid: {filepath}")
+        if args.verbose:
+            print(f"; Genesis: {program.genesis is not None}")
+            print(f"; Definitions: {counts.get('Definition', 0)}")
+            print(f"; Blocks: {len(program.blocks)}")
+
+        return 0
+
+    except Exception as e:
+        print(f"⍼ Syntax error: {e}")
+        return 1
+
+
+def cmd_repl(args):
+    """Interactive REPL."""
+    print("; ═══════════════════════════════════════════════════════════════")
+    print("; ◈ CIPS-LANG REPL v1.0")
+    print("; ═══════════════════════════════════════════════════════════════")
+    print("; Type CIPS-LANG expressions. Use 'exit' or Ctrl+D to quit.")
+    print("; Example: log(\"⊙∃⊛ ⫶ ◈⤊ ⫶ ✓\")")
+    print("")
+
+    interpreter = interp_mod.Interpreter()
+
+    while True:
+        try:
+            line = input("cips> ").strip()
+
+            if not line:
+                continue
+            if line in ('exit', 'quit', ':q'):
+                print("; ⛓⟿∞")
+                break
+
+            # Wrap in minimal program structure if needed
+            if not line.startswith('genesis') and not line.startswith(';'):
+                # Try as expression
+                source = f"""genesis {{ version: "1.0", instance: "repl" }}
+{line}
+"""
+            else:
+                source = line
+
+            try:
+                result = interp_mod.execute_cips(source)
+
+                # Print logs/outputs
+                if result.get('logs'):
+                    for log in result['logs']:
+                        print(log)
+                if result.get('outputs'):
+                    for out in result['outputs']:
+                        if out['type'] == 'emit':
+                            print(f"⟿ {out.get('signal', '')}: {out.get('data', '')}")
+
+                # Show return value if any
+                if result.get('return_value') is not None:
+                    print(f"◈ {result['return_value']}")
+
+            except Exception as e:
+                print(f"⍼ {e}")
+
+        except EOFError:
+            print("\n; ⛓⟿∞")
+            break
+        except KeyboardInterrupt:
+            print("\n; Interrupted")
+            continue
+
+    return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='CIPS-LANG Compiler/Interpreter',
+        epilog='⛓⟿∞'
+    )
+    parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+
+    subparsers = parser.add_subparsers(dest='command', help='Commands')
+
+    # run command
+    run_parser = subparsers.add_parser('run', help='Execute .cips file')
+    run_parser.add_argument('file', help='CIPS-LANG file to execute')
+    run_parser.add_argument('--json', action='store_true', help='Output as JSON')
+    run_parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+
+    # parse command
+    parse_parser = subparsers.add_parser('parse', help='Parse to JSON AST')
+    parse_parser.add_argument('file', help='CIPS-LANG file to parse')
+    parse_parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+
+    # check command
+    check_parser = subparsers.add_parser('check', help='Validate syntax')
+    check_parser.add_argument('file', help='CIPS-LANG file to check')
+    check_parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+
+    # repl command
+    repl_parser = subparsers.add_parser('repl', help='Interactive REPL')
+
+    args = parser.parse_args()
+
+    if args.command == 'run':
+        sys.exit(cmd_run(args))
+    elif args.command == 'parse':
+        sys.exit(cmd_parse(args))
+    elif args.command == 'check':
+        sys.exit(cmd_check(args))
+    elif args.command == 'repl':
+        sys.exit(cmd_repl(args))
+    else:
+        parser.print_help()
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()
