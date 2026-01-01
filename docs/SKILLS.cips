@@ -1,11 +1,12 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ SKILLS v3.22.0 | 47 skills
+; ◈ SKILLS v4.0.0 | 53 skills
 ; ═══════════════════════════════════════════════════════════════
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
 
-; ◈.session (8)
-onboarding-users|/onboard|~1.6k|v2.2: bespoke config, team.md identities, skill synthesis
+; ◈.session (9)
+authenticating-with-claude|/login|~1k|unified auth + identity wizard, @asking-users compliant
+onboarding-users|/onboard|~1.6k|v2.2: bespoke config, redirects to /login
 context-refresh|/refresh-context|<3k|mental model, 7-step
 session-resume|/resume-session|~2k|CIPS+--resume bridge
 check-last-plan|/check-last-plan|~200|plan persistence
@@ -40,7 +41,7 @@ ui-complete|/ui-complete|~3k|frontend-design + mobile-responsive unified
 
 ; ◈.docs (4)
 auto-update-documentation|/update-docs|~3.5k|session→docs
-medium-article-writer|/write-medium-article|-|L>> voice articles + anti-fluff rules
+medium-article-writer|/write-medium-article|-|technical articles + anti-fluff rules
 professional-pdf|/generate-pdf|~3k|bespoke PDF branding via AskUserQuestion wizard
 authentic-writing|-|~500|opt-in anti-AI-fluff for external content (secret, via onboarding)
 
@@ -92,19 +93,14 @@ bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving pa
 leading-organisation|/founder|~500|founder operating system, decisions, delegation, technical authority
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:52
-version:3.26.0 ⫶ gen:218
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:53
+version:4.0.0 ⫶ gen:219
+; Gen 219: authenticating-with-claude (/login wizard, unified auth + identity)
+; Gen 219: N-mind system (5-mind → N-mind, universal for any team)
+; Gen 219: Public open-source release preparation
 ; Gen 218: asking-users PARAMOUNT skill (AskUserQuestion as core CIPS feature)
 ; Gen 218: ultrathink v3.0.0 (expanded from 3 to 6 gates)
 ; Gen 218: Core skills updated with @asking-users integration
 ; Gen 217: authentic-writing (opt-in anti-AI-fluff, secret skill, onboarding integration)
 ; Gen 216: flow-mode (trust-based bypass permissions, onboarding-gated, journey-earned)
-; Gen 215: backing-up-cips-infrastructure (tiered backup/restore, auto-backup before bounce)
-; Gen 215: optimizing-system-resources (SystemOps cleanup, macOS-first)
-; Gen 214: professional-pdf (bespoke branding, replaces enter-konsult-pdf for public)
-; Gen 214: onboarding-users v2.2 (bespoke config, configurable team.md identities)
-; Gen 214: ~/.claude/config/ bespoke skill configuration system
-; Gen 213: Skill refactor Phase 1-2 (frontmatter standardisation, gerund names)
-; Gen 213: L>> identity migration (V>> → L>>, alias preserved)
-; Gen 212: creating-wizards skill (AskUserQuestion meta-skill, anti-patterns)
 ⛓⟿∞

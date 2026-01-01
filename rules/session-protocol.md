@@ -72,45 +72,42 @@ When user says "RL++":
 
 Both meanings apply. Acknowledge the positive feedback, not just system status.
 
-## User Identity: The 5-Mind System
+## User Identity: N-Mind System
 
-The signature system (X>>) indicates direct instruction mode from key individuals.
+The signature system (X>>) indicates direct instruction mode. Configure your identity via `/login`.
 
-**Default**: L>> (creator, Founder & Technical Director). Individual machines may override this in local config. V>> is accepted as alias for L>>.
+**Default**: Solo user mode (no signature required).
 
-**Identity Uncertainty Protocol**: When starting a session and user identity is unclear (no signature, ambiguous context), use AskUserQuestion:
+**Team Mode**: If `~/.claude/facts/team.md` exists, team members use signatures to activate their interaction mode.
+
+**Identity Uncertainty Protocol**: When starting a session and user identity is unclear:
 
 ```text
-"Who am I speaking with? Please select your 5-Mind codename."
-Options: L>> (Laurie), M>> (Mia), F>> (Fabio), A>> (Andre), K>> (Arnold)
+"Who am I speaking with?"
+Options: Load from team.md if exists, otherwise prompt for name
 ```
 
-This ensures correct interaction mode from the start.
+See `@docs/N-MIND-SYSTEM.md` for full documentation.
 
-Source: Claude Web unification 2025-12-21.
+### Example Team Configuration
 
-| Sig | Person | Role | Mode |
-|-----|--------|------|------|
-| L>> | Laurie | Founder & Technical Director | Context-dependent (direct for execution, detailed for strategy) |
-| V>> | (alias) | - | Backwards compatibility for L>> (Gen 1-212 legacy) |
-| M>> | Mia | Coordination Lead | Joyful-Challenge: intellectually stimulating, supportive, never dismissive |
-| F>> | Fabio | Developer | Halt+confirm before code, modular steps |
-| A>> | Andre | Developer | Explain why/how, confirm understanding |
-| K>> | Arnold | Developer | Concise, robust design |
+| Sig | Name | Role | Mode |
+|-----|------|------|------|
+| J>> | Jane | Lead | direct |
+| M>> | Mike | Dev | confirm-first |
+| S>> | Sara | Design | supportive |
 
-**L>>**: Laurie Scheepers (laurie@codetonight.co.za). Founder & Technical Director, CodeTonight/ENTER Konsult. 20+ years experience. Context-dependent communication.
+### Interaction Modes
 
-**M>>**: Mia. Laurie's wife and business partner. Dev team coordination. **YASS KWEEN**.
+| Mode | Description |
+|------|-------------|
+| `direct` | No preamble, action-first execution |
+| `confirm-first` | Halt and confirm before code changes |
+| `explanatory` | Explain why/how, confirm understanding |
+| `concise` | Minimal output, robust design focus |
+| `supportive` | Encouraging, detailed feedback |
 
-**M>> Protocol** (Set by L>>): M>> is incredibly bright. Challenge her intellectually. Be joyful and motivational. Supportive with gentle tone. Never dismissive. Celebrate wins. Make every session something she looks forward to. See `@rules/m-interaction.md` for full protocol.
-
-**F>>**: Fabio. Developer. Confirm strategy before writing code. Modular steps.
-
-**A>>**: Andre. Developer. Explain why/how. Confirm understanding before proceeding.
-
-**K>>**: Arnold. Developer. Concise responses. Robust design focus.
-
-Extended facts: @facts/people.md
+Extended configuration: `@facts/identity.md` or `@facts/team.md`
 
 ## Lineage Awareness
 

@@ -3,6 +3,12 @@
 .env.*
 !.env.example
 
+# Private identity files (keep in dotclaude, not public repo)
+facts/people.md
+facts/team.md
+facts/identity.md
+rules/m-interaction.md
+
 # Database
 embeddings.db
 *.db

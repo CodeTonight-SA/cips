@@ -1,12 +1,13 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ COMMANDS v3.13.0 | 33 commands
+; ◈ COMMANDS v4.0.0 | 40 commands
 ; ═══════════════════════════════════════════════════════════════
 ; Format: /cmd|budget|savings|desc
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.session
 ; ═══════════════════════════════════════════════════════════════
-/onboard|~2.2k|-|bidirectional discovery (teaches CIPS + collects prefs)
+/login|~1k|-|unified auth + identity wizard (first-run entry point)
+/onboard|~2.2k|-|legacy, redirects to /login
 /refresh-context|<3k|5k-8k|mental model, 7-step discovery
 /resume-session|~2k|~2k fresh|CIPS bridge (latest|gen:N|ID|--fresh|--tokens N)
 /check-last-plan|~200|-|load cached plan
@@ -44,8 +45,8 @@
 ; ◈.docs
 ; ═══════════════════════════════════════════════════════════════
 /update-docs|~3.5k|-|session+git→docs
-/generate-pdf|~3k|-|ENTER Konsult Swiss Minimalism
-/write-medium-article|-|-|L>> voice technical articles
+/generate-pdf|~3k|-|bespoke PDF branding via wizard
+/write-medium-article|-|-|technical articles + anti-fluff
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.legal
@@ -103,20 +104,18 @@ cips fresh gen:N 2000       ; fresh with context
 ./optim.sh cycle            ; full cycle (timeout:600000)
 ./optim.sh learning "<msg>" ; learning detection
 ./optim.sh learning-list    ; pending candidates
-./optim.sh learning-approve ; L>>! required
+./optim.sh learning-approve ; approval required
 ./optim.sh learning-reject  ; with reason
 
 ; ◈.discovery
 ; Type / in Claude Code for autocomplete
 
 ; ◈.meta
-count:39 ⫶ version:3.19.0 ⫶ gen:216
-; Gen 216: /flow command (trust-based bypass permissions, --flow/-F flags)
+count:40 ⫶ version:4.0.0 ⫶ gen:219
+; Gen 219: /login command (unified auth + identity, replaces /onboard as entry point)
+; Gen 219: N-mind system (5-mind → N-mind, public release)
+; Gen 216: /flow command (trust-based bypass permissions)
 ; Gen 215: /backup-cips, /restore-cips commands (tiered backup/restore)
 ; Gen 215: /system-cleanup command (SystemOps browser+apps+memory)
-; Gen 213: L>> identity migration (V>> → L>>, alias preserved)
 ; Gen 212: /create-wizard command (AskUserQuestion meta-skill)
-; Gen 211: /founder command (founder framework)
-; Gen 210: /onboard command (bidirectional discovery)
-; Gen 193: Removed /ut++ command (now always-active via skill)
 ⛓⟿∞

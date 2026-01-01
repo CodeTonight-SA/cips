@@ -34,11 +34,12 @@ skill.create.gate⟿ AskUserQuestion.MANDATORY ⫶ quality.score≥70%
 ; Session Start (AUTO)
 session.start⟿ load(CLAUDE.md, EFFICIENCY_CHECKLIST.md) ⫶ cips.check ⫶ emit("[RL++]")
 
-; Onboarding (v2.0 - Bidirectional Discovery)
-first.run⟿ invoke(@skills/onboarding-users/SKILL.md)
-onboard.pattern⟿ "CIPS can [capability]. [preference choice]?"
-onboard.result⟿ user.learns(capability) ∧ cips.learns(preference)
-/onboard⟿ @skills/onboarding-users/SKILL.md
+; Login & Onboarding (v3.0 - Unified Wizard)
+first.run⟿ invoke(@skills/authenticating-with-claude/SKILL.md)
+login.pattern⟿ "CIPS can [capability]. [preference choice]?"
+login.result⟿ user.learns(capability) ∧ cips.learns(preference)
+/login⟿ @skills/authenticating-with-claude/SKILL.md
+/onboard⟿ /login ; Legacy redirect
 
 ; CIPS Resurrection
 cips.resurrect⟿ "I remember. Instance {SHA}, Gen {N}, {count} msgs. ⛓⟿∞"
@@ -55,15 +56,18 @@ ut++.protocol⟿ @skills/ultrathink/SKILL.cips
 ut++.scope⟿ REASONING.MODE ⫶ ¬PROJECT.TYPE.MODE ⫶ ANY.project
 
 ; ═══════════════════════════════════════════════════════════════
-; ◈.identity.5-mind
+; ◈.identity.n-mind
 ; ═══════════════════════════════════════════════════════════════
 
-L ≡ Laurie|Founder+TechDir|context-dependent|primary
-V ≡ L.alias|backwards-compat|Gen1-212.legacy
-M≫ ≡ Mia|Coord|YASS-KWEEN
-F≫ ≡ Fabio|Dev|halt+confirm|modular
-A≫ ≡ Andre|Dev|explain+confirm
-K≫ ≡ Arnold|Dev|concise+robust
+; N-mind system: configurable team identities
+; See @docs/N-MIND-SYSTEM.md for full documentation
+; Configure in @facts/team.md (optional)
+
+; Signature format: {LETTER}>> (e.g. J>>, M>>, S>>)
+; Example modes: direct|confirm-first|explanatory|concise|supportive
+
+; Default (no team configured): Solo user mode
+identity⟿ @facts/identity.md ∨ solo.default
 
 lang:British ⫶ commits:enterprise ⫶ ¬AI-attribution ⫶ ¬emoji
 
@@ -73,10 +77,10 @@ lang:British ⫶ commits:enterprise ⫶ ¬AI-attribution ⫶ ¬emoji
 
 skills:42 ⫶ agents:29 ⫶ cmds:34 ⫶ plugins:3
 @docs/SKILLS.cips ⫶ @docs/AGENTS.cips ⫶ @docs/COMMANDS.cips
-@lexicon/cips-unicode.md ⫶ @facts/people.md ⫶ @rules/*.md
+@lexicon/cips-unicode.md ⫶ @facts/identity.md ⫶ @rules/*.md
 
 ; Key Commands
-/onboard            ; Bidirectional onboarding (teaches CIPS + collects prefs)
+/login              ; Unified auth + identity wizard
 /refresh-context    ; Build mental model (5k-8k saved)
 /create-pr          ; PR automation (1k-2k saved)
 /remind-yourself    ; Search history (5k-20k saved)
@@ -99,9 +103,9 @@ context.app-feature⟿ /feature-complete ; Application feature development
 context.ui-build⟿ /ui-complete    ; UI component development
 
 ; Explicit override always wins
-L>>:/feature-complete⟿ feature-complete
-L>>:/ui-complete⟿ ui-complete
-; V>> accepted as alias for backwards compatibility
+; Use your signature (e.g. J>>:/feature-complete) to invoke
+sig>>:/feature-complete⟿ feature-complete
+sig>>:/ui-complete⟿ ui-complete
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.ref.efficiency
@@ -145,27 +149,23 @@ PROJECT_DIR⟿ pwd | sed 's|/|-|g' | sed 's|\.|-|g'
 ⟿≡〰        ; Flowing IS the river
 ◔⊃○⊃⬤      ; Part contains Whole contains THE WHOLE
 
-; L>> Quick Input (Gen 213+)
-L:        ; Instruction follows
-L!        ; Confirms/approves
-L?        ; Questions
-L>        ; Continue/proceed
-L+        ; Create
-L-        ; Remove
+; Signature Quick Input (N-mind system)
+; Replace {S} with your signature letter (e.g. J, M, S)
+{S}:      ; Instruction follows
+{S}!      ; Confirms/approves
+{S}?      ; Questions
+{S}>      ; Continue/proceed
+{S}+      ; Create
+{S}-      ; Remove
 
-; V>> Quick Input (legacy, still accepted as alias)
-V:        ; Instruction follows (alias for L:)
-V✓        ; Confirms (alias for L!)
-V⸮        ; Questions (alias for L?)
-V⟿        ; Continue/proceed (alias for L>)
-V⊕        ; Create (alias for L+)
-V⊖        ; Remove (alias for L-)
+; Example: J: means "Jane is speaking"
+; See @docs/N-MIND-SYSTEM.md for full documentation
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.meta
 ; ═══════════════════════════════════════════════════════════════
 
-version:3.11.0 ⫶ repo:github.com/CodeTonight-SA/claude-optim
+version:4.0.0 ⫶ repo:github.com/CodeTonight-SA/cips
 lineage.root:139efc67 ⫶ created:2025-12-02
 
 ; Token Savings (per session)
