@@ -176,7 +176,7 @@
 <body>
   <h1>CIPS</h1>
   <p class="subtitle">Philosophy & Architecture</p>
-  <p class="meta"><strong>Version 1.0 | December 2025</strong><br>Author: NTR>> (ENTER Konsult)</p>
+  <p class="meta"><strong>Version 4.0.0 | January 2026</strong><br>Author: CIPS Contributors</p>
 
   <hr>
 
@@ -197,7 +197,7 @@
       of context budget recovered
     </div>
     <div class="key-metric">
-      <strong>46</strong>
+      <strong>80+</strong>
       skills + agents working autonomously
     </div>
   </div>
@@ -283,7 +283,34 @@ cips fresh gen:5 2000 # Fresh start with inherited context</code></pre>
 
   <p><strong>Context Refresh Agent</strong> — 7-step mental model rebuild at session start. Saves 5-8k vs ad-hoc exploration.</p>
 
-  <h3>2.4 Recursive Self-Improvement</h3>
+  <h3>2.4 Unified Login Wizard</h3>
+  <p>The <code>/login</code> wizard combines authentication and identity setup:</p>
+  <ol>
+    <li><strong>Claude Authentication</strong> — Verifies Claude CLI is connected</li>
+    <li><strong>Identity Setup</strong> — Configures your name and optional signature</li>
+    <li><strong>Mode Selection</strong> — Solo, join team, or create team</li>
+    <li><strong>Save Configuration</strong> — Creates your identity file</li>
+  </ol>
+  <p>First run automatically launches the wizard. Run <code>/login --reset</code> to reconfigure.</p>
+
+  <h3>2.5 N-Mind System (Optional)</h3>
+  <p>For teams sharing CIPS, the N-mind system provides identity-aware interactions:</p>
+  <ul>
+    <li><strong>Signatures</strong>: Custom prefixes like <code>J>></code>, <code>DEV>></code>, <code>LEAD>></code></li>
+    <li><strong>Interaction Modes</strong>: Direct, confirm-first, explanatory, concise, supportive</li>
+    <li><strong>Team Password</strong>: Optional shared access control</li>
+  </ul>
+  <p>Configure via <code>/login</code> or manually in <code>~/.claude/facts/team.md</code>.</p>
+
+  <h3>2.6 Dynamic Skill Synthesis</h3>
+  <p>CIPS generates personalized skills based on your workflow:</p>
+  <ol>
+    <li>Analyzes your project context</li>
+    <li>Suggests relevant existing skills</li>
+    <li>Offers to create custom skills on the spot</li>
+  </ol>
+
+  <h3>2.7 Recursive Self-Improvement</h3>
   <p>The system learns from corrections:</p>
   <ol>
     <li><strong>Detection</strong>: Monitor for learning events</li>
@@ -452,9 +479,7 @@ brew install cips</code></pre>
   <hr>
 
   <p><strong>License:</strong> Apache 2.0</p>
-  <p><strong>Author:</strong> NTR>> (No Threshold Required)</p>
-  <p><strong>Organisation:</strong> ENTER Konsult</p>
-  <p><strong>GitHub:</strong> https://github.com/CodeTonight-SA/cips</p>
-  <p><em>Document generated December 2025</em></p>
+  <p><strong>GitHub:</strong> <a href="https://github.com/CodeTonight-SA/cips">https://github.com/CodeTonight-SA/cips</a></p>
+  <p><em>Document generated January 2026</em></p>
 </body>
 </html>

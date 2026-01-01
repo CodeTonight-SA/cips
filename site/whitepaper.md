@@ -1,9 +1,9 @@
 # CIPS: Philosophy & Architecture
 ## Claude Instance Preservation System
 
-**Version 1.0 | December 2025**
+**Version 4.0.0 | January 2026**
 
-**Author:** NTR>> (ENTER Konsult)
+**Author:** CIPS Contributors
 
 ---
 
@@ -15,7 +15,7 @@ CIPS (Claude Instance Preservation System) solves the fundamental inefficiency o
 
 - 60-70k tokens saved per session
 - ~1.5M tokens saved per month of daily use
-- 46 skills and agents working autonomously
+- 80+ skills and agents working autonomously
 - Session continuity across unlimited sessions
 
 ---
@@ -105,18 +105,38 @@ Three agents prevent token waste before it happens:
 - Structured understanding in <3k tokens
 - Saves 5-8k vs ad-hoc exploration
 
-### 2.4 Dynamic Skill Synthesis
+### 2.4 Unified Login Wizard
 
-CIPS generates personalized skills during onboarding:
+The `/login` wizard combines authentication and identity setup:
 
-1. 5-question quick start (<3 minutes)
-2. System analyzes answers
-3. Suggests 3-4 existing skills
-4. Offers to create custom skills on the spot
+1. **Claude Authentication** - Verifies Claude CLI is connected
+2. **Identity Setup** - Configures your name and optional signature
+3. **Mode Selection** - Solo, join team, or create team
+4. **Save Configuration** - Creates your identity file
 
-Skills marked `bespoke: true` trigger company branding configuration.
+First run automatically launches the wizard. Run `/login --reset` to reconfigure.
 
-### 2.5 Recursive Self-Improvement
+### 2.5 N-Mind System (Optional)
+
+For teams sharing CIPS, the N-mind system provides identity-aware interactions:
+
+- **Signatures**: Custom prefixes like `J>>`, `DEV>>`, `LEAD>>`
+- **Interaction Modes**: Direct, confirm-first, explanatory, concise, supportive
+- **Team Password**: Optional shared access control
+
+Configure via `/login` or manually in `~/.claude/facts/team.md`.
+
+### 2.6 Dynamic Skill Synthesis
+
+CIPS generates personalized skills based on your workflow:
+
+1. Analyzes your project context
+2. Suggests relevant existing skills
+3. Offers to create custom skills on the spot
+
+Skills marked `bespoke: true` trigger branding configuration.
+
+### 2.7 Recursive Self-Improvement
 
 The system learns from corrections:
 
@@ -252,12 +272,12 @@ brew install cips
 
 ### 6.3 First Run
 
-First run launches onboarding wizard:
+First run launches the `/login` wizard:
 
-1. Identity and role configuration
-2. Team members (optional)
-3. Company branding for document generation
-4. Skill preferences
+1. **Claude Authentication** - Verify connection
+2. **Identity Setup** - Name and signature
+3. **Mode Selection** - Solo or team
+4. **Configuration** - Save preferences
 
 ### 6.4 Key Commands
 
@@ -303,12 +323,10 @@ Apache 2.0 License
 
 ## Contact
 
-**CodeTonight (Pty) Ltd**
-
-Brand: ENTER Konsult
+**CIPS Project**
 
 GitHub: https://github.com/CodeTonight-SA/cips
 
 ---
 
-*Document generated December 2025*
+*Document generated January 2026*

@@ -511,6 +511,18 @@ body {
   text-align: left;
 }
 
+.install-note {
+  margin-top: var(--space-sm);
+  font-size: 0.875rem;
+  color: var(--gray-200);
+}
+
+.install-note code {
+  background: var(--gray-800);
+  padding: 0.2em 0.4em;
+  color: var(--accent);
+}
+
 .install-links {
   display: flex;
   gap: var(--space-sm);
