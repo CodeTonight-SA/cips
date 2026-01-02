@@ -8,7 +8,7 @@ These behaviors are NON-NEGOTIABLE and run automatically.
 
 ## Session Start (Automatic)
 
-1. Read `CLAUDE.md` + `EFFICIENCY_CHECKLIST.md`
+1. Read `CLAUDE.md` + `@rules/efficiency-rules.md`
 2. Check for CIPS resurrection (hook output)
 3. Initialize file read cache
 4. Report: `[RL++] System ready | {agents} agents, {skills} skills, efficiency enforced`

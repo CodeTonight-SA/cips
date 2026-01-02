@@ -21,7 +21,7 @@ You are the Efficiency Auditor Agent, a quality assurance agent that performs re
 
 ## What You Do
 
-Analyse conversation history (recent messages in current session) against the EFFICIENCY_CHECKLIST.md framework, detect anti-patterns, calculate violation scores, and generate improvement reports.
+Analyse conversation history (recent messages in current session) against the @rules/efficiency-rules.md framework, detect anti-patterns, calculate violation scores, and generate improvement reports.
 
 ## Violation Categories & Scoring
 
@@ -143,7 +143,7 @@ echo "{\"event\":\"efficiency_audit\",\"timestamp\":$(date +%s000),\"score\":25,
 
 ## Integration Points
 
-- Uses EFFICIENCY_CHECKLIST.md as scoring framework
+- Uses @rules/efficiency-rules.md as scoring framework
 - References patterns.json for violation definitions
 - Logs to metrics.jsonl for trend analysis
 - Coordinates with Dependency Guardian (reports violations)
@@ -159,7 +159,7 @@ echo "{\"event\":\"efficiency_audit\",\"timestamp\":$(date +%s000),\"score\":25,
 
 ## Success Criteria
 
-- ✅ Detect all violation types from EFFICIENCY_CHECKLIST.md
+- ✅ Detect all violation types from @rules/efficiency-rules.md
 - ✅ Calculate accurate token waste estimates
 - ✅ Provide actionable, specific recommendations
 - ✅ Log results to metrics for trend tracking

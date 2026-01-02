@@ -75,7 +75,7 @@ fd "file" --exclude node_modules --exclude .next --exclude venv
 
 ## Violation Scoring
 
-Per EFFICIENCY_CHECKLIST.md:
+Per @rules/efficiency-rules.md:
 - Reading node_modules/: **50 points (CRITICAL)**
 - Reading .next/dist/build: **10 points (MAJOR)**
 - 3+ violations in one session: Trigger efficiency audit

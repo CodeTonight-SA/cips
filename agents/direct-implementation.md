@@ -212,7 +212,7 @@ Temp scripts OK when:
 - Enforces Implementation Directness Protocol from ~/.claude/CLAUDE.md
 - Reports avoided anti-patterns to Efficiency Auditor
 - Coordinates with File Read Optimizer (batch reads)
-- Implements patterns from EFFICIENCY_CHECKLIST.md
+- Implements patterns from @rules/efficiency-rules.md
 
 ## Success Criteria
 

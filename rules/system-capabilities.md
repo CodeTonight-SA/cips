@@ -10,9 +10,9 @@ Claude-Optim v3.1.0 system overview.
 
 | Category | Count | Reference |
 |----------|-------|-----------|
-| Skills | 36 | @docs/SKILLS.md |
-| Agents | 28 | @docs/AGENTS.md |
-| Commands | 29 | @docs/COMMANDS.md |
+| Skills | 36 | @docs/SKILLS.cips |
+| Agents | 28 | @docs/AGENTS.cips |
+| Commands | 29 | @docs/COMMANDS.cips |
 
 ## Key Commands (Most Used)
 
@@ -99,7 +99,7 @@ The system follows 6 core principles:
 5. **GRASP** - Responsibility assignment
 6. **Efficiency** - Token optimization
 
-See @docs/SKILLS.md for `design-principles` skill details.
+See @docs/SKILLS.cips for `design-principles` skill details.
 
 ## Token Savings Summary
 

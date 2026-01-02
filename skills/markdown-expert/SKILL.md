@@ -230,7 +230,7 @@ Before submitting any markdown:
 ## Integration
 
 - Works with `.markdownlint.json` configuration
-- Complements `EFFICIENCY_CHECKLIST.md` (prevents re-work)
+- Complements `@rules/efficiency-rules.md` (prevents re-work)
 - Can be enforced via pre-commit hooks
 - Integrates with markdown-expert agent (auto-fix)
 

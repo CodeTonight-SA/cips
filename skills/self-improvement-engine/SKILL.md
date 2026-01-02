@@ -44,7 +44,7 @@ Add to CLAUDE.md → Write Medium Article → [REPEAT with meta-improvements]
 | `/auto-improve` | Run full cycle (detect → generate → optimize) |
 | `/detect-inefficiency` | Scan history for patterns |
 | `/generate-skill <pattern>` | Create skill from detected pattern |
-| `/audit-efficiency` | Score session against EFFICIENCY_CHECKLIST.md |
+| `/audit-efficiency` | Score session against @rules/efficiency-rules.md |
 
 ---
 
@@ -59,7 +59,7 @@ Add to CLAUDE.md → Write Medium Article → [REPEAT with meta-improvements]
 | **Command Creation** | Register slash commands for new skills |
 | **CLAUDE.md Integration** | Auto-update Skills System section |
 | **Documentation Pipeline** | Trigger Medium article generation |
-| **Efficiency Audit** | Real-time scoring using EFFICIENCY_CHECKLIST.md |
+| **Efficiency Audit** | Real-time scoring using @rules/efficiency-rules.md |
 
 ---
 
@@ -109,7 +109,7 @@ Add to CLAUDE.md → Write Medium Article → [REPEAT with meta-improvements]
 
 ### Process
 
-1. Load EFFICIENCY_CHECKLIST.md
+1. Load @rules/efficiency-rules.md
 2. Scan session's tool usage
 3. Count violations by category
 4. Calculate score: `(major * 10) + (minor * 3)`
@@ -165,7 +165,7 @@ Add to CLAUDE.md → Write Medium Article → [REPEAT with meta-improvements]
 | `chat-history-search` | Mine history for patterns |
 | `medium-article-writer` | Auto-trigger article after skill creation |
 | `pr-automation` | Create PR for new skills |
-| `EFFICIENCY_CHECKLIST.md` | Score sessions |
+| `@rules/efficiency-rules.md` | Score sessions |
 
 ---
 

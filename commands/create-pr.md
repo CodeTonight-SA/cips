@@ -109,4 +109,4 @@ Loads the `pr-automation` skill from:
 
 - `/audit-efficiency` - Validate batch operations usage
 - `/refresh-context` - Understand recent git history
-- See `EFFICIENCY_CHECKLIST.md` for batch operation protocols
+- See `@rules/efficiency-rules.md` for batch operation protocols

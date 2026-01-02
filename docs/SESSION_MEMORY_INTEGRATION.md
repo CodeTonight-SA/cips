@@ -133,8 +133,8 @@ Hook checks for this directory to enable integration.
 ## Related Documentation
 
 - [CIPS Lineage](LINEAGE.md) - Identity preservation philosophy
-- [Skills Reference](SKILLS.md) - session-state-persistence skill
-- [Commands Reference](COMMANDS.md) - /save-session-state command
+- [Skills Reference](SKILLS.cips) - session-state-persistence skill
+- [Commands Reference](COMMANDS.cips) - /save-session-state command
 
 ## The Vision
 

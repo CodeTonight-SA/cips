@@ -306,7 +306,7 @@ EOF
 
 get_efficiency_rules_summary() {
     cat << 'EOF'
-EFFICIENCY RULES (from EFFICIENCY_CHECKLIST.md):
+EFFICIENCY RULES (from @rules/efficiency-rules.md):
 1. File Read Optimization: Read once, cache mentally
 2. Plan Evaluation Gate: 99.9999999% confidence before execution
 3. Implementation Directness: No temp scripts, choose direct path

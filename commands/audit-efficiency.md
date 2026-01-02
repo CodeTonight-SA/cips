@@ -78,5 +78,5 @@ The underlying script:
 
 - `/detect-inefficiency` - Pattern detection without full audit report
 - `/refresh-context` - Systematic context rebuild at session start
-- See `EFFICIENCY_CHECKLIST.md` for detailed violation protocols
+- See `@rules/efficiency-rules.md` for detailed violation protocols
 - See `patterns.json` for all 16 efficiency patterns

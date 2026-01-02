@@ -73,7 +73,7 @@ ise findings into concise project snapshot
 
 - Complements existing `/refresh-context` command in ~/.claude/commands/
 - Reads from ~/.claude/history.jsonl (use jq with timestamp filtering)
-- Respects EFFICIENCY_CHECKLIST.md token budgets
+- Respects @rules/efficiency-rules.md token budgets
 - Feeds context to other agents in multi-agent workflows
 
 ## Success Criteria

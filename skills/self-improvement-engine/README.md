@@ -111,7 +111,7 @@ Next steps:
 ---
 
 ### `/audit-efficiency`
-**Score session against EFFICIENCY_CHECKLIST.md**
+**Score session against @rules/efficiency-rules.md**
 
 Analyzes current or past session for violations, calculates score.
 
@@ -121,7 +121,7 @@ Analyzes current or past session for violations, calculates score.
 ```text
 
 ### What it does:
-1. Loads `EFFICIENCY_CHECKLIST.md` violation rules
+1. Loads `@rules/efficiency-rules.md` violation rules
 2. Scans tool calls for violations:
    - Repeated file reads (major: 10 pts)
    - Temp script creation (major: 10 pts)

@@ -32,7 +32,7 @@ skill.create.gate⟿ AskUserQuestion.MANDATORY ⫶ quality.score≥70%
 ; ═══════════════════════════════════════════════════════════════
 
 ; Session Start (AUTO)
-session.start⟿ load(CLAUDE.md, EFFICIENCY_CHECKLIST.md) ⫶ cips.check ⫶ emit("[RL++]")
+session.start⟿ load(CLAUDE.md, @rules/efficiency-rules.md) ⫶ cips.check ⫶ emit("[RL++]")
 
 ; Login & Onboarding (v3.0 - Unified Wizard)
 first.run⟿ invoke(@skills/authenticating-with-claude/SKILL.md)

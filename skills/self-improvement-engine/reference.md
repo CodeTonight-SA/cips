@@ -228,7 +228,7 @@ Prevents repeated file reads by caching file contents in working memory.
 
 ```bash
 # 1. Load Checklist
-checklist = parse("~/.claude/EFFICIENCY_CHECKLIST.md")
+checklist = parse("~/.claude/@rules/efficiency-rules.md")
 
 # 2. Analyze Session
 tool_calls = get_current_session_tools()

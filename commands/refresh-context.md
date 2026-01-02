@@ -78,4 +78,4 @@ Loads the `context-refresh` skill from:
 
 - `/remind-yourself` - Search past conversations by topic/date
 - `/audit-efficiency` - Detect context-loss pattern violations
-- See `EFFICIENCY_CHECKLIST.md` for file read optimization protocols
+- See `@rules/efficiency-rules.md` for file read optimization protocols
