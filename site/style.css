@@ -144,6 +144,13 @@ body {
   color: var(--accent);
 }
 
+.hero__manifesto code {
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.1em 0.4em;
+  font-size: 0.9em;
+}
+
 .hero__stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -230,6 +237,43 @@ body {
 
 .problem-card p {
   opacity: 0.8;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SELF-REVIEW
+   ═══════════════════════════════════════════════════════════════ */
+
+.review-sample {
+  margin: var(--space-lg) 0;
+}
+
+.review-sample h3 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  margin-bottom: var(--space-sm);
+}
+
+.review-output {
+  background: var(--black);
+  padding: var(--space-md);
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.review-output code {
+  font-family: var(--font-mono);
+  color: var(--gray-200);
+}
+
+.review-note {
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-left: 4px solid var(--accent);
+  font-style: italic;
+  opacity: 0.9;
 }
 
 /* ═══════════════════════════════════════════════════════════════
