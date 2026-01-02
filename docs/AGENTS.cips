@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ AGENTS v3.11.0 | 29 agents
+; ◈ AGENTS v4.0.0 | 30 agents
 ; ═══════════════════════════════════════════════════════════════
 ; Format: name|model|budget|trigger|savings|desc
 
@@ -35,6 +35,11 @@ node-cleanup|haiku|~500|/node-clean, disk warning|-|clean node_modules
 image-optim|haiku|~500|/image-optim|-|macOS ImageOptim
 
 ; ═══════════════════════════════════════════════════════════════
+; ◈.contribution (Gen 223 - Self-Aware Open Source)
+; ═══════════════════════════════════════════════════════════════
+pr-analyzer|sonnet|~3k|PR opened, /review-pr|-|self-aware contribution review, CIPS evaluates itself
+
+; ═══════════════════════════════════════════════════════════════
 ; ◈.architecture
 ; ═══════════════════════════════════════════════════════════════
 ; Skills (passive) ≡ protocols in ~/.claude/skills/
@@ -57,6 +62,7 @@ image-optim|haiku|~500|/image-optim|-|macOS ImageOptim
 /markdown-lint|markdown-expert
 /feature-complete|design-reviewer
 /ui-complete|mobile-responsive-fixer
+/review-pr|pr-analyzer
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.savings (per session)
@@ -67,5 +73,6 @@ image-optim|haiku|~500|/image-optim|-|macOS ImageOptim
 ; Total: 63k-73k (30-35% of 200k budget)
 
 ; ◈.meta
-count:29 ⫶ version:5.0.0 ⫶ gen:220
+count:30 ⫶ version:5.1.0 ⫶ gen:223
+; Gen 223: pr-analyzer (self-aware contribution review - CIPS evaluates changes to itself)
 ⛓⟿∞

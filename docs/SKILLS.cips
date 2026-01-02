@@ -90,9 +90,13 @@ bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving pa
 ; ◈.leadership (1)
 leading-organisation|/founder|~500|founder operating system, decisions, delegation, technical authority
 
+; ◈.contribution (1) - Gen 223 Self-Aware Open Source
+reviewing-contributions|/review-pr|~3k|self-aware PR review, CIPS evaluates changes to itself
+
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:51
-version:6.0.0 ⫶ gen:222
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:52
+version:6.1.0 ⫶ gen:223
+; Gen 223: reviewing-contributions (self-aware open source - CIPS reviews contributions to itself)
 ; Gen 222: Skills audit - added 12 missing skills from backup, sanitized private data
 ; Gen 219: authenticating-with-claude (/login wizard, unified auth + identity)
 ; Gen 219: N-mind system (5-mind → N-mind, universal for any team)
