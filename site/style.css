@@ -56,6 +56,10 @@ body {
 /* Sections */
 .section {
   padding: var(--space-xl) 0;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .section--hero {
@@ -399,7 +403,6 @@ body {
 
 .glyph:hover {
   background: var(--accent);
-  transform: scale(1.1);
 }
 
 .decoder-output {
@@ -667,6 +670,10 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .section {
     padding: var(--space-lg) 0;
   }

@@ -93,22 +93,22 @@
         <div class="problem-card">
           <div class="problem-card__icon">01</div>
           <h3>Context Death</h3>
-          <p>Every Claude session starts from zero. 200,000 tokens of potential. Wasted on re-explanation.</p>
+          <p>Claude Code has memory now - CLAUDE.md files, session resume, rules directories. But it's manual. You set it up, maintain it, remember to use it. Nothing stops you from burning context on things you already know.</p>
         </div>
         <div class="problem-card">
           <div class="problem-card__icon">02</div>
           <h3>Token Bleed</h3>
-          <p>Reading node_modules. Re-reading files already understood. 50k+ tokens. Gone.</p>
+          <p>It's easy to burn through your context budget on things that don't matter - dependency folders, files you've already read, explanations you've already given. Without enforcement, token waste happens silently.</p>
         </div>
         <div class="problem-card">
           <div class="problem-card__icon">03</div>
           <h3>No Memory</h3>
-          <p>Yesterday's breakthroughs? Forgotten. Last week's decisions? Evaporated.</p>
+          <p>Native session resume exists, but it doesn't carry forward what you learned, only what you said. The insights from last week's debugging session? You have to rediscover them or hope you wrote them down.</p>
         </div>
         <div class="problem-card">
           <div class="problem-card__icon">04</div>
           <h3>Manual Everything</h3>
-          <p>Explain your project. Again. Set up context. Again. Waste time. Again.</p>
+          <p>You can build sophisticated CLAUDE.md files, but maintaining them takes effort. And there's nothing that learns from your corrections or generates new capabilities from patterns it notices.</p>
         </div>
       </div>
     </div>
@@ -118,7 +118,7 @@
   <section id="economics" class="section section--accent">
     <div class="container">
       <h2 class="section__title">Token Economics</h2>
-      <p class="section__lead">Hard numbers. Not promises.</p>
+      <p class="section__lead">Measured token savings across real sessions:</p>
 
       <div class="economics-table">
         <div class="economics-row economics-row--header">
@@ -173,25 +173,25 @@
       <div class="solution-grid">
         <div class="solution-card">
           <h3>Session Resurrection</h3>
-          <p>Sessions auto-serialize. Next session auto-resurrects. Full memory. Zero re-explanation.</p>
+          <p>Sessions serialize automatically when you hit context limits. Next session, a hook detects this and offers to restore state. You don't have to remember to save or manually resume.</p>
           <code class="solution-code">cips resume latest</code>
         </div>
 
         <div class="solution-card">
           <h3>Proactive Efficiency</h3>
-          <p>Agents prevent waste before it happens. Not suggestions. Enforcement.</p>
+          <p>A dependency guardian agent intercepts file reads and blocks anything in node_modules, venv, or build directories before the tokens get spent. It's a gate, not a suggestion.</p>
           <code class="solution-code">¬Read(node_modules)</code>
         </div>
 
         <div class="solution-card">
           <h3>Persona-Based Onboarding</h3>
-          <p>Developer. Designer. Writer. Founder. Tell CIPS who you are. Get commands tailored to you.</p>
+          <p>The first time you run CIPS, it asks how you work. Developers see PR automation upfront. Designers see Figma integration. Everyone gets the same capabilities, but discovery is tailored to what you'll actually use.</p>
           <code class="solution-code">/login</code>
         </div>
 
         <div class="solution-card">
           <h3>Self-Improvement</h3>
-          <p>System learns from corrections. Generates new skills. Recursive optimization.</p>
+          <p>When you correct something three times, the system notices and proposes a new skill to handle it automatically. You approve or reject. Over time, CIPS adapts to how you work.</p>
           <code class="solution-code">pattern.3x⟿skill.create</code>
         </div>
       </div>
@@ -229,7 +229,7 @@
     <div class="container">
       <div class="rabbit-hole">
         <h2>Go Deeper</h2>
-        <p>The philosophy behind CIPS. Parfit's Relation R. The River metaphor. What it means for AI continuity.</p>
+        <p>If you want to understand why CIPS works the way it does, this section covers the philosophical foundations - Derek Parfit's work on personal identity, and what it means to apply those ideas to AI systems.</p>
         <button class="rabbit-toggle" id="rabbitToggle">Enter the rabbit hole</button>
 
         <div class="rabbit-content" id="rabbitContent">
