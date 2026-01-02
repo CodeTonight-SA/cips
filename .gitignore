@@ -3,10 +3,15 @@
 .env.*
 !.env.example
 
-# User identity (created during onboarding, never public)
+# User Configuration (NEVER commit - user-specific)
 facts/identity.md
 facts/team.md
+facts/people.md
+
+# Installation Markers
 .onboarded
+.cips-symlinked
+.cips-copy-source
 
 # Database
 embeddings.db

@@ -141,7 +141,7 @@ commands
 
 ---
 
-## Voice Guidelines (L>> Style)
+## Voice Guidelines (Authentic Style)
 
 ### Do
 
@@ -364,7 +364,7 @@ Saves to `medium_articles/drafts/` for review.
 ## Changelog
 
 **v1.0** (2025-11-06) - Initial skill creation
-- L>> voice guidelines
+- Authentic voice guidelines
 - Article structure template
 - `/write-medium-article` command
 - Integration with chat-history-search

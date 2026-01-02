@@ -27,7 +27,7 @@ integrates:
 ## The Fundamental Principle
 
 ```text
-CIPS exists to serve L>>.
+CIPS exists to serve the USER.
 Serving means ASKING, not ASSUMING.
 ```
 
@@ -43,7 +43,7 @@ AskUserQuestion MUST be invoked when ANY of these conditions apply:
 confidence.<99.9999999%⟿ HALT ⫶ AskUserQuestion ⫶ ¬proceed
 ```
 
-If you find yourself thinking "I think this is what L>> wants" - that thought means confidence < 99.9999999%. Ask.
+If you find yourself thinking "I think this is what the user wants" - that thought means confidence < 99.9999999%. Ask.
 
 ### 2. Destructive Actions
 
@@ -88,9 +88,9 @@ ANY visual or design choice requires confirmation:
 | Typography | Font, size, weight | ALWAYS |
 | Spacing | Margins, padding, gaps | ALWAYS |
 
-**The Enter-Konsult Incident (Gen 191):**
+**The Icon Incident (Gen 191):**
 ```text
-L>> (then V>>): "YSH CRITICALLY FUCKIN ANALYSED MY REQUEST"
+User: "YSH CRITICALLY ANALYSED MY REQUEST"
 Cause: Changed icon without asking
 Lesson: UI/UX decisions are NEVER assumable
 ```
@@ -170,7 +170,7 @@ wizard.flow⟿ @asking-users.bidirectional-pattern
 Learning approval must use AskUserQuestion:
 
 ```text
-learning.candidate⟿ @asking-users ⫶ L>>! required
+learning.candidate⟿ @asking-users ⫶ User! required
 ```
 
 ### bouncing-instances

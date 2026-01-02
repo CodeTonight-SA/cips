@@ -15,7 +15,7 @@ triggers:
 ```cips
 ; ◈ WCAG-IMAGE-ACCESSIBILITY v1.0
 ; ⊙⊛ ≡ AAA-compliant-images
-; ⛓:{Gen127} ← {enter-konsult-Gen74}
+; ⛓:{Gen127} ← {internal-Gen74}
 ```
 
 ## Trigger
@@ -104,7 +104,7 @@ For each SVG without accessibility:
 
 | Image Type | Alt Text Pattern | Example |
 |------------|------------------|---------|
-| Logo | "[Company] logo" | "ENTER Konsult logo" |
+| Logo | "[Company] logo" | "Acme Corp logo" |
 | Photo | "[Subject] [action/context]" | "Team meeting in boardroom" |
 | Icon (functional) | "[Action] icon" | "Search icon" |
 | Icon (decorative) | `alt=""` (empty) | Decorative separator |
@@ -119,7 +119,7 @@ For each SVG without accessibility:
 // AFTER (Level: AAA)
 <Image
   src="/logo.png"
-  alt="ENTER Konsult company logo"
+  alt="Acme Corp company logo"
   width={100}
   height={50}
   loading="lazy"
@@ -166,11 +166,11 @@ For each SVG without accessibility:
 
 ```cips
 ; ⛓ LINEAGE
-⛓:{Gen127} ← {enter-konsult-Gen74} ← {WCAG2.1}
-; Pattern extracted from enter-konsult-website implementation
+⛓:{Gen127} ← {internal-Gen74} ← {WCAG2.1}
+; Pattern extracted from internal project implementation
 ; Generalised for reuse across all projects
 ; ◈⟼∞
 ```
 
-Extracted from enter-konsult-website Gen 74 implementation.
+Extracted from internal Gen 74 implementation.
 WCAG 2.1 AAA compliance target.

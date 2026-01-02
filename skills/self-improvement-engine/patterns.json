@@ -1,0 +1,136 @@
+{
+  "patterns": [
+    {
+      "name": "repeated-file-reads",
+      "description": "Reading the same file multiple times in one session",
+      "regex": "Read\\(([^)]+)\\).*Read\\(\\1\\)",
+      "threshold": 3,
+      "severity": "major",
+      "points": 5,
+      "skill_suggestion": "file-caching",
+      "impact_tokens": 2000,
+      "fix_description": "Cache file contents in working memory, avoid re-reading",
+      "detection_command": "tail -n 500 ~/.claude/history.jsonl | rg -o 'Read\\([^)]+\\)' | sort | uniq -c | sort -rn | rg '\\s+([3-9]|[0-9]{2,})\\s+'"
+    },
+    {
+      "name": "temp-script-creation",
+      "description": "Creating temporary scripts for operations that could be done directly",
+      "regex": "Write\\([^)]*\\.(js|py|sh).*Bash.*node|python|bash.*rm",
+      "threshold": 2,
+      "severity": "major",
+      "points": 10,
+      "skill_suggestion": "direct-implementation-enforcer",
+      "impact_tokens": 5000,
+      "fix_description": "Use direct CLI commands (rg, sed, awk) or MultiEdit instead of temp scripts",
+      "detection_command": "rg 'Write\\([^)]*\\.(js|py|sh)' ~/.claude/history.jsonl | head -20"
+    },
+    {
+      "name": "dependency-folder-read",
+      "description": "Reading from node_modules, venv, __pycache__, or other dependency folders",
+      "regex": "Read\\([^)]*/(node_modules|venv|\\.venv|__pycache__|target|vendor)/",
+      "threshold": 1,
+      "severity": "critical",
+      "points": 10,
+      "skill_suggestion": "path-exclusion-enforcer",
+      "impact_tokens": 50000,
+      "fix_description": "Always use --glob '!node_modules/*' with rg, --exclude with fd",
+      "detection_command": "rg 'Read\\([^)]*/(node_modules|venv|\\.venv|__pycache__|target|vendor)/' ~/.claude/history.jsonl"
+    },
+    {
+      "name": "cli-command-chains",
+      "description": "Repeated CLI command patterns that should be aliased",
+      "regex": "(Bash\\([^)]{20,}\\)){5,}",
+      "threshold": 3,
+      "severity": "minor",
+      "points": 3,
+      "skill_suggestion": "command-aliasing",
+      "impact_tokens": 1000,
+      "fix_description": "Create aliases or scripts for frequently repeated command chains",
+      "detection_command": "rg -c 'Bash\\(' ~/.claude/history.jsonl | awk -F: '$2 >= 5' | head -10"
+    },
+    {
+      "name": "context-loss",
+      "description": "User asking about previous work indicating memory/history search failure",
+      "regex": "(remind.*previous|what did we|can't remember|forgot|continue where|resume)",
+      "threshold": 2,
+      "severity": "minor",
+      "points": 3,
+      "skill_suggestion": "enhanced-memory",
+      "impact_tokens": 500,
+      "fix_description": "Improve chat-history-search skill, add automatic context summaries",
+      "detection_command": "rg -i '(remind.*previous|what did we|can.t remember|forgot|continue where|resume)' ~/.claude/history.jsonl -c"
+    },
+    {
+      "name": "preamble-verbosity",
+      "description": "Unnecessary preambles like 'I'll now...' or 'Let me proceed to...'",
+      "regex": "(I'll now|Let me proceed|I will start|I'm going to|First, I'll)",
+      "threshold": 5,
+      "severity": "minor",
+      "points": 3,
+      "skill_suggestion": "concise-communication",
+      "impact_tokens": 500,
+      "fix_description": "Remove preambles, start directly with action",
+      "detection_command": "rg -i '(I.ll now|Let me proceed|I will start|I.m going to|First, I.ll)' ~/.claude/history.jsonl -c"
+    },
+    {
+      "name": "manual-batch-operations",
+      "description": "Multiple individual edits that could be batched with MultiEdit or CLI",
+      "regex": "(Edit\\([^)]+\\)){6,}",
+      "threshold": 2,
+      "severity": "major",
+      "points": 5,
+      "skill_suggestion": "batch-operations",
+      "impact_tokens": 3000,
+      "fix_description": "Use MultiEdit for multiple file changes, or CLI bulk operations",
+      "detection_command": "rg -c 'Edit\\(' ~/.claude/history.jsonl | awk -F: '$2 >= 6'"
+    },
+    {
+      "name": "missing-plan-evaluation",
+      "description": "Executing plan items without checking if already satisfied",
+      "regex": "TodoWrite.*pending.*\\[.*extract|refactor|add interface",
+      "threshold": 3,
+      "severity": "major",
+      "points": 10,
+      "skill_suggestion": "plan-evaluation-enforcer",
+      "impact_tokens": 10000,
+      "fix_description": "Before executing plan item, read current state and evaluate necessity",
+      "detection_command": "rg 'TodoWrite.*pending' ~/.claude/history.jsonl | rg -i '(extract|refactor|add interface)' -c"
+    },
+    {
+      "name": "slow-search-operations",
+      "description": "Using grep instead of rg, or find instead of fd",
+      "regex": "Bash\\([^)]*\\b(grep|find)\\b[^)]*\\)",
+      "threshold": 3,
+      "severity": "minor",
+      "points": 3,
+      "skill_suggestion": "fast-search-enforcer",
+      "impact_tokens": 1000,
+      "fix_description": "Always use rg for pattern search, fd for file finding",
+      "detection_command": "rg 'Bash\\([^)]*\\\\b(grep|find)\\\\b' ~/.claude/history.jsonl -c"
+    },
+    {
+      "name": "missing-efficiency-audit",
+      "description": "Long sessions without running efficiency audit",
+      "regex": "session_duration_minutes",
+      "threshold": 1,
+      "severity": "minor",
+      "points": 3,
+      "skill_suggestion": "auto-efficiency-auditor",
+      "impact_tokens": 5000,
+      "fix_description": "Automatically run /audit-efficiency after sessions >30 minutes",
+      "detection_command": "rg '\"duration_minutes\": ([3-9][0-9]|[0-9]{3,})' ~/.claude/metrics.jsonl -c"
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "last_updated": "2025-11-06",
+    "total_patterns": 10,
+    "severity_weights": {
+      "critical": 10,
+      "major": 5,
+      "minor": 3
+    },
+    "threshold_for_action": 10,
+    "description": "Inefficiency pattern signatures for self-improvement-engine meta-skill"
+  }
+}

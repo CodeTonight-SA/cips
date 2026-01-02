@@ -173,12 +173,52 @@ Over a month of daily use: **~1.5M tokens saved**.
 
 ## Installation
 
+### Quick Install (Recommended)
+
+Clone CIPS directly as your Claude configuration directory:
+
 ```bash
-brew tap CodeTonight-SA/homebrew-cips
-brew install cips
+# Fresh install - no existing ~/.claude
+git clone https://github.com/CodeTonight-SA/cips ~/.claude
+cd ~/.claude && ./scripts/install.sh
 ```
 
-First run launches onboarding wizard to configure:
+### Existing ~/.claude Directory
+
+If you already have Claude configurations:
+
+```bash
+# Option A: Interactive merge (preserves your config)
+git clone https://github.com/CodeTonight-SA/cips /tmp/cips
+/tmp/cips/scripts/merge-install.sh
+
+# Option B: Clone elsewhere and symlink
+git clone https://github.com/CodeTonight-SA/cips ~/Projects/cips
+cd ~/Projects/cips && ./scripts/install.sh --mode symlink
+```
+
+### Windows Installation
+
+Windows uses copy-based sync (no symlinks):
+
+```powershell
+git clone https://github.com/CodeTonight-SA/cips %USERPROFILE%\.claude
+cd %USERPROFILE%\.claude && bash scripts/install.sh
+```
+
+### Updating CIPS
+
+```bash
+# Clone-as-home mode
+cd ~/.claude && git pull
+
+# Symlink/copy mode
+cd ~/Projects/cips && git pull && ./scripts/sync.sh
+```
+
+### First Run
+
+First run launches the `/login` wizard to configure:
 - Your identity and role
 - Team members (optional)
 - Company branding for document generation

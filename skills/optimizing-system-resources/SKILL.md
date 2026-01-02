@@ -214,7 +214,7 @@ Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10
 ## Example Session
 
 ```text
-L>>: clean up resources
+User: clean up resources
 
 CIPS:
 Assessment:

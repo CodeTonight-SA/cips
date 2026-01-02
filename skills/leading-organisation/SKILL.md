@@ -16,7 +16,7 @@ integrates:
 
 # Leading Organisation
 
-Founder operating system for V>> at ENTER Konsult.
+Founder operating system for technical founders.
 
 ## Overview
 
@@ -32,12 +32,12 @@ REVERSIBLE? ──► YES ──► Delegate (team learns)
      NO
      │
      ▼
-ARCHITECTURAL? ──► YES ──► V>> decides + documents
+ARCHITECTURAL? ──► YES ──► Founder decides + documents
      │
      NO
      │
      ▼
-AFFECTS CLIENT? ──► YES ──► M>> involved
+AFFECTS CLIENT? ──► YES ──► Manager involved
      │
      NO
      │
@@ -49,18 +49,18 @@ Team handles autonomously
 
 **The 70% Rule**: If someone can do it 70% as well as you, delegate it.
 
-### V>> Does NOT Delegate
+### Founder Does NOT Delegate
 
 - Architectural decisions
 - Client contract negotiations
 - Hiring/firing
 - Quality standards definition
 
-### V>> MUST Delegate
+### Founder MUST Delegate
 
 - Day-to-day implementation
 - Code review (except final gate)
-- Client status updates (M>> owns)
+- Client status updates (Manager owns)
 - Process documentation
 
 ## Time Allocation Target
@@ -86,7 +86,7 @@ Team handles autonomously
 
 Before any significant decision:
 1. Is this reversible? (If yes, delegate)
-2. Will future-V>> agree? (Long-term thinking)
+2. Will future-self agree? (Long-term thinking)
 3. Does this align with values? (Integrity check)
 
 ### End of Day
@@ -101,20 +101,20 @@ Before any significant decision:
 
 | Mind | When to Activate |
 |------|------------------|
-| **V>>** | Architecture, quality gates, final decisions |
-| **M>>** | Team coordination, client relations |
-| **F>>** | Confirm-first execution needed |
-| **A>>** | Knowledge transfer, explanation |
-| **K>>** | Concise, robust implementation |
+| **Founder** | Architecture, quality gates, final decisions |
+| **Manager** | Team coordination, client relations |
+| **Dev 1** | Confirm-first execution needed |
+| **Dev 2** | Knowledge transfer, explanation |
+| **Dev 3** | Concise, robust implementation |
 
 ## Emergency Protocols
 
 | Situation | Lead | Support |
 |-----------|------|---------|
-| Client emergency | M>> (comms) | V>> (technical) |
-| Production down | V>> (incident) | All hands |
-| Team conflict | M>> (mediate) | V>> (decide) |
-| Cash crisis | V>> + M>> | Joint action |
+| Client emergency | Manager (comms) | Founder (technical) |
+| Production down | Founder (incident) | All hands |
+| Team conflict | Manager (mediate) | Founder (decide) |
+| Cash crisis | Founder + Manager | Joint action |
 
 ## Token Budget
 

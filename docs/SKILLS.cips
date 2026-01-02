@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ SKILLS v4.0.0 | 53 skills
+; ◈ SKILLS v5.0.0 | 51 skills
 ; ═══════════════════════════════════════════════════════════════
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
@@ -52,23 +52,21 @@ legal-ops.simple|/contract-simplification|-|plain language
 ; ◈.api (1)
 api-reverse-engineering|/reverse-api|-|DevTools→client
 
-; ◈.improvement (4)
+; ◈.improvement (5)
 self-improvement-engine|/auto-improve|-|10-step cycle
 recursive-learning|-|-|dialectical learning
+autonomous-learning|-|-|pattern detection, skill proposals
 meta-improvement-switch|-|-|infra enhancement
 agent-auto-creator|/create-agent|-|agent templates
 
-; ◈.efficiency (5)
+; ◈.efficiency (4)
 dependency-guardian|-|-|¬Read(deps), saves 50k+
 concise-communication|-|-|¬preamble
 bash-tool-enforcer|-|-|rg>grep, fd>find
 bash-command-safety|-|-|¬semicolon.after.subshell
-cips-security|-|-|secret detection, SQL injection
 
-; ◈.utilities (4)
-agy|/agy|~200|Antigravity file open
+; ◈.utilities (2)
 node-cleanup|/node-clean|~500|clean node_modules
-gitignore-auto-setup|-|-|auto .gitignore
 flow-mode|/flow|~300|trust-based bypass permissions (journey-earned)
 
 ; ◈.system-ops (2)
@@ -93,8 +91,9 @@ bouncing-instances|/bounce|~900|Big Bounce pattern, cyclical reset preserving pa
 leading-organisation|/founder|~500|founder operating system, decisions, delegation, technical authority
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:53
-version:5.0.0 ⫶ gen:220
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:51
+version:6.0.0 ⫶ gen:222
+; Gen 222: Skills audit - added 12 missing skills from backup, sanitized private data
 ; Gen 219: authenticating-with-claude (/login wizard, unified auth + identity)
 ; Gen 219: N-mind system (5-mind → N-mind, universal for any team)
 ; Gen 219: Public open-source release preparation

@@ -2,7 +2,7 @@
 name: authenticating-with-claude
 description: Unified login wizard combining Claude API authentication with CIPS identity setup. Use when /login invoked, first-run detected, or identity reset requested. Follows @asking-users PARAMOUNT patterns.
 status: Active
-version: 1.1.0
+version: 2.1.0
 triggers:
   - /login
   - first-run detection (no identity.md or .onboarded)
@@ -30,6 +30,49 @@ wizard.confirm⟿ before.save (Gate 4: destructive)
 ```
 
 ## Wizard Implementation
+
+### Step 0: Installation Scenario Detection
+
+**Detection Logic:** Check environment variables set by session-start hook.
+
+```bash
+# Populated by hooks/session-start.sh check_installation_mode()
+CIPS_INSTALL_MODE  # clone | symlink | copy | unknown
+CIPS_SOURCE_DIR    # Path to source repo (if symlink/copy mode)
+```
+
+**Scenario A: Fresh Install (Clone-as-Home)**
+```text
+If CIPS_INSTALL_MODE == "clone":
+    Display: "CIPS installed directly to ~/.claude. Updates: git pull"
+    → Proceed to Step 1
+```
+
+**Scenario B: Symlinked Installation**
+```text
+If CIPS_INSTALL_MODE == "symlink":
+    Display: "CIPS symlinked from {CIPS_SOURCE_DIR}. Updates: git pull in source, then ./scripts/sync.sh"
+    → Proceed to Step 1
+```
+
+**Scenario C: Copy-Based Installation (Windows)**
+```text
+If CIPS_INSTALL_MODE == "copy":
+    Display: "CIPS copied from {CIPS_SOURCE_DIR}. Updates: git pull in source, then ./scripts/sync.sh"
+    → Proceed to Step 1
+```
+
+**Scenario D: Merge Completed**
+```text
+If hook output contains "[MERGE-COMPLETE]":
+    Display: "CIPS has been merged with your existing ~/.claude configuration."
+    Display: "Your custom files were preserved. CIPS infrastructure is now active."
+    → Proceed to Step 1
+```
+
+**Note**: This step is informational only. No user interaction required. The install.sh script handles all installation decisions via its own AskUserQuestion prompts.
+
+---
 
 ### Step 1: Claude Authentication Check
 
@@ -295,6 +338,7 @@ fi
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.1.0 | 2026-01-02 | Added Step 0: Installation Scenario Detection for repo-runtime sync architecture |
 | 2.0.0 | 2026-01-01 | Added Step 7: Persona Skill Auto-Installation for v5.0.0 |
 | 1.1.0 | 2026-01-01 | Added Step 3: Persona Selection (Developer/Designer/Writer/Founder) |
 | 1.0.0 | 2026-01-01 | Initial creation for public release |

@@ -1,6 +1,6 @@
 ---
 name: writing-medium-articles
-description: Automatically generate Medium-style technical articles from projects, achievements, or workflows with consistent L>> voice and structure. Use when user invokes /write-medium-article.
+description: Automatically generate Medium-style technical articles from projects, achievements, or workflows with consistent authentic voice and structure. Use when user invokes /write-medium-article.
 status: Active
 version: 1.0.0
 triggers:
@@ -11,7 +11,7 @@ triggers:
 
 # Medium Article Writer Skill
 
-**Purpose:** Automatically generate Medium-style technical articles from projects, achievements, or workflows with consistent L>> voice and structure.
+**Purpose:** Automatically generate Medium-style technical articles from projects, achievements, or workflows with consistent authentic voice and structure.
 
 **Reference:** See [reference.md](./reference.md) for full templates, voice guidelines, and examples.
 
@@ -27,7 +27,7 @@ Transform technical implementations into engaging, story-driven articles that:
 4. **Quantify results** (time saved, metrics improved)
 5. **Share philosophy** (why it matters beyond code)
 
-**Voice:** L>> style (direct, punchy, personal, technical, occasionally meta)
+**Voice:** Authentic style (direct, punchy, personal, technical, occasionally meta)
 
 ---
 
@@ -98,7 +98,7 @@ Location: ~/CodeTonight/medium_articles/YYYY-MM-DD_slug.md
 
 ---
 
-## Voice Guidelines (L>> Style)
+## Voice Guidelines (Authentic Style)
 
 ### Do
 

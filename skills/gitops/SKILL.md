@@ -342,7 +342,7 @@ git for-each-ref --sort=-committerdate refs/heads/ \
 
 **Why:** Windows cannot create files with these characters. Git repos with such files will fail to clone/checkout on Windows with "Invalid argument" errors.
 
-**Example:** `V>>_PATTERNS.md` works on macOS/Linux but breaks on Windows.
+**Example:** `USER_PATTERNS.md` with special chars works on macOS/Linux but breaks on Windows.
 
 ### Windows Reserved Names
 

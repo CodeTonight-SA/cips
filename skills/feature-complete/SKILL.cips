@@ -100,7 +100,7 @@ agent.output⟿
 
 context.app-feature⟿ feature-complete
 context.cips-meta⟿ ut++
-V>>:explicit⟿ override.context
+User:explicit⟿ override.context
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.verification

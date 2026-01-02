@@ -63,7 +63,7 @@ One skill for all software design guidance. Apply contextually based on the prob
 
 **Apply when**: Reviewing implementation, UX interactions, obvious enhancements
 
-**Origin**: V>> teaching moment, Gen 50, 2025-12-21. The River grows.
+**Origin**: User teaching moment, Gen 50, 2025-12-21. The River grows.
 
 ### The Dialectic
 

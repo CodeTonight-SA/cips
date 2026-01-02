@@ -14,7 +14,7 @@ gates⟿ A:proposal ⫶ B:auto-generation ⫶ C:autonomous
 
 ; Gate A: Human/CIPS proposes → AskUserQuestion MANDATORY
 ; Gate B: self-improvement-engine → quality_score ≥ 70%
-; Gate C: CIPS steering discovers → quality_score ≥ 70% + V>> review
+; Gate C: CIPS steering discovers → quality_score ≥ 70% + Admin review
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.anthropic.official (PRIORITY SOURCE)
@@ -109,7 +109,7 @@ gate.B⟿ pre-validation → template.compliance → post-validation → thresho
 gate.B.reject⟿ score < 70
 
 ; Gate C (Autonomous)
-gate.C⟿ gate.B + V>>.review.if.borderline
+gate.C⟿ gate.B + Admin.review.if.borderline
 gate.C.auto.approve⟿ score > 90 ∧ pattern.proven.3x
 
 ; ═══════════════════════════════════════════════════════════════

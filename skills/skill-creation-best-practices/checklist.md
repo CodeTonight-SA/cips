@@ -107,7 +107,7 @@ Gate Type: [ ] A: Proposal  [ ] B: Auto-Gen  [ ] C: Autonomous
 ### Thresholds
 
 - **< 70**: REJECT - Does not meet quality standards
-- **70-90**: REVIEW - Needs V>> approval for borderline cases
+- **70-90**: REVIEW - Needs Admin approval for borderline cases
 - **> 90**: PASS - Meets or exceeds quality standards
 
 ---
@@ -131,7 +131,7 @@ Gate Type: [ ] A: Proposal  [ ] B: Auto-Gen  [ ] C: Autonomous
 
 - [ ] Same as Gate B
 - [ ] Pattern proven 3+ times (for auto-approve)
-- [ ] V>> review required if score 70-90%
+- [ ] Admin review required if score 70-90%
 
 ---
 

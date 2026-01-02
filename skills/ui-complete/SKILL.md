@@ -19,7 +19,7 @@ Unified UI development that combines:
 
 1. **frontend-design** (plugin): Anti-AI-slop aesthetics, distinctive typography, bold visual direction
 2. **mobile-responsive-ui** (CIPS): dvh units, 48px touch targets, mobile-first, testing protocol
-3. **ENTER Konsult brand** (when applicable): Swiss Minimalism, refined elegance
+3. **Custom branding** (when applicable): Swiss Minimalism style, refined elegance
 
 ## When to Use
 
@@ -94,7 +94,7 @@ Test at three breakpoints:
 If project has brand guidelines:
 
 1. Check for brand configuration in project
-2. Apply ENTER Konsult Swiss Minimalism if applicable
+2. Apply configured brand styles if applicable
 3. Verify visual consistency with brand
 
 ## Anti-Patterns
@@ -151,7 +151,7 @@ Claude (ui-complete):
 1. Phase 1: Choose brutalist/editorial aesthetic with bold serif typography
 2. Phase 2: Implement mobile-first with w-full md:max-w-4xl, min-h-dvh
 3. Phase 3: Test 375px/768px/1920px, verify touch targets
-4. Phase 4: Apply ENTER Konsult brand if configured
+4. Phase 4: Apply project brand if configured
 ```
 
 ---

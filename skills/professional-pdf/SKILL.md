@@ -235,7 +235,7 @@ AskUserQuestion({
 
 ---
 
-## Migration from enter-konsult-pdf
+## Migration from Legacy PDF Skill
 
 If migrating from the old skill:
 1. Your existing documents remain unchanged

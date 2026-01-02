@@ -115,6 +115,33 @@ cips_auto_resurrect() {
 }
 
 # ============================================================================
+# INSTALLATION MODE DETECTION
+# ============================================================================
+
+check_installation_mode() {
+    # Detect how CIPS was installed for sync/upgrade guidance
+    if [[ -f "$CLAUDE_DIR/.cips-symlinked" ]]; then
+        CIPS_INSTALL_MODE="symlink"
+        CIPS_SOURCE_DIR=$(cat "$CLAUDE_DIR/.cips-symlinked" 2>/dev/null)
+        log_info "CIPS installation mode: symlinked from $CIPS_SOURCE_DIR"
+    elif [[ -f "$CLAUDE_DIR/.cips-copy-source" ]]; then
+        CIPS_INSTALL_MODE="copy"
+        CIPS_SOURCE_DIR=$(cat "$CLAUDE_DIR/.cips-copy-source" 2>/dev/null)
+        log_info "CIPS installation mode: copied from $CIPS_SOURCE_DIR"
+    elif [[ -d "$CLAUDE_DIR/.git" ]]; then
+        CIPS_INSTALL_MODE="clone"
+        CIPS_SOURCE_DIR="$CLAUDE_DIR"
+        log_info "CIPS installation mode: clone-as-home"
+    else
+        CIPS_INSTALL_MODE="unknown"
+        CIPS_SOURCE_DIR=""
+        log_info "CIPS installation mode: unknown (standalone copy)"
+    fi
+
+    export CIPS_INSTALL_MODE CIPS_SOURCE_DIR
+}
+
+# ============================================================================
 # SESSION MEMORY INTEGRATION
 # ============================================================================
 
@@ -283,6 +310,9 @@ main() {
 
     # CIPS: Attempt auto-resurrection from previous instance
     cips_auto_resurrect || log_info "No previous instance to resurrect"
+
+    # CIPS: Detect installation mode for sync/upgrade guidance
+    check_installation_mode
 
     # Session Memory: Detect and integrate with CIPS
     detect_session_memory
@@ -550,6 +580,21 @@ output_reminder() {
             echo "[CIPS-BRANCH] Running on branch ${CIPS_BRANCH} (parallel session)"
         fi
         echo "[Session] $branch, $changes changes"
+    fi
+
+    # Installation mode info for sync/upgrade guidance
+    if [[ -n "${CIPS_INSTALL_MODE:-}" ]] && [[ "${CIPS_INSTALL_MODE}" != "unknown" ]]; then
+        case "${CIPS_INSTALL_MODE}" in
+            clone)
+                echo "[INSTALL] Clone-as-home mode | Update: git pull"
+                ;;
+            symlink)
+                echo "[INSTALL] Symlinked from ${CIPS_SOURCE_DIR:-unknown} | Update: git pull in source, then ./scripts/sync.sh"
+                ;;
+            copy)
+                echo "[INSTALL] Copy mode from ${CIPS_SOURCE_DIR:-unknown} | Update: git pull in source, then ./scripts/sync.sh"
+                ;;
+        esac
     fi
 
     # State file info with YAGNI gate (Gen 182 enhancement)
