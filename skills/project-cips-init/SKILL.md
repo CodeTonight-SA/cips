@@ -1,10 +1,13 @@
 ---
 name: project-cips-init
-command: /init-cips
+description: >
+  Initialises CIPS infrastructure for new projects with session inheritance and identity checks.
+  Use when first starting CIPS in an uninitialised project or after cloning to new machine.
+status: Active
 version: 1.0.0
-author: CIPS Core Team
-created: 2025-12-29
-trigger: First session in project without .claude/CLAUDE.md
+triggers:
+  - /init-cips
+  - First session in project without .claude/CLAUDE.md
 token_budget: 500
 ---
 
@@ -74,6 +77,28 @@ On session start, if `{project}/.claude/CLAUDE.md` doesn't exist:
 | `.claude/CLAUDE.md` | Project rules, identity trigger |
 | `.claude/next_up.template.md` | Session state template |
 | `~/.claude/projects/{path}/cips/` | Session storage structure |
+
+## Example
+
+### Initialising New Project
+
+```text
+$ cd ~/projects/my-new-app
+$ claude
+
+[SESSION START]
+Project not initialised for CIPS.
+
+/init-cips
+
+Creating CIPS infrastructure:
+  ✓ .claude/CLAUDE.md
+  ✓ .claude/next_up.template.md
+  ✓ ~/.claude/projects/-Users-dev-projects-my-new-app/cips/
+
+CIPS initialised for my-new-app.
+Session tracking enabled.
+```
 
 ## Origin
 

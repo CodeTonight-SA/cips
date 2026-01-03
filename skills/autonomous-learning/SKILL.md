@@ -1,8 +1,10 @@
 ---
 name: autonomous-learning
+description: >
+  Dialectical reasoning framework for self-improvement through pattern detection.
+  Use when detecting teaching moments, high novelty scores, or generalisation patterns.
 version: 1.0.0
 status: Active
-command: null
 priority: high
 token_budget: 500
 triggers:
@@ -80,6 +82,25 @@ User message
 
 # Reject with reason
 ./optim.sh learning-reject skill-20251221120000 "Too specific"
+```
+
+## Example
+
+### Detected Learning Event
+
+```text
+User: "You should always check git status before committing"
+CIPS: Detected teaching moment with high novelty
+
+[CIPS LEARNING] Detected generalizable pattern: pre-commit-checking
+
+Learning Score: 0.82
+Triggers: teaching_moment, generalisation
+
+Description:
+Always verify git status before commit operations to prevent...
+
+Proposed skill: pre-commit-checking
 ```
 
 ## Directory Structure

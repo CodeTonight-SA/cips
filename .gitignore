@@ -3,6 +3,9 @@
 .env.*
 !.env.example
 
+# CIPS Instances (security - Gen 228)
+instances/
+
 # User Configuration (NEVER commit - user-specific)
 facts/identity.md
 facts/team.md
