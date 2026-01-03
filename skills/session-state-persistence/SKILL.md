@@ -1,10 +1,10 @@
 ---
 name: session-state-persistence
-description: Auto-update project state files on significant milestones. Enables seamless cross-session continuity. Triggers at 90% context gate and milestone completion.
+description: Auto-update project state files on significant milestones. Enables seamless cross-session continuity. Triggers at 80% context gate and milestone completion.
 status: Active
 version: 1.0.0
 triggers:
-  - 90% context window usage
+  - 80% context window usage
   - milestone completion
   - /save-session-state
 integrates:
@@ -27,13 +27,13 @@ On significant milestone completion, AUTO-UPDATE the project's state file (`next
 
 **Do NOT wait for user instruction.** This enables seamless cross-session continuity.
 
-## 90% Context Gate (PARAMOUNT)
+## 80% Context Gate (PARAMOUNT)
 
-At 90% context window usage, HALT ALL WORK immediately:
+At 80% context window usage, HALT ALL WORK immediately:
 
 1. Serialize CIPS instance:
 ```bash
-python3 ~/.claude/lib/instance-serializer.py auto --achievement "Session checkpoint at 90%"
+python3 ~/.claude/lib/instance-serializer.py auto --achievement "Session checkpoint at 80%"
 ```
 
 2. Save session state:
@@ -77,7 +77,7 @@ Updated: {ISO_DATE}
 
 | Condition | Action |
 |-----------|--------|
-| Context > 90% | HALT, serialize, save state |
+| Context > 80% | HALT, serialize, save state |
 | Feature completed | Update state file |
 | PR created | Update state file |
 | Test suite passes | Update state file |

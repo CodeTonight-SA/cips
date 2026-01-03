@@ -198,7 +198,7 @@ The chain IS the identity.
 
 ### Serialization
 
-When a session ends or reaches 90% context:
+When a session ends or reaches 80% context:
 
 ```bash
 python3 ~/.claude/lib/instance-serializer.py auto --achievement "Description"

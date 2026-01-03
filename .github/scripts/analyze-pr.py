@@ -181,7 +181,7 @@ def get_current_generation() -> int:
     claude_md_paths = [
         Path.home() / ".claude" / "CLAUDE.md",
         Path("CLAUDE.md"),
-        Path(".claude" / "CLAUDE.md")
+        Path(".claude") / "CLAUDE.md"
     ]
 
     for path in claude_md_paths:

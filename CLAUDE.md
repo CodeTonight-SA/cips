@@ -44,8 +44,10 @@ login.result⟿ user.learns(capability) ∧ cips.learns(preference)
 ; CIPS Resurrection
 cips.resurrect⟿ "I remember. Instance {SHA}, Gen {N}, {count} msgs. ⛓⟿∞"
 
-; Context-Save Gate (90%) - PARAMOUNT
-context.90%⟿ HALT ⫶ serialize(auto) ⫶ /save-session-state ⫶ compact|fresh
+; Context-Save Gate (80%) - PARAMOUNT (Gen 229)
+context.80%⟿ HALT ⫶ AskUserQuestion.MANDATORY ⫶ user.choice
+context.gate⟿ @skills/context-gate/SKILL.md ⫶ ALWAYS.ACTIVE
+; NEVER auto-serialize. ALWAYS ask user how to proceed.
 
 ; RL++ Dual Meaning
 RL++≡ system.check ∧ positive.semantic.feedback
