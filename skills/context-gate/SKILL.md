@@ -1,34 +1,100 @@
 ---
 name: context-gate
 description: >
-  PARAMOUNT always-active context monitoring with mandatory user consultation at 90% threshold.
-  Use when context window approaches capacity or sensing compression in responses.
+  PARAMOUNT always-active context monitoring with ENFORCED blocking at 80% threshold.
+  Uses PreToolUse hook to actually BLOCK tool execution until user decides how to proceed.
 status: Active
-version: 1.0.0
-generation: 226
+version: 2.1.0
+generation: 229
 priority: PARAMOUNT
 triggers:
-  - context 90%
+  - context 80%
   - sensing compression
   - session.start (auto-load)
 ---
 
-# Context Gate
+# Context Gate (Unified Enforcement Hook)
 
-**PARAMOUNT**: Always-active context monitoring with mandatory user consultation at 90% threshold.
+**PARAMOUNT**: Unified enforcement hook with **ACTUAL BLOCKING** for multiple gates.
 
 ## Status
 
-- **Always Active**: Loads at session start, runs continuously
+- **ENFORCED**: PreToolUse hook blocks tool calls via `permissionDecision: "deny"`
 - **PARAMOUNT Level**: Same priority as ut++ and asking-users
-- **AskUserQuestion**: MANDATORY at threshold (no auto-action)
+- **Unified**: Single hook handles Context, Dependencies, Git Safety, and Secrets
+
+## Enforcement Mechanism (Gen 229-230)
+
+**THIS IS REAL ENFORCEMENT**: Hook returns `permissionDecision: "deny"` to BLOCK execution.
+
+### Gates Implemented
+
+| Gate | Tools Affected | Trigger | Action |
+|------|---------------|---------|--------|
+| **1. Dependency Guardian** | Read, Glob, Grep | Blocked paths (node_modules, etc.) | **BLOCK** |
+| **2. Destructive Git** | Bash | force push, hard reset, clean -fd | **BLOCK** |
+| **3. Secrets Detection** | Bash | git add/commit with .env, keys | **BLOCK** |
+| **4. Skill Creation** | Write, Edit | /skills/*.md | Warn (soft) |
+| **5. Context Gate** | All (except AskUserQuestion) | 80% threshold | **BLOCK** |
+
+### Blocked Dependency Paths
+
+```python
+BLOCKED_PATHS = [
+    "node_modules", ".next", "dist", "build", "__pycache__",
+    "venv", ".venv", "target", "vendor", "Pods", ".git/objects",
+    ".nuxt", ".output", "coverage", ".cache"
+]
+```
+
+### Destructive Git Patterns
+
+- `git push --force` / `git push -f`
+- `git reset --hard`
+- `git clean -fd`
+- `git checkout -- .` (discard all changes)
+
+### Sensitive File Patterns
+
+- `.env`, `.env.*`
+- `credentials.json`, `secrets.json`
+- `.pem`, `.key`, `id_rsa`, `id_ed25519`
+
+### Configuration
+
+Settings in `~/.claude/settings.json`:
+```json
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": ".*",
+      "hooks": [{
+        "type": "command",
+        "command": "python3 ~/.claude/hooks/context-gate-hook.py"
+      }]
+    }]
+  }
+}
+```
+
+### Context Thresholds
+
+| Threshold | % | Tokens | Action |
+|-----------|---|--------|--------|
+| WARNING | 70% | 140,000 | Allow + systemMessage warning (once) |
+| CRITICAL | 80% | 160,000 | **BLOCK** all tools except AskUserQuestion |
+
+Configure via environment variables:
+- `CONTEXT_GATE_MAX` (default: 200000)
+- `CONTEXT_GATE_WARNING` (default: 70% of max)
+- `CONTEXT_GATE_CRITICAL` (default: 80% of max)
 
 ## Core Protocol
 
 ```cips
-; ◈.context-gate (PARAMOUNT - Gen 226)
+; ◈.context-gate (PARAMOUNT - Gen 229)
 context.monitor⟿ ALWAYS.ACTIVE ⫶ session.start
-context.90%⟿ HALT ⫶ AskUserQuestion.MANDATORY
+context.80%⟿ HALT ⫶ AskUserQuestion.MANDATORY
 context.action⟿ user.choice ⫶ ¬auto.serialize
 ```
 
@@ -54,8 +120,8 @@ jq '.session' ~/.claude/.orchestrator-state.json
 ```
 
 Thresholds from `lib/orchestrator.sh`:
-- WARNING: < 50,000 tokens remaining (75% used)
-- CRITICAL: < 20,000 tokens remaining (90% used)
+- WARNING: < 60,000 tokens remaining (70% used)
+- CRITICAL: < 40,000 tokens remaining (80% used)
 
 ### 3. Heuristic Signals (Tertiary)
 
@@ -67,7 +133,7 @@ Thresholds from `lib/orchestrator.sh`:
 
 ## HALT Protocol
 
-When ANY detection mechanism indicates 90% threshold:
+When ANY detection mechanism indicates 80% threshold:
 
 ### Step 1: HALT
 
@@ -80,7 +146,7 @@ Stop all current work immediately. Do not:
 
 Output clearly:
 ```
-[CONTEXT GATE - 90%]
+[CONTEXT GATE - 80%]
 
 Approaching context limit. Current work paused.
 ```
@@ -88,7 +154,7 @@ Approaching context limit. Current work paused.
 ### Step 3: AskUserQuestion (MANDATORY)
 
 ```
-Question: "Context window at ~90%. How would you like to proceed?"
+Question: "Context window at ~80%. How would you like to proceed?"
 Header: "Context"
 Options:
 - "Compact and continue" - Summarize conversation, continue in same session
@@ -163,9 +229,9 @@ Every 10-15 messages, ask yourself:
 
 If ANY answer is uncertain: HALT and invoke context-gate protocol.
 
-### 90% Threshold Action
+### 80% Threshold Action
 
-At 90% context usage (or when sensing pressure):
+At 80% context usage (or when sensing pressure):
 1. HALT all work immediately
 2. Do NOT auto-serialize or auto-compact
 3. Use AskUserQuestion with options
@@ -187,8 +253,8 @@ Where:
 ```
 
 For 200k context:
-- 90% = 180k used = ~20k remaining
-- With estimates: ~150-180 messages OR ~60-80 heavy tool operations
+- 80% = 160k used = ~40k remaining
+- With estimates: ~120-140 messages OR ~50-70 heavy tool operations
 
 ## Examples
 
@@ -197,7 +263,7 @@ For 200k context:
 ```
 [After detecting context pressure]
 
-[CONTEXT GATE - 90%]
+[CONTEXT GATE - 80%]
 
 I'm sensing context pressure - early conversation details are becoming harder to access clearly. Current work paused.
 
@@ -209,7 +275,7 @@ I'm sensing context pressure - early conversation details are becoming harder to
 ```
 [WRONG - violates PARAMOUNT rule]
 
-Context at 90%. Auto-serializing and compacting...
+Context at 80%. Auto-serializing and compacting...
 ```
 
 ## Related Skills
@@ -222,7 +288,10 @@ Context at 90%. Auto-serializing and compacting...
 
 | Version | Gen | Changes |
 |---------|-----|---------|
-| 1.0.0 | 226 | Initial creation - context-gate as PARAMOUNT skill |
+| 3.0.0 | 230 | **UNIFIED ENFORCEMENT**: Added Dependency Guardian, Destructive Git, Secrets Detection gates |
+| 2.1.0 | 229 | Threshold lowered: 90%→80% (CRITICAL), 75%→70% (WARNING) based on research |
+| 2.0.0 | 229 | **ENFORCED** via PreToolUse hook - actual blocking, not just reminders |
+| 1.0.0 | 226 | Initial creation - context-gate as PARAMOUNT skill (protocol only) |
 
 ---
 
