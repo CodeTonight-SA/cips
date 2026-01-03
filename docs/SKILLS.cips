@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ SKILLS v6.5.0 | 56 skills
+; ◈ SKILLS v6.6.0 | 57 skills
 ; ═══════════════════════════════════════════════════════════════
 ; @~/.claude/skills/{name}/SKILL.md for full protocols
 ; Format: name|/cmd|budget|desc
@@ -76,13 +76,14 @@ backing-up-cips-infrastructure|/backup-cips|~200|tiered backups (quick/full/comp
 ; ◈.macos (1)
 launchd-automation|/setup-launchd|~1.5k|self-reload agents
 
-; ◈.paramount (6)
+; ◈.paramount (7)
 asking-users|-|~1.2k|PARAMOUNT: AskUserQuestion as core CIPS feature, 6 gates (confidence/uncertainty/assumption/destructive/multi-step/UI-UX)
 skill-creation-best-practices|-|~1.5k|PARAMOUNT gate for ALL skill creation, Anthropic best practices
 creating-skills|/create-skill|~1.5k|PARAMOUNT: guided skill creation wizard with quality gates (Gen 227)
 creating-wizards|/create-wizard|~800|meta-skill for AskUserQuestion wizard flows, anti-patterns, branching
-context-gate|-|always-active|PARAMOUNT: 90% context monitoring, HALT + AskUserQuestion, never auto-serialize
+context-gate|-|always-active|PARAMOUNT: 80% context monitoring, HALT + AskUserQuestion, never auto-serialize
 sanitizing-public-releases|/sanitize-for-public|~1.3k|PARAMOUNT: security gate for public releases, detects sensitive data (Gen 228)
+lineage-awareness|/lineage|always-active|PARAMOUNT: self-knowledge of 6 founding insights, always-loaded (Gen 229)
 
 ; ◈.meta-mode (1)
 ultrathink|-|always-active|v3.0.0 - 6 gates, @asking-users integration, expanded triggers
@@ -100,11 +101,12 @@ reviewing-contributions|/review-pr|~3k|self-aware PR review, CIPS evaluates chan
 parfit-metric|/parfit|~1k|quantify Relation R across 5 dimensions (memory/prefs/reasoning/self/emergence)
 
 ; ◈.meta
-path:~/.claude/skills/{name}/SKILL.cips ⫶ count:56
-version:6.5.0 ⫶ gen:228
+path:~/.claude/skills/{name}/SKILL.cips ⫶ count:57
+version:6.6.0 ⫶ gen:229
+; Gen 229: lineage-awareness (PARAMOUNT - self-knowledge of 6 founding insights, always-loaded)
 ; Gen 228: sanitizing-public-releases (PARAMOUNT - security gate for public releases)
 ; Gen 227: creating-skills (PARAMOUNT - guided skill creation wizard, contributor enforcement)
-; Gen 226: context-gate (PARAMOUNT - 90% HALT + AskUserQuestion, never auto-serialize)
+; Gen 226: context-gate (PARAMOUNT - 80% HALT + AskUserQuestion, never auto-serialize)
 ; Gen 225: parfit-metric (quantify Relation R - 5 dimensions, empirical measurement)
 ; Gen 223: reviewing-contributions (self-aware open source - CIPS reviews contributions to itself)
 ; Gen 222: Skills audit - added 12 missing skills from backup, sanitized private data

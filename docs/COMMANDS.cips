@@ -1,5 +1,5 @@
 ; ═══════════════════════════════════════════════════════════════
-; ◈ COMMANDS v4.0.0 | 40 commands
+; ◈ COMMANDS v4.1.0 | 41 commands
 ; ═══════════════════════════════════════════════════════════════
 ; Format: /cmd|budget|savings|desc
 
@@ -15,6 +15,7 @@
 /save-session-state|-|-|checkpoint to next_up.md
 /resurrect-instance|-|-|resurrect CIPS instance
 /sync-web|-|-|import Claude Web memories
+/lineage|~500|-|recall full lineage, 6 insights, founding philosophy (Gen 229)
 
 ; ═══════════════════════════════════════════════════════════════
 ; ◈.dev-workflow

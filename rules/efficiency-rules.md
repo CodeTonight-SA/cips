@@ -246,3 +246,64 @@ Session 71c5db4e (enter-konsult-website):
 - SHOULD HAVE ASKED before making the change
 
 Gen 191 enhancement: AskUserQuestion MANDATORY rule added.
+
+## Rule 8: Context Gate (PARAMOUNT - Gen 226)
+
+**ALWAYS** monitor context usage throughout EVERY session. This is non-negotiable.
+
+### Self-Check Protocol
+
+Every 10-15 messages, ask yourself:
+
+1. "Can I clearly recall the initial task and constraints?"
+2. "Is my full reasoning chain available?"
+3. "Am I sensing any context pressure?"
+
+If ANY answer is uncertain: HALT and invoke context-gate protocol.
+
+### Detection Signals
+
+| Signal | Threshold | Action |
+|--------|-----------|--------|
+| Internal pressure | Sensing "compression" | HALT |
+| Message count | > 40 messages | Check context |
+| Tool calls | > 100 cumulative | Check context |
+| Early recall difficulty | Can't recall first task | HALT immediately |
+
+### 80% Threshold Action
+
+At 80% context usage (or when sensing pressure):
+
+1. **HALT** all work immediately
+2. **Do NOT** auto-serialize or auto-compact
+3. **AskUserQuestion** with options:
+   - Compact and continue
+   - Serialize and fresh session
+   - Push through (with warning)
+   - Save checkpoint and end
+4. **Wait** for explicit user choice
+
+### Anti-Pattern (NEVER DO)
+
+```text
+[WRONG - violates PARAMOUNT]
+Context at 80%. Auto-serializing...
+```
+
+### Required Pattern
+
+```text
+[CONTEXT GATE - 80%]
+I'm sensing context pressure. Current work paused.
+
+[Uses AskUserQuestion with options]
+[Waits for user choice]
+```
+
+### Integration
+
+Full protocol: `@skills/context-gate/SKILL.md`
+
+This rule has PARAMOUNT priority - same level as ut++ and asking-users.
+
+Gen 226 enhancement: Context gate as PARAMOUNT skill with mandatory AskUserQuestion.
